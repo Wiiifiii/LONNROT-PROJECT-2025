@@ -228,21 +228,6 @@ export default function Documentation() {
             We remain committed to evolving the platform to meet and exceed user expectations.
           </p>
         </section>
-        <section id="team" className="mb-12 bg-[#111827] text-white p-6 rounded">
-          <h2 className="font-semibold mb-4">Team &amp; Credits</h2>
-          <p className="mb-4">
-            The Lönnrot project is the result of a passionate collaboration by Group 4:
-          </p>
-          <ul className="list-disc list-inside mb-4">
-            <li>Kalle Miettinen</li>
-            <li>Lauri Timonen</li>
-            <li>Roope Forstèn</li>
-            <li>Wefky Hamed</li>
-          </ul>
-          <p>
-            We gratefully acknowledge the guidance of our mentors and the open-source communities behind Next.js, React, Prisma, and all other tools powering this project.
-          </p>
-        </section>
       </div>
     </div>
   );
