@@ -22,7 +22,7 @@ const Navbar = () => {
 
   const navLinks = [
     { href: "/", title: "Home", Icon: AiFillHome },
-    { href: "/books", title: "All Books", Icon: PiBooksDuotone },
+    { href: "/books", title: "Bookshelf", Icon: PiBooksDuotone },
     { href: "/my-reading-lists", title: "My Lists", Icon: ImList2 },
     { href: "/about", title: "About", Icon: SiAboutdotme },
     { href: "/documentation", title: "Doc", Icon: BsFiletypeDoc },
@@ -31,7 +31,7 @@ const Navbar = () => {
 
   const mobileLinks = [
     { href: "/", title: "Home", Icon: AiFillHome },
-    { href: "/books", title: "All Books", Icon: PiBooksDuotone },
+    { href: "/books", title: "Bookshelf", Icon: PiBooksDuotone },
     { href: "/my-reading-lists", title: "My Lists", Icon: ImList2 },
     { href: "/about", title: "About", Icon: SiAboutdotme },
     { href: "/documentation", title: "Doc", Icon: BsFiletypeDoc },
