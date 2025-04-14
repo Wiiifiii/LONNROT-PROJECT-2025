@@ -34,14 +34,10 @@ const BookRead = () => {
       return;
     }
     fetch(`http://${window.location.host}/api/books/${bookId}/extract`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && data.book) {
-          setBook(data.book);
-          setPdfUrl(data.book.pdfUrl);
-        } else {
-          setError("Failed to fetch the PDF URL from server.");
-        }
+      .then((res) => res.blob())
+      .then((blob) => {
+        const pdfUrl = URL.createObjectURL(blob);
+        setPdfUrl(pdfUrl);
         setLoading(false);
       })
       .catch((err) => {
@@ -49,6 +45,7 @@ const BookRead = () => {
         setLoading(false);
       });
   }, []);
+  
 
   const handleAddToReadingList = () => {
     setListMessage("");
