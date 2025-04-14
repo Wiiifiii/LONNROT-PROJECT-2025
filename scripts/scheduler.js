@@ -1,6 +1,6 @@
 // Summary: Schedules and manually triggers the importBooks script using node-cron and a command-line flag.
 import cron from 'node-cron';
-import { main } from '../scripts/importBooks.js';
+import { main } from './importBooks.js';
 
 async function runImportBooks() {
   const timestamp = new Date().toISOString();

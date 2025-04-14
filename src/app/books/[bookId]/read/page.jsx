@@ -1,5 +1,3 @@
-// Summary: Displays a PDF viewer for a selected book, fetches book details and a PDF URL from the API, and provides navigation options and reading list management.
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -33,11 +31,24 @@ const BookRead = () => {
       setLoading(false);
       return;
     }
-    fetch(`http://${window.location.host}/api/books/${bookId}/extract`)
-      .then((res) => res.blob())
-      .then((blob) => {
-        const pdfUrl = URL.createObjectURL(blob);
-        setPdfUrl(pdfUrl);
+    fetch(`/api/books/${bookId}/extract`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setBook(data.book);
+          // Decode the base64 PDF string and create a blob URL
+          const byteCharacters = atob(data.pdfBase64);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: "application/pdf" });
+          const url = URL.createObjectURL(blob);
+          setPdfUrl(url);
+        } else {
+          setError("Failed to fetch book data");
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -45,7 +56,6 @@ const BookRead = () => {
         setLoading(false);
       });
   }, []);
-  
 
   const handleAddToReadingList = () => {
     setListMessage("");
@@ -55,14 +65,11 @@ const BookRead = () => {
   const handleListSelect = async (selectedListId) => {
     if (!selectedListId || !book?.id) return;
     try {
-      const res = await fetch(
-        `http://${window.location.host}/api/reading-lists/${selectedListId}/items`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ bookId: book.id }),
-        }
-      );
+      const res = await fetch(`/api/reading-lists/${selectedListId}/items`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookId: book.id }),
+      });
       const json = await res.json();
       if (!res.ok || !json.success) {
         setListMessage(json.error || "Failed to add book to reading list.");
@@ -82,8 +89,10 @@ const BookRead = () => {
     return <div className="text-red-600 text-center mt-10">Error: {error}</div>;
   }
 
-  const iconButtonClass = "p-2 bg-[#374151] text-white rounded-full hover:bg-[#1f2937] transition text-sm";
-  const navButtonClass = "flex items-center gap-1 px-3 py-1 bg-[#374151] text-white rounded-full hover:bg-[#1f2937] transition text-sm";
+  const iconButtonClass =
+    "p-2 bg-[#374151] text-white rounded-full hover:bg-[#1f2937] transition text-sm";
+  const navButtonClass =
+    "flex items-center gap-1 px-3 py-1 bg-[#374151] text-white rounded-full hover:bg-[#1f2937] transition text-sm";
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#111827" }}>
@@ -115,7 +124,10 @@ const BookRead = () => {
         </div>
       </div>
       <div className="flex justify-center px-4 mt-6">
-        <div className="max-w-7xl w-full bg-[#1f2937] text-white border border-gray-500 rounded-xl p-6 shadow-lg flex flex-col" style={{ minHeight: "80vh" }}>
+        <div
+          className="max-w-7xl w-full bg-[#1f2937] text-white border border-gray-500 rounded-xl p-6 shadow-lg flex flex-col"
+          style={{ minHeight: "80vh" }}
+        >
           <div className="flex justify-end gap-2 mb-2">
             <button onClick={handleAddToReadingList} className={iconButtonClass}>
               <FaBookmark className="text-sm" />
@@ -124,9 +136,7 @@ const BookRead = () => {
           {showListSelector && (
             <div className="flex flex-col items-end mb-2">
               <ReadingListSelector onSelect={handleListSelect} />
-              {listMessage && (
-                <p className="mt-1 text-sm text-green-400">{listMessage}</p>
-              )}
+              {listMessage && <p className="mt-1 text-sm text-green-400">{listMessage}</p>}
             </div>
           )}
           {pdfUrl ? (

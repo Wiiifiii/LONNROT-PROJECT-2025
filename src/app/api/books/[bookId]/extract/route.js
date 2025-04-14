@@ -1,5 +1,3 @@
-// Summary: This API route processes a book by downloading and unzipping its text file, parsing metadata, generating a multi-page PDF from the text using pdf-lib, and querying other books by the same author.
-
 import fs from "fs";
 import path from "path";
 import http from "http";
@@ -16,12 +14,14 @@ export async function GET(request, context) {
   try {
     const { book: rawText } = await processBook(id);
     const analyzedBook = analyzeBook(rawText, id);
-    const pdfUrl = await createPdfFromText(analyzedBook, rawText);
+    const pdfBytes = await createPdfFromText(analyzedBook, rawText);
+    const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
     const otherBooks = await getOtherBooksByAuthor(analyzedBook.author, id);
     return new Response(
       JSON.stringify({
         success: true,
-        book: { ...analyzedBook, pdfUrl },
+        book: analyzedBook,
+        pdfBase64,
         otherBooks,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
@@ -77,13 +77,12 @@ async function processBook(id) {
     fs.unlinkSync(zipPath);
   }
 
-  // Convert the numeric book id to a four-digit padded string and ensure correct subdomain
+  // Convert book id to a four-digit padded string. (ZIP files on lonnrot.net are named like "0001.txt")
   const paddedId = id.toString().padStart(4, "0");
   const dlPath = `http://www.lonnrot.net/kirjat/${paddedId}.zip`;
 
   const outputPath1 = path.join("./temp/", String(id));
   const outputPath2 = path.join("./temp/", `${id}_fixed.txt`);
-  // Update: Use paddedId for the expected file name since the ZIP contains "0001.txt" for id "1"
   const expectedTxtPath = path.join(outputPath1, `${paddedId}.txt`);
 
   await downloadAndUnzip(dlPath, outputPath1);
@@ -148,12 +147,7 @@ async function createPdfFromText(bookObj, rawText) {
     cursorY -= lineHeight;
   }
   const pdfBytes = await pdfDoc.save();
-  const publicDir = path.join(process.cwd(), "public");
-  const booksDir = path.join(publicDir, "books");
-  if (!fs.existsSync(booksDir)) fs.mkdirSync(booksDir, { recursive: true });
-  const pdfPath = path.join(booksDir, `${bookObj.id}.pdf`);
-  fs.writeFileSync(pdfPath, pdfBytes);
-  return `/books/${bookObj.id}.pdf`;
+  return pdfBytes;
 }
 
 async function getOtherBooksByAuthor(author, excludeId) {
