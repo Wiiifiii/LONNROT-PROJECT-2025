@@ -1,3 +1,4 @@
+// route.js – Updated version
 import fs from "fs";
 import path from "path";
 import http from "http";
@@ -5,6 +6,7 @@ import unzipper from "unzipper";
 import { PrismaClient } from "@prisma/client";
 import { PDFDocument } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
+import parseBook from "../../../../../../scripts/parseBook.js"; // Ensure the path is correct
 
 const prisma = new PrismaClient();
 
@@ -13,14 +15,24 @@ export async function GET(request, context) {
   const id = parseInt(bookId, 10);
   try {
     const { book: rawText } = await processBook(id);
-    const analyzedBook = analyzeBook(rawText, id);
-    const pdfBytes = await createPdfFromText(analyzedBook, rawText);
+    // Use parseBook.js to extract metadata from the raw text.
+    const parsedBook = parseBook(rawText);
+    // Optionally generate the PDF using the raw text BUT you can decide to skip the header!
+    // For example, if you want to keep the first page (header) as is, you might generate PDF from rawText.
+    // Alternatively, if you want to remove the metadata from the PDF, generate from parsedBook.bodyText.
+    // Here we assume you want the entire text (keeping first page untouched) for PDF generation:
+    const pdfBytes = await createPdfFromRawText(rawText);
     const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
-    const otherBooks = await getOtherBooksByAuthor(analyzedBook.author, id);
+
+    // Use the metadata for display and search – you might attach it to the returned book.
+    parsedBook.id = id; // Ensure id is attached.
+
+    const otherBooks = await getOtherBooksByAuthor(parsedBook.metadata.author, id);
     return new Response(
       JSON.stringify({
         success: true,
-        book: analyzedBook,
+        // The entire parsed object with metadata:
+        book: parsedBook,
         pdfBase64,
         otherBooks,
       }),
@@ -77,7 +89,7 @@ async function processBook(id) {
     fs.unlinkSync(zipPath);
   }
 
-  // Convert book id to a four-digit padded string. (ZIP files on lonnrot.net are named like "0001.txt")
+  // ZIP file names are four-digit padded strings.
   const paddedId = id.toString().padStart(4, "0");
   const dlPath = `http://www.lonnrot.net/kirjat/${paddedId}.zip`;
 
@@ -103,51 +115,59 @@ async function processBook(id) {
   return { book: bookContent };
 }
 
-function analyzeBook(txt, id) {
-  const book = {};
-  const _name = /^(.*?\s.*?)\s/;
-  book.author = _name.exec(txt)?.[1] || "-";
-  const _bookName = /'(.*?)'/;
-  book.name = _bookName.exec(txt)?.[1] || "-";
-  const _bookStart = /[0-9]{4}/g;
-  const matches = [...txt.matchAll(_bookStart)];
-  if (matches.length > 1) {
-    book.start = matches[1].index + 4;
-    const _rmnl = /[\r\n]+(?=[a-z])/gi;
-    book.text = txt.slice(book.start).replace(_rmnl, "");
-  } else {
-    book.text = txt;
-  }
-  book.id = id;
-  return book;
-}
-
-async function createPdfFromText(bookObj, rawText) {
+async function createPdfFromRawText(rawText) {
   const pdfDoc = await PDFDocument.create();
   pdfDoc.registerFontkit(fontkit);
+
+  // Use the custom font – change if you require monospaced styling.
   const fontPath = path.join(process.cwd(), "public", "fonts", "LiberationSans-Regular.ttf");
   const fontBytes = fs.readFileSync(fontPath);
   const customFont = await pdfDoc.embedFont(fontBytes);
-  let page = pdfDoc.addPage();
-  let { width, height } = page.getSize();
-  page.drawText(bookObj.name, { x: 50, y: height - 50, size: 16, font: customFont });
-  page.drawText(`Author: ${bookObj.author}`, { x: 50, y: height - 70, size: 12, font: customFont });
-  let cursorY = height - 90;
+
   const margin = 50;
   const lineHeight = 14;
-  const maxWidth = width - margin * 2;
-  const lines = wrapText(rawText, 80);
-  for (const line of lines) {
-    if (cursorY <= margin) {
-      page = pdfDoc.addPage();
-      ({ width, height } = page.getSize());
+  
+  // Split the entire raw text by newlines to preserve it exactly.
+  const lines = rawText.split("\n");
+
+  let pageNumber = 1;
+  let currentPage = pdfDoc.addPage();
+  let { height } = currentPage.getSize();
+  let cursorY = height - margin;
+
+  for (let line of lines) {
+    // If there is not enough space, finish the current page and start a new one.
+    if (cursorY < margin) {
+      drawPageNumber(currentPage, pageNumber, customFont);
+      pageNumber++;
+      currentPage = pdfDoc.addPage();
+      ({ height } = currentPage.getSize());
       cursorY = height - margin;
     }
-    page.drawText(line, { x: margin, y: cursorY, size: 12, font: customFont, lineHeight, maxWidth });
+    // Draw the line as is.
+    currentPage.drawText(line, {
+      x: margin,
+      y: cursorY,
+      size: 12,
+      font: customFont,
+    });
     cursorY -= lineHeight;
   }
-  const pdfBytes = await pdfDoc.save();
-  return pdfBytes;
+  
+  // Draw the final page number.
+  drawPageNumber(currentPage, pageNumber, customFont);
+  return pdfDoc.save();
+}
+
+function drawPageNumber(page, pageNumber, font) {
+  const { width } = page.getSize();
+  const text = `Page ${pageNumber}`;
+  page.drawText(text, {
+    x: width - 80,
+    y: 20,
+    size: 10,
+    font,
+  });
 }
 
 async function getOtherBooksByAuthor(author, excludeId) {
@@ -158,20 +178,4 @@ async function getOtherBooksByAuthor(author, excludeId) {
     },
     select: { id: true, title: true, author: true },
   });
-}
-
-function wrapText(text, maxChars) {
-  const words = text.split(/\s+/);
-  const lines = [];
-  let currentLine = "";
-  for (const w of words) {
-    if ((currentLine + w).length <= maxChars) {
-      currentLine += w + " ";
-    } else {
-      lines.push(currentLine.trim());
-      currentLine = w + " ";
-    }
-  }
-  if (currentLine) lines.push(currentLine.trim());
-  return lines;
 }
