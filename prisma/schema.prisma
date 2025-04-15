@@ -9,36 +9,36 @@ generator client {
 
 // Books Model
 model Book {
-  id           Int              @id @default(autoincrement())
-  title        String           @db.VarChar(255)  // Added length constraint
-  author       String           @db.VarChar(255)  // Added length constraint
-  description  String?          @db.Text
-  file_name    String?          @db.VarChar(255)
-  file_url     String?          @db.VarChar(512)  // Longer for URLs
-  upload_date  DateTime?        @default(now())   // Added default timestamp
-  cover_url    String?          @db.VarChar(512)
-  metadata     Json?
-  isDeleted    Boolean          @default(false)
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(255) // Added length constraint
+  author      String    @db.VarChar(255) // Added length constraint
+  description String?   @db.Text
+  file_name   String?   @db.VarChar(255)
+  file_url    String?   @db.VarChar(512) // Longer for URLs
+  upload_date DateTime? @default(now()) // Added default timestamp
+  cover_url   String?   @db.VarChar(512)
+  metadata    Json?
+  isDeleted   Boolean   @default(false)
 
   // Relations
-  activityLogs ActivityLog[]
-  reviews      Review[]        
-  readingItems ReadingListItem[]
+  activityLogs     ActivityLog[]
+  reviews          Review[]
+  readingItems     ReadingListItem[]
+  readingPositions ReadingPosition[] // New back-relation for reading positions
 
   // Indexes for frequently queried fields
   @@index([title])
   @@index([author])
   @@index([upload_date])
-
   @@map("books")
 }
 
-
-// enum for roles
+// Enum for roles
 enum Role {
   user
   admin
 }
+
 // Users Model
 model User {
   id            Int      @id @default(autoincrement())
@@ -49,9 +49,13 @@ model User {
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
 
-  activityLogs  ActivityLog[]
-  reviews       Review[]
-  readingLists  ReadingList[]
+  // Relations
+  activityLogs ActivityLog[]
+  reviews      Review[]
+  readingLists ReadingList[]
+
+  // New relation: each user’s reading positions (bookmarks)
+  readingPositions ReadingPosition[]
 
   @@map("users")
 }
@@ -76,8 +80,8 @@ model Review {
   id        Int      @id @default(autoincrement())
   bookId    Int
   userId    Int?
-  rating    Int      // e.g., 1-5 stars
-  comment   String?  
+  rating    Int // e.g., 1-5 stars
+  comment   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -90,24 +94,24 @@ model Review {
 // User Reading Lists Model
 model ReadingList {
   id        Int      @id @default(autoincrement())
-  name      String   // e.g., "My Favorites" or "To Read"
+  name      String // e.g., "My Favorites" or "To Read"
   userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user  User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items ReadingListItem[]  
+  user  User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items ReadingListItem[]
 
   @@map("reading_lists")
 }
 
 // Join Table for Many-to-Many (Reading Lists <-> Books)
 model ReadingListItem {
-  id            Int          @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   readingListId Int
   bookId        Int
-  order         Int?         
-  addedAt       DateTime     @default(now())
+  order         Int?
+  addedAt       DateTime @default(now())
 
   readingList ReadingList @relation(fields: [readingListId], references: [id], onDelete: Cascade)
   book        Book        @relation(fields: [bookId], references: [id], onDelete: Cascade)
@@ -116,4 +120,17 @@ model ReadingListItem {
   @@map("reading_list_items")
 }
 
+// New: Reading Position Model (Bookmark)
+model ReadingPosition {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  bookId    Int
+  position  Int // e.g. the page number or scroll offset
+  updatedAt DateTime @default(now()) @updatedAt
 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookId])
+  @@map("reading_positions")
+}
