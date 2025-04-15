@@ -1,7 +1,7 @@
 // Summary: Server-rendered page that fetches book details by bookId and renders the BookDetail client component with fresh data.
 
 import React from "react";
-import BookDetail from "./components/BookDetail";
+import BookDetail from "./bookdetail/page";
 
 export default async function BookDetailPage({ params }) {
   const { bookId } = await params;
