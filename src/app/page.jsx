@@ -1,5 +1,6 @@
 // Summary: Home page that applies global styles, displays a hero section with a background image overlay, and renders the Hero and Navbar components.
-
+"use client";
+export const dynamic = "force-dynamic";
 import './styles/globals.css';
 import Hero from './components/Hero';
 import Navbar from './components/Navbar';

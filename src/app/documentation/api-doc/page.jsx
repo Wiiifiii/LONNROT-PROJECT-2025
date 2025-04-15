@@ -1,6 +1,8 @@
 // Summary: Server-rendered API documentation page that displays code examples for authentication, books, reviews, reading lists, user profiles, and activity logs using a syntax highlighter.
 
 "use client";
+
+export const dynamic = "force-dynamic";
 import React, { useState } from 'react';
 import Navbar from '../../components/Navbar';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';

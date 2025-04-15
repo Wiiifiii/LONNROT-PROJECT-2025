@@ -1,6 +1,8 @@
-"use client";
-// Summary: Handles user login using NextAuth credentials provider. On successful login, the user is redirected to the home page.
 
+// Summary: Handles user login using NextAuth credentials provider. On successful login, the user is redirected to the home page.
+"use client";
+
+export const dynamic = "force-dynamic";
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

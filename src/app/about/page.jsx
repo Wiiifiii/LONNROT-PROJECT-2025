@@ -1,6 +1,9 @@
 // Summary: Displays the About page including project overview, Elias Lönnrot info,
 // historical references, and collaborations.
 
+"use client";
+
+export const dynamic = "force-dynamic";
 import React from 'react';
 import Image from 'next/image';
 import Navbar from '../components/Navbar';

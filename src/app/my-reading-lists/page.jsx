@@ -1,6 +1,8 @@
 // Summary: Client-rendered page for managing a user's reading lists. It provides functionality to create, edit, delete, and view reading list items while handling session state and global messages.
 
 "use client";
+export const dynamic = "force-dynamic";
+
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Navbar from "../components/Navbar";

@@ -1,5 +1,6 @@
-"use client";
 // Summary: Admin Users page placeholder indicating that the users management section is under development.
+"use client";
+export const dynamic = "force-dynamic";
 
 import React from "react";
 import Link from "next/link";

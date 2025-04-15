@@ -1,6 +1,8 @@
 // Summary: Client-rendered profile page that manages user authentication and profile editing using NextAuth, fetching user data and providing UI for profile updates.
 
 "use client";
+export const dynamic = "force-dynamic";
+
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";

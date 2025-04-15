@@ -1,6 +1,8 @@
 // Summary: Client-rendered documentation page that displays detailed information about the project (including table of contents, technology stack, system architecture, frontend roadmap, API/backend structure, development details, future plans, and team credits) with an integrated lightbox for viewing images.
 
 "use client";
+
+export const dynamic = "force-dynamic";
 import React, { useState } from "react";
 import Image from "next/image";
 import Navbar from "../components/Navbar";

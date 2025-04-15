@@ -1,6 +1,8 @@
 // Summary: Handles user registration by rendering a registration form, processing user inputs, and providing feedback upon submission.
 
 "use client";
+
+export const dynamic = "force-dynamic";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
