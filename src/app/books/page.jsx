@@ -4,6 +4,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import Navbar from "../components/Navbar";
 import { FaEye, FaInfoCircle, FaDownload } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -27,6 +28,7 @@ export default function BooksPage() {
   const [idSortOrder, setIdSortOrder] = useState("desc");
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchBooks() {
@@ -173,13 +175,13 @@ export default function BooksPage() {
                     <FaEye className="mr-1" />
                     <span>View/Read</span>
                   </a>
-                  <a
-                    href={`/books/${book.id}`}
+                  <button
+                    onClick={() => router.push(`/books/${book.id}/bookdetail`)}
                     className="inline-flex items-center gap-1 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300 text-sm"
                   >
                     <FaInfoCircle className="mr-1" />
                     <span>Details</span>
-                  </a>
+                  </button>
                   <a
                     href={book.file_url || "#"}
                     download
