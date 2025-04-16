@@ -4,7 +4,7 @@ import PopupContainer from "@/app/components/PopupContainer"; // adjust the path
 import "./styles/globals.css";
 
 export const metadata = {
-  title: "Lonrot Library",
+  title: "Lonnrot Library",
 };
 
 export const viewport = {

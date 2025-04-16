@@ -23,7 +23,6 @@ model Book {
   file_url        String?   @db.VarChar(512)
   upload_date     DateTime? @default(now()) // Retain upload date if desired
   cover_url       String?   @db.VarChar(512)
-  // New dedicated metadata fields:
   genres          String[]  // Allows multiple genres per book
   publicationYear Int?      // The year the book was published
   language        String?   // The language of the book
