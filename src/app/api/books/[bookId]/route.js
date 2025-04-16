@@ -1,4 +1,6 @@
-// Summary: Provides API endpoints for GET, PUT, and DELETE operations on a single book and fetches related books by the same author.
+// src/app/api/books/[bookId]/route.js
+// Summary: Provides API endpoints for GET, PUT, and DELETE operations on a single book 
+// and fetches related books by the same author.
 
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
@@ -40,9 +42,11 @@ export async function PUT(request, context) {
     const bookId = params.bookId;
     const id = parseInt(bookId, 10);
     const body = await request.json();
+
     if (!body.title || !body.author) {
       return NextResponse.json({ success: false, error: "Title and Author are required" }, { status: 400 });
     }
+
     const updatedBook = await prisma.book.update({
       where: { id },
       data: {
@@ -52,10 +56,15 @@ export async function PUT(request, context) {
         file_name: body.file_name || null,
         file_url: body.file_url || null,
         cover_url: body.cover_url || null,
+        // New fields:
+        genres: body.genres && Array.isArray(body.genres) ? body.genres : undefined,
+        publicationYear: body.publicationYear ? Number(body.publicationYear) : undefined,
+        language: body.language || undefined,
         metadata: body.metadata || {},
         isDeleted: body.isDeleted === true,
       },
     });
+    
     return NextResponse.json({ success: true, data: updatedBook }, { status: 200 });
   } catch (error) {
     console.error("PUT update book error:", error);
