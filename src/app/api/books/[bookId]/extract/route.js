@@ -14,24 +14,25 @@ export async function GET(request, context) {
   const { bookId } = await context.params;
   const id = parseInt(bookId, 10);
   try {
+    // Download and process the book file from the ZIP.
     const { book: rawText } = await processBook(id);
     // Use parseBook.js to extract metadata from the raw text.
+    // The updated parseBook now extracts additional fields such as genres and language.
     const parsedBook = parseBook(rawText);
-    // Optionally generate the PDF using the raw text BUT you can decide to skip the header!
-    // For example, if you want to keep the first page (header) as is, you might generate PDF from rawText.
-    // Alternatively, if you want to remove the metadata from the PDF, generate from parsedBook.bodyText.
-    // Here we assume you want the entire text (keeping first page untouched) for PDF generation:
+    // Optionally generate the PDF using the raw text. Here we generate the PDF from the entire rawText.
     const pdfBytes = await createPdfFromRawText(rawText);
     const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
 
-    // Use the metadata for display and search – you might attach it to the returned book.
-    parsedBook.id = id; // Ensure id is attached.
+    // Attach the id to the parsed book data.
+    parsedBook.id = id;
 
+    // Fetch other books by the same author (excluding this one).
     const otherBooks = await getOtherBooksByAuthor(parsedBook.metadata.author, id);
+    
     return new Response(
       JSON.stringify({
         success: true,
-        // The entire parsed object with metadata:
+        // Return the entire parsed object (which now includes genres and language) 
         book: parsedBook,
         pdfBase64,
         otherBooks,
@@ -103,6 +104,7 @@ async function processBook(id) {
     const files = fs.readdirSync(outputPath1);
     throw new Error(`Expected file ${paddedId}.txt not found in ${outputPath1}. Contents: ${files.join(", ")}`);
   }
+  
   let bookContent;
   if (needsFixing(expectedTxtPath)) {
     fixEncoding(expectedTxtPath, outputPath2);

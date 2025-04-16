@@ -1,4 +1,5 @@
-// Summary: Handles GET, PUT, and DELETE operations for a single review identified by reviewId using Prisma ORM.
+// src/app/api/reviews/[reviewId]/route.js
+// Summary: Provides GET, PUT, and DELETE operations on a single review by its ID using Prisma ORM.
 
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
@@ -37,7 +38,7 @@ export async function PUT(request, { params }) {
     const updatedReview = await prisma.review.update({
       where: { id },
       data: {
-        rating: body.rating,
+        rating: Number(body.rating),
         comment: body.comment || "",
       },
     });
