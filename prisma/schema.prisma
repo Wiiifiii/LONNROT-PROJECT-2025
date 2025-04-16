@@ -7,54 +7,62 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Books Model
-model Book {
-  id          Int       @id @default(autoincrement())
-  title       String    @db.VarChar(255) // Added length constraint
-  author      String    @db.VarChar(255) // Added length constraint
-  description String?   @db.Text
-  file_name   String?   @db.VarChar(255)
-  file_url    String?   @db.VarChar(512) // Longer for URLs
-  upload_date DateTime? @default(now()) // Added default timestamp
-  cover_url   String?   @db.VarChar(512)
-  metadata    Json?
-  isDeleted   Boolean   @default(false)
-
-  // Relations
-  activityLogs     ActivityLog[]
-  reviews          Review[]
-  readingItems     ReadingListItem[]
-  readingPositions ReadingPosition[] // New back-relation for reading positions
-
-  // Indexes for frequently queried fields
-  @@index([title])
-  @@index([author])
-  @@index([upload_date])
-  @@map("books")
-}
-
 // Enum for roles
 enum Role {
   user
   admin
 }
 
-// Users Model
-model User {
-  id            Int      @id @default(autoincrement())
-  username      String
-  email         String   @unique
-  password_hash String?
-  role          Role     @default(user) // Only allows "user" or "admin"
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+// Books Model
+model Book {
+  id              Int       @id @default(autoincrement())
+  title           String    @db.VarChar(255)
+  author          String    @db.VarChar(255)
+  description     String?   @db.Text
+  file_name       String?   @db.VarChar(255)
+  file_url        String?   @db.VarChar(512)
+  upload_date     DateTime? @default(now()) // Retain upload date if desired
+  cover_url       String?   @db.VarChar(512)
+  // New dedicated metadata fields:
+  genres          String[]  // Allows multiple genres per book
+  publicationYear Int?      // The year the book was published
+  language        String?   // The language of the book
+  updatedAt       DateTime  @default(now()) @updatedAt
+  metadata        Json?     // For any extra metadata captured from the original text file
+  isDeleted       Boolean   @default(false)
 
   // Relations
-  activityLogs ActivityLog[]
-  reviews      Review[]
-  readingLists ReadingList[]
+  activityLogs     ActivityLog[]
+  reviews          Review[]
+  readingItems     ReadingListItem[]
+  readingPositions ReadingPosition[]
 
-  // New relation: each user’s reading positions (bookmarks)
+  @@index([title])
+  @@index([author])
+  @@index([upload_date])
+  @@index([publicationYear])
+  @@index([language])
+  @@map("books")
+}
+
+// Users Model
+model User {
+  id               Int      @id @default(autoincrement())
+  username         String
+  displayName      String?  // Optional display name for personalization
+  email            String   @unique
+  password_hash    String?
+  profileImage     Bytes?   // Stores user's profile image binary data directly in the DB
+  bio              String?  // A short biography about the user
+  socialMediaLinks Json?    // JSON field for storing social media links, e.g. { "twitter": "...", "linkedin": "..." }
+  role             Role     @default(user)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  // Relations
+  activityLogs     ActivityLog[]
+  reviews          Review[]
+  readingLists     ReadingList[]
   readingPositions ReadingPosition[]
 
   @@map("users")
@@ -80,7 +88,7 @@ model Review {
   id        Int      @id @default(autoincrement())
   bookId    Int
   userId    Int?
-  rating    Int // e.g., 1-5 stars
+  rating    Int
   comment   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -94,7 +102,7 @@ model Review {
 // User Reading Lists Model
 model ReadingList {
   id        Int      @id @default(autoincrement())
-  name      String // e.g., "My Favorites" or "To Read"
+  name      String
   userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -120,12 +128,12 @@ model ReadingListItem {
   @@map("reading_list_items")
 }
 
-// New: Reading Position Model (Bookmark)
+// Reading Position Model (Bookmark)
 model ReadingPosition {
   id        Int      @id @default(autoincrement())
   userId    Int
   bookId    Int
-  position  Int // e.g. the page number or scroll offset
+  position  Int
   updatedAt DateTime @default(now()) @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
