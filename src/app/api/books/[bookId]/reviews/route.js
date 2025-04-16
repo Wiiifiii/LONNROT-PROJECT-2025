@@ -1,4 +1,5 @@
-// Summary: This API route handles POST requests to create a new review for a book. It verifies the user session, extracts the review data from the request body, creates a review using Prisma, and returns a JSON response.
+// src/app/api/books/[bookId]/reviews/route.js
+// Summary: Handles POST requests to create a new review for a book, verifying the user session.
 
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
@@ -17,7 +18,7 @@ export async function POST(request, { params }) {
     const { bookId } = params;
     const bookIdNum = parseInt(bookId, 10);
     const { rating, comment } = await request.json();
-    if (!rating) {
+    if (rating === undefined) {
       return NextResponse.json({ error: "Missing rating" }, { status: 400 });
     }
     const newReview = await prisma.review.create({
