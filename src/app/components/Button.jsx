@@ -2,10 +2,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Button = ({ icon: Icon, text, tooltip, onClick, className }) => {
+const Button = ({ icon: Icon, text, tooltip, onClick, className, type = 'button' }) => {
   return (
-    <button 
-      onClick={onClick}
+    <button      type={type}
+     onClick={onClick}
       className={`inline-flex items-center gap-1 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300 text-sm ${className}`}
       title={tooltip}
     >
@@ -21,6 +21,7 @@ Button.propTypes = {
   tooltip: PropTypes.string,
   onClick: PropTypes.func,
   className: PropTypes.string,
+  type: PropTypes.oneOf(['button','submit','reset']),
 };
 
 export default Button;
