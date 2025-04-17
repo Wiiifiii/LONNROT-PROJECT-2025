@@ -3,27 +3,37 @@
 
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
 
-export async function GET(request, { params }) {
+export async function GET(request, context) {
+  const { params } = await context; // ✅ await params
+  const reviewId = Number(params.reviewId);
+  const cookieStore = await cookies(); // ✅ await cookies
+  const sid = cookieStore.get("lo_sid")?.value ?? "anon";
+
   try {
-    const { reviewId } = params;
-    const id = parseInt(reviewId, 10);
     const review = await prisma.review.findUnique({
-      where: { id },
+      where: { id: reviewId },
       include: {
         user: { select: { id: true, username: true, email: true } },
         book: { select: { id: true, title: true } },
       },
     });
     if (!review) {
-      return NextResponse.json({ success: false, error: "Review not found" }, { status: 404 });
+      return NextResponse.json(
+        { success: false, error: "Review not found" },
+        { status: 404 }
+      );
     }
-    return NextResponse.json({ success: true, data: review }, { status: 200 });
+    return NextResponse.json({ success: true, data: review, sid }, { status: 200 });
   } catch (error) {
     console.error("GET /api/reviews/[reviewId] error:", error);
-    return NextResponse.json({ success: false, error: "Failed to fetch review" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed to fetch review" },
+      { status: 500 }
+    );
   }
 }
 
