@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import StatsCard from "@/components/StatsCard";
+import StatsCard from "../../components/StatsCard";
 
 export default function OverviewTab() {
   const [stats, setStats] = useState(null);

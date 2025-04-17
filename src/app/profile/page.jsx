@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/Navbar";
-import StatsCard from "@/components/StatsCard";
+import StatsCard from "../components/StatsCard";
 
 // import each tab
 import OverviewTab from "./tabs/OverviewTab";
