@@ -48,12 +48,14 @@ const authOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.profileImage = user.profileImage; // Add profileImage to token if it exists
       }
       return token;
     },
     async session({ session, token }) {
       session.user.id = token.id;
       session.user.role = token.role;
+      session.user.profileImage = token.profileImage; 
       return session;
     },
   },
