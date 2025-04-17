@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Navbar from "@/app/components/Navbar";
 import ReadingListSelector from "@/app/components/ReadingListSelector";
 import { FaBookOpen } from "react-icons/fa";
@@ -17,6 +17,7 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 
 export default function BookRead() {
   const router = useRouter();
+  const { bookId } = useParams(); // gets the dynamic segment
   const [error, setError] = useState("");
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -26,9 +27,14 @@ export default function BookRead() {
   const { openPopup } = usePopup();
 
   useEffect(() => {
-    const reg = /\/books\/(\d+)\//;
-    const match = reg.exec(window.location.href);
-    const bookId = match ? match[1] : null;
+    fetch(`/api/books/${bookId}/read-start`, { method: "POST" });
+
+    return () => {
+      fetch(`/api/books/${bookId}/read-finish`, { method: "POST" });
+    };
+  }, [bookId]);
+
+  useEffect(() => {
     if (!bookId) {
       setError("Failed to obtain book ID from the URL");
       setLoading(false);
@@ -60,7 +66,7 @@ export default function BookRead() {
         setError("Error fetching book data: " + err.message);
         setLoading(false);
       });
-  }, []);
+  }, [bookId]);
 
   const handleAddToReadingList = () => {
     setListMessage("");
