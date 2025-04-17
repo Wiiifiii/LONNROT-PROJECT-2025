@@ -1,6 +1,6 @@
-// Path (dev): lonnrot-project/middleware.js
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 const SECRET_KEY = process.env.JWT_SECRET || "supersecret";
 
@@ -98,9 +98,25 @@ export function middleware(request) {
       { status: 401 }
     );
   }
+  
+  const res = NextResponse.next();
+  if (!request.cookies.get("lo_sid")) {
+    const sid = crypto
+      .createHash("sha256")
+      .update(crypto.randomBytes(16))
+      .digest("hex");
+    res.cookies.set("lo_sid", sid, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      path: "/",
+    });
+  }
+  return res;
 }
 
 // Apply this middleware to routes matching the patterns.
 export const config = {
-  matcher: ["/api/books/:path*", "/admin/:path*"],
+  matcher: ["/api/books/:path*", "/admin/:path*", "/api/:path*", "/books/:path*"],
 };
