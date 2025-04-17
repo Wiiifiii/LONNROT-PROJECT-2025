@@ -1,4 +1,3 @@
-/* app/books/page.jsx  (pagination removed) */
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
 import Navbar from "../components/Navbar";
@@ -18,6 +17,7 @@ function useDebounce(v, d) {
 
 export default function BooksPage() {
   const [books, setBooks] = useState([]);
+  const [statsMap, setStatsMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -42,9 +42,7 @@ export default function BooksPage() {
 
   const genreOptions = useMemo(() => {
     const set = new Set();
-    books.forEach(
-      (b) => b.genres?.forEach((g) => set.add(g))
-    );
+    books.forEach((b) => b.genres?.forEach((g) => set.add(g)));
     return ["Coming Soon", ...Array.from(set).sort()];
   }, [books]);
 
@@ -87,18 +85,18 @@ export default function BooksPage() {
       }
     }
     fetchAll();
-  }, [
-    debouncedSearch,
-    genre,
-    year,
-    language,
-    author,
-    downloadable,
-    latest,
-    trending,
-  ]);
+  }, [debouncedSearch, genre, year, language, author, downloadable, latest, trending]);
 
-  /* ---------------- render ---------------- */
+  /* after books have been fetched */
+  useEffect(() => {
+    if (!books.length) return;
+    const ids = books.map((b) => b.id).join(",");
+    fetch(`/api/books/stats?ids=${ids}`)
+      .then((r) => r.json())
+      .then(setStatsMap)
+      .catch(() => setStatsMap({}));
+  }, [books]);
+
   if (loading)
     return <div className="text-center text-2xl text-slate-200 mt-16">Loading…</div>;
   if (error)
@@ -111,7 +109,7 @@ export default function BooksPage() {
       <div className="fixed top-0 w-full z-50">
         <Navbar />
       </div>
-
+      
       <div className="pt-16 bg-gray-900 min-h-screen text-white">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row md:space-x-4">
@@ -133,26 +131,33 @@ export default function BooksPage() {
                 )}
               </div>
 
-              <Dropdown label="Genre"     options={genreOptions}     value={genre}     onChange={(e) => setGenre(e.target.value)} />
-              <Dropdown label="Year"      options={yearOptions}      value={year}      onChange={(e) => setYear(e.target.value)} />
-              <Dropdown label="Language"  options={languageOptions}  value={language}  onChange={(e) => setLanguage(e.target.value)} />
-              <Dropdown label="Author"    options={authorOptions}    value={author}    onChange={(e) => setAuthor(e.target.value)} />
+              <Dropdown label="Genre" options={genreOptions} value={genre} onChange={(e) => setGenre(e.target.value)} />
+              <Dropdown label="Year" options={yearOptions} value={year} onChange={(e) => setYear(e.target.value)} />
+              <Dropdown label="Language" options={languageOptions} value={language} onChange={(e) => setLanguage(e.target.value)} />
+              <Dropdown label="Author" options={authorOptions} value={author} onChange={(e) => setAuthor(e.target.value)} />
 
-              {[["downloadable", downloadable, setDownloadable, "Downloadable"],
+              {[
+                ["downloadable", downloadable, setDownloadable, "Downloadable"],
                 ["latest", latest, setLatest, <><FaClock className="mr-1" />Latest</>],
-                ["trending", trending, setTrending, <><FaFire className="mr-1" />Trending</>],]
-                .map(([id, state, setter, lbl]) => (
-                  <div key={id} className="flex items-center space-x-2">
-                    <input id={id} type="checkbox" checked={state} onChange={e => setter(e.target.checked)} />
-                    <label htmlFor={id} className="text-sm flex items-center">{lbl}</label>
-                  </div>
+                ["trending", trending, setTrending, <><FaFire className="mr-1" />Trending</>],
+              ].map(([id, state, setter, lbl]) => (
+                <div key={id} className="flex items-center space-x-2">
+                  <input id={id} type="checkbox" checked={state} onChange={(e) => setter(e.target.checked)} />
+                  <label htmlFor={id} className="text-sm flex items-center">{lbl}</label>
+                </div>
               ))}
             </aside>
 
             {/* Cards */}
             <section className="md:w-2/3">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {books.map((b) => <Card key={b.id} book={b} />)}
+                {books.map((b) => (
+                  <Card
+                    key={b.id}
+                    book={b}
+                    stats={statsMap[b.id] ?? { DOWNLOAD: 0, READ_START: 0 }}
+                  />
+                ))}
               </div>
             </section>
           </div>
