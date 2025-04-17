@@ -1,3 +1,4 @@
+// schema.prisma
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -22,16 +23,15 @@ model Book {
   file_name       String?   @db.VarChar(255)
   file_url        String?   @db.VarChar(512)
   pdf_url         String?   @db.VarChar(512)
-  upload_date     DateTime? @default(now()) // Retain upload date if desired
+  upload_date     DateTime? @default(now())
   cover_url       String?   @db.VarChar(512)
-  genres          String[]  // Allows multiple genres per book
-  publicationYear Int?      // The year the book was published
-  language        String?   // The language of the book
+  genres          String[]
+  publicationYear Int?
+  language        String?
   updatedAt       DateTime  @default(now()) @updatedAt
-  metadata        Json?     // For any extra metadata captured from the original text file
+  metadata        Json?
   isDeleted       Boolean   @default(false)
 
-  // Relations
   activityLogs     ActivityLog[]
   reviews          Review[]
   readingItems     ReadingListItem[]
@@ -49,18 +49,18 @@ model Book {
 // Users Model
 model User {
   id               Int      @id @default(autoincrement())
-  username         String
-  displayName      String?  // Optional display name for personalization
-  email            String   @unique
+  username         String   @unique
+  displayName      String?   // Optional display name
+  email            String    @unique
   password_hash    String?
-  profileImage     Bytes?   // Stores user's profile image binary data directly in the DB
-  bio              String?  // A short biography about the user
-  socialMediaLinks Json?    // JSON field for storing social media links, e.g. { "twitter": "...", "linkedin": "..." }
-  role             Role     @default(user)
-  created_at       DateTime @default(now())
-  updated_at       DateTime @updatedAt
+  dateOfBirth      DateTime? // Actual birthdate
+  profileImage     Bytes?    // Stored as binary
+  bio              String?
+  socialMediaLinks Json?     // e.g. { twitter: "...", linkedin: "..." }
+  role             Role      @default(user)
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
 
-  // Relations
   activityLogs     ActivityLog[]
   reviews          Review[]
   readingLists     ReadingList[]
@@ -100,7 +100,7 @@ model Review {
   @@map("reviews")
 }
 
-// User Reading Lists Model
+// Reading Lists
 model ReadingList {
   id        Int      @id @default(autoincrement())
   name      String
@@ -114,7 +114,6 @@ model ReadingList {
   @@map("reading_lists")
 }
 
-// Join Table for Many-to-Many (Reading Lists <-> Books)
 model ReadingListItem {
   id            Int      @id @default(autoincrement())
   readingListId Int
@@ -129,7 +128,6 @@ model ReadingListItem {
   @@map("reading_list_items")
 }
 
-// Reading Position Model (Bookmark)
 model ReadingPosition {
   id        Int      @id @default(autoincrement())
   userId    Int
@@ -144,15 +142,14 @@ model ReadingPosition {
   @@map("reading_positions")
 }
 
-/// New ─ Tracking book downloads & reads
 model BookInteraction {
   id        Int              @id @default(autoincrement())
   bookId    Int
   type      InteractionType
-  sessionId String?          @db.VarChar(64)     // hashed cookie or “anon”
+  sessionId String?          @db.VarChar(64)
   createdAt DateTime         @default(now())
 
-  book      Book             @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
 
   @@index([bookId, type])
   @@index([createdAt])
