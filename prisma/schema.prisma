@@ -21,6 +21,7 @@ model Book {
   description     String?   @db.Text
   file_name       String?   @db.VarChar(255)
   file_url        String?   @db.VarChar(512)
+  pdf_url         String?   @db.VarChar(512)
   upload_date     DateTime? @default(now()) // Retain upload date if desired
   cover_url       String?   @db.VarChar(512)
   genres          String[]  // Allows multiple genres per book
