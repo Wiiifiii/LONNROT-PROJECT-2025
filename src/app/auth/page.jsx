@@ -50,9 +50,9 @@ export default function AuthPage() {
       }
     } else {
       const result = await signIn("credentials", {
-        email,
+        username,
         password,
-        redirect: false,
+        remember
       });
       if (result.error) {
         setMessage("Login failed: " + result.error);
