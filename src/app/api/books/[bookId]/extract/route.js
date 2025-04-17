@@ -1,4 +1,3 @@
-// route.js – Updated version
 import fs from "fs";
 import path from "path";
 import http from "http";
@@ -10,9 +9,9 @@ import parseBook from "../../../../../../scripts/parseBook.js"; // Ensure the pa
 
 const prisma = new PrismaClient();
 
-export async function GET(request, context) {
-  const { bookId } = await context.params;
-  const id = parseInt(bookId, 10);
+export async function GET(request, ctx) {
+  const { bookId } = await ctx.params;
+  const id = Number(bookId);
   try {
     // Download and process the book file from the ZIP.
     const { book: rawText } = await processBook(id);
@@ -29,6 +28,7 @@ export async function GET(request, context) {
     // Fetch other books by the same author (excluding this one).
     const otherBooks = await getOtherBooksByAuthor(parsedBook.metadata.author, id);
     
+   
     return new Response(
       JSON.stringify({
         success: true,
