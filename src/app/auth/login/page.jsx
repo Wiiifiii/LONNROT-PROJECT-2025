@@ -1,90 +1,128 @@
-
-// Summary: Handles user login using NextAuth credentials provider. On successful login, the user is redirected to the home page.
+// src/app/auth/login/page.jsx
 "use client";
 
-export const dynamic = "force-dynamic";
 import React, { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { signIn } from "next-auth/react";
-import { FiArrowRight, FiUserPlus, FiLogIn } from "react-icons/fi";
-import { SiCodeproject } from "react-icons/si";
+import { useRouter } from "next/navigation";
+import Button from "../../components/Button"; // adjust if your path differs
+import { FiEye, FiEyeOff, FiLogIn } from "react-icons/fi";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPw, setShowPw] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMsg("");
     const result = await signIn("credentials", {
       redirect: false,
-      email,
+      username,
       password,
     });
-    if (result?.ok) {
-      router.push("/");
+    if (result?.error) {
+      setErrorMsg(result.error);
     } else {
-      console.error("Login failed");
+      router.push("/");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center">
-      <div className="mb-8">
-        <div className="flex-shrink-0 flex items-center">
-          <SiCodeproject className="text-blue-400 mr-2" size={24} />
-          <Link
-            href="/"
-            className="text-2xl md:text-4xl font-semibold text-white hover:text-blue-400"
-          >
-            PROJECT LÖNNROT
-          </Link>
-        </div>
+    <div className="flex min-h-screen bg-gray-900">
+      {/* Left: Illustration */}
+      <div className="hidden md:block md:w-1/2 relative">
+        <Image
+          src="/images/LogInPage.png"
+          alt="Welcome illustration"
+          fill
+          className="object-cover"
+        />
       </div>
-      <div className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow">
-        <h2 className="text-2xl font-bold mb-6">Login</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            className="w-full mb-4 p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400"
-            type="email"
-            placeholder="Email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            className="w-full mb-6 p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400"
-            type="password"
-            placeholder="Password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button
-            className="w-full inline-flex items-center justify-center px-6 py-3 bg-[#374151] hover:bg-[#111827] rounded-full transition duration-300 text-white font-semibold text-sm"
-            type="submit"
-          >
-            <FiLogIn className="mr-2" size={18} />
+
+      {/* Right: Form */}
+      <div className="flex flex-1 items-center justify-center p-8">
+        <div className="w-full max-w-md bg-gray-800 rounded-2xl shadow-lg p-8 space-y-6">
+          <h2 className="text-3xl font-bold text-center text-white">
             Login
-          </button>
-        </form>
-      </div>
-      <div className="mt-6 space-y-4">
-        <Link
-          href="/"
-          className="inline-flex items-center px-6 py-3 bg-[#374151] hover:bg-[#111827] rounded-full transition duration-300 text-white font-semibold text-sm"
-        >
-          Continue without signing in <FiArrowRight className="ml-2" size={20} />
-        </Link>
-        <Link
-          href="/auth/register"
-          className="inline-flex items-center px-6 py-3 bg-[#374151] hover:bg-[#111827] rounded-full transition duration-300 text-white font-semibold text-sm"
-        >
-          Create Account <FiUserPlus className="ml-2" size={20} />
-        </Link>
+          </h2>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Username */}
+            <div className="relative">
+              <input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                className="w-full px-4 pt-6 pb-2 bg-gray-700 text-white rounded-lg border border-gray-600 peer"
+                placeholder=" "
+              />
+              <label
+                htmlFor="username"
+                className="absolute left-4 top-2 text-gray-400 text-sm transition-all 
+                           peer-placeholder-shown:top-4 peer-placeholder-shown:text-base 
+                           peer-focus:top-2 peer-focus:text-sm"
+              >
+                Username
+              </label>
+            </div>
+
+            {/* Password */}
+            <div className="relative">
+              <input
+                id="password"
+                type={showPw ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-4 pt-6 pb-2 bg-gray-700 text-white rounded-lg border border-gray-600 peer"
+                placeholder=" "
+              />
+              <label
+                htmlFor="password"
+                className="absolute left-4 top-2 text-gray-400 text-sm transition-all 
+                           peer-placeholder-shown:top-4 peer-placeholder-shown:text-base 
+                           peer-focus:top-2 peer-focus:text-sm"
+              >
+                Password
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowPw((v) => !v)}
+                className="absolute right-3 top-3 text-gray-400"
+                aria-label={showPw ? "Hide password" : "Show password"}
+              >
+                {showPw ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
+
+            {/* Error */}
+            {errorMsg && (
+              <p className="text-red-500 text-center text-sm">{errorMsg}</p>
+            )}
+
+            {/* Submit */}
+            <Button
+              type="submit"
+              icon={FiLogIn}
+              text="Log In"
+              className="w-full justify-center"
+            />
+          </form>
+
+          {/* Secondary Actions */}
+          <div className="text-center mt-4">
+            <Button
+              onClick={() => router.push("/auth/register")}
+              text="Don't have an account? Register"
+              className="w-full bg-gray-700 hover:bg-gray-600"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
