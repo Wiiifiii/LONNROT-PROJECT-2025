@@ -1,10 +1,7 @@
-// Summary: Sets up the NextAuth API routes using the provided authOptions configuration for the Node.js runtime.
-
+// src/app/api/auth/[...nextauth]/route.js
 export const runtime = "nodejs";
-import NextAuth from "next-auth";
+import NextAuth from "next-auth/next";
 import authOptions from "./authOptions";
 
-export const GET = NextAuth(authOptions);
-export const POST = NextAuth(authOptions);
-
-
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
