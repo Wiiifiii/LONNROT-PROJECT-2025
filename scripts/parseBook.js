@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 // parseBook.js
 // Parses raw text of a book into a structured JSON object for use in search, filtering, and display.
