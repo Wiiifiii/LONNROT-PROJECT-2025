@@ -1,70 +1,67 @@
-/* components/Card.jsx – buttons fill full row */
-"use client";
-import React from "react";
+import React, { useState } from "react";
 import Button from "./Button";
 import { FaEye, FaInfoCircle, FaDownload, FaBook } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 
-export default function Card({ book }) {
+const truncate = (s) => (s.length > 15 ? s.slice(0, 15) + "…" : s);
+
+export default function Card({ book, stats }) {
   const router = useRouter();
+  const [localStats, setLocalStats] = useState(stats);
+
+  /* bump badge after a download */
+  const bump = () => {
+    fetch(`/api/books/${book.id}/stats`)
+      .then((r) => r.json())
+      .then(setLocalStats)
+      .catch(() => {});
+  };
 
   return (
     <div className="bg-gray-800 rounded-lg shadow-md p-4 flex flex-col space-y-2">
-      {/* ─── Row 1 ─── */}
-      <div className="flex items-center space-x-2">
-        <FaBook className="text-3xl text-gray-400 flex-shrink-0" />
+      <div className="flex items-center gap-2">
+        <FaBook className="text-3xl text-gray-400" />
         <div>
-          <h3 className="text-lg font-bold leading-snug">{book.title}</h3>
-          <p className="text-gray-400 text-sm leading-tight">By {book.author}</p>
+          <h3 className="text-lg font-bold">{truncate(book.title)}</h3>
+          <p className="text-gray-400 text-sm">{book.author}</p>
         </div>
       </div>
 
-      {/* Meta */}
-      <div className="text-xs text-gray-300 space-y-0.5">
-        {book.genres?.length > 0 && <p>Genres: {book.genres.join(", ")}</p>}
-        {book.publicationYear && <p>Year: {book.publicationYear}</p>}
-        {book.language && <p>Language: {book.language}</p>}
-      </div>
+      <p className="text-xs text-gray-400">
+        Downloads: {localStats.DOWNLOAD} &nbsp; Views: {localStats.READ_START}
+      </p>
 
-      {/* ─── Row 2 : full‑width buttons ─── */}
       <div className="flex gap-2">
-        <div className="flex-1">
-          <Button
-            icon={FaEye}
-            text="View"
-            tooltip="Read the book online"
-            onClick={() => router.push(`/books/${book.id}/read`)}
-            className="w-full justify-center"
-          />
-        </div>
-        <div className="flex-1">
-          <Button
-            icon={FaInfoCircle}
-            text="Details"
-            tooltip="Book details"
-            onClick={() => router.push(`/books/${book.id}/bookdetail`)}
-            className="w-full justify-center"
-          />
-        </div>
+        <Button
+          icon={FaEye}
+          text="View"
+          onClick={() => router.push(`/books/${book.id}/read`)}
+          className="flex-1 justify-center"
+        />
+        <Button
+          icon={FaInfoCircle}
+          text="Details"
+          onClick={() => router.push(`/books/${book.id}/bookdetail`)}
+          className="flex-1 justify-center"
+        />
       </div>
 
-      {/* ─── Row 3 : downloads (stacked) ─── */}
-      <div className="flex flex-col space-y-2 items-stretch">
+      <div className="flex flex-col space-y-2">
         <a
-          href={book.file_url ?? "#"}
-          download
-          title="Download original TXT"
-          className="inline-flex items-center gap-1 justify-center px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] transition text-sm"
+          href={`/api/books/${book.id}/download?format=txt`}
+          onClick={bump}
+          className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm"
         >
-          <FaDownload /> Download TXT
+          <FaDownload /> TXT
         </a>
         <a
-          href={book.pdf_url ?? "#"}
-          download
-          title="Download PDF"
-          className="inline-flex items-center gap-1 justify-center px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] transition text-sm"
+          href={`/api/books/${book.id}/download?format=pdf`}
+          onClick={bump}
+          className={`inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm ${
+            book.pdf_url ? "" : "opacity-50 cursor-not-allowed"
+          }`}
         >
-          <FaDownload /> Download PDF
+          <FaDownload /> PDF
         </a>
       </div>
     </div>
