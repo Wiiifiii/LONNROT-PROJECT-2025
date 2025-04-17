@@ -35,6 +35,7 @@ model Book {
   reviews          Review[]
   readingItems     ReadingListItem[]
   readingPositions ReadingPosition[]
+  bookInteractions BookInteraction[]
 
   @@index([title])
   @@index([author])
@@ -140,4 +141,25 @@ model ReadingPosition {
 
   @@unique([userId, bookId])
   @@map("reading_positions")
+}
+
+/// New ─ Tracking book downloads & reads
+model BookInteraction {
+  id        Int              @id @default(autoincrement())
+  bookId    Int
+  type      InteractionType
+  sessionId String?          @db.VarChar(64)     // hashed cookie or “anon”
+  createdAt DateTime         @default(now())
+
+  book      Book             @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@index([bookId, type])
+  @@index([createdAt])
+  @@map("book_interactions")
+}
+
+enum InteractionType {
+  DOWNLOAD
+  READ_START
+  READ_FINISH
 }
