@@ -55,6 +55,7 @@ model User {
   password_hash    String?
   dateOfBirth      DateTime? // Actual birthdate
   profileImage     Bytes?    // Stored as binary
+  settings         Json?    // store notifications, etc.
   bio              String?
   socialMediaLinks Json?     // e.g. { twitter: "...", linkedin: "..." }
   role             Role      @default(user)
