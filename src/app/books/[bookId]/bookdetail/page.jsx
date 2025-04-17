@@ -1,10 +1,11 @@
-// src/app/books/[bookId]/bookdetail/page.jsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Navbar from "../../../components/Navbar";
+import Card from "../../../components/Card";
 import Button from "../../../components/Button";
+
 import {
   FaEye,
   FaDownload,
@@ -18,17 +19,9 @@ export default function BookDetailsPage() {
   const { bookId } = useParams();
   const [bookData, setBookData] = useState(null);
   const [stats, setStats] = useState(null);
+  const [otherStats, setOtherStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  /* review form */
-  const [reviewComment, setReviewComment] = useState("");
-  const [reviewRating, setReviewRating] = useState(0);
-  const [reviewMessage, setReviewMessage] = useState("");
-
-  /* reading‑list */
-  const [showListSelector, setShowListSelector] = useState(false);
-  const [listMessage, setListMessage] = useState("");
 
   /* ------------- fetch book ------------- */
   useEffect(() => {
@@ -47,7 +40,7 @@ export default function BookDetailsPage() {
     })();
   }, [bookId]);
 
-  /* ------------- fetch stats ------------- */
+  /* ------------- fetch stats for main book ------------- */
   const loadStats = () =>
     fetch(`/api/books/${bookId}/stats`)
       .then((r) => r.json())
@@ -58,17 +51,30 @@ export default function BookDetailsPage() {
     if (bookId) loadStats();
   }, [bookId]);
 
+  /* ------------- bulk‑fetch stats for otherBooks ------------- */
+  useEffect(() => {
+    if (!bookData?.otherBooks?.length) return;
+    const ids = bookData.otherBooks.map((b) => b.id).join(",");
+    fetch(`/api/books/stats?ids=${ids}`)
+      .then((r) => r.json())
+      .then(setOtherStats)
+      .catch(() => setOtherStats({}));
+  }, [bookData]);
+
   /* ------------- refresh after download ------------- */
   const handleDownloadClick = () => {
-    /** wait 1 s so BookInteraction row is inserted, then refresh counts */
     setTimeout(loadStats, 1000);
   };
 
   /* ------------- reading list ------------- */
+  const [showListSelector, setShowListSelector] = useState(false);
+  const [listMessage, setListMessage] = useState("");
+
   const handleAddToReadingList = () => {
     setShowListSelector((p) => !p);
     setListMessage("");
   };
+
   const handleListSelect = async (listId) => {
     if (!listId) return;
     try {
@@ -88,6 +94,10 @@ export default function BookDetailsPage() {
   };
 
   /* ------------- review submit ------------- */
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewMessage, setReviewMessage] = useState("");
+
   const handleSubmitReview = async (e) => {
     e.preventDefault();
     setReviewMessage("");
@@ -105,7 +115,6 @@ export default function BookDetailsPage() {
       if (!res.ok || !json.success)
         throw new Error(json.error || "Failed to submit review");
       setReviewMessage("Review submitted successfully!");
-      /* re‑append review locally */
       setBookData((b) => ({
         ...b,
         reviews: [json.data, ...b.reviews],
@@ -118,7 +127,9 @@ export default function BookDetailsPage() {
   /* ------------- render states ------------- */
   if (loading)
     return (
-      <div className="min-h-screen text-center text-white pt-20">Loading…</div>
+      <div className="min-h-screen text-center text-white pt-20">
+        Loading…
+      </div>
     );
   if (error)
     return (
@@ -152,24 +163,25 @@ export default function BookDetailsPage() {
                 icon={FaEye}
                 text="View / Read"
                 tooltip="Open reader"
-                onClick={() => (window.location.href = `/books/${book.id}/read`)}
+                onClick={() =>
+                  (window.location.href = `/books/${book.id}/read`)
+                }
                 className="flex-1 justify-center"
               />
               <Button
                 icon={FaDownload}
                 text="Download TXT"
                 tooltip="Download original txt"
-                onClick={handleDownloadClick}
                 className="flex-1 justify-center"
+                onClick={() => {
+                  window.open(
+                    `/api/books/${book.id}/download?format=txt`,
+                    "_blank",
+                    "noopener"
+                  );
+                  handleDownloadClick();
+                }}
               />
-              {/* actual link hidden behind button */}
-              <a
-                href={`/api/books/${book.id}/download?format=txt`}
-                className="sr-only"
-              >
-                txt
-              </a>
-
               <Button
                 icon={FaDownload}
                 text="Download PDF"
@@ -178,27 +190,25 @@ export default function BookDetailsPage() {
                     ? "Download generated PDF"
                     : "PDF not available yet"
                 }
-                onClick={
-                  book.pdf_url
-                    ? handleDownloadClick
-                    : (e) => e.preventDefault()
-                }
                 className={`flex-1 justify-center ${
                   book.pdf_url ? "" : "opacity-50 cursor-not-allowed"
                 }`}
+                onClick={(e) => {
+                  if (!book.pdf_url) {
+                    e.preventDefault();
+                    return;
+                  }
+                  window.open(
+                    `/api/books/${book.id}/download?format=pdf`,
+                    "_blank",
+                    "noopener"
+                  );
+                  handleDownloadClick();
+                }}
               />
-              {book.pdf_url && (
-                <a
-                  href={`/api/books/${book.id}/download?format=pdf`}
-                  className="sr-only"
-                >
-                  pdf
-                </a>
-              )}
-
               <Button
                 icon={FaBookmark}
-                text="Add to List"
+                text="Add to List"
                 tooltip="Add to your reading list"
                 onClick={handleAddToReadingList}
                 className="flex-1 justify-center"
@@ -213,12 +223,14 @@ export default function BookDetailsPage() {
               </div>
             )}
 
-            {/* list selector */}
+            {/* reading‐list selector */}
             {showListSelector && (
               <div className="mt-2">
                 <ReadingListSelector onSelect={handleListSelect} />
                 {listMessage && (
-                  <p className="mt-1 text-sm text-green-400">{listMessage}</p>
+                  <p className="mt-1 text-sm text-green-400">
+                    {listMessage}
+                  </p>
                 )}
               </div>
             )}
@@ -226,7 +238,9 @@ export default function BookDetailsPage() {
 
           {/* -------- right column (reviews) -------- */}
           <div className="md:w-1/2">
-            <h2 className="text-2xl font-semibold mb-4">Ratings & Reviews</h2>
+            <h2 className="text-2xl font-semibold mb-4">
+              Ratings & Reviews
+            </h2>
 
             {reviews?.length ? (
               <div className="space-y-4 max-h-96 overflow-y-auto">
@@ -234,7 +248,9 @@ export default function BookDetailsPage() {
                   <div key={r.id} className="p-4 bg-gray-800 rounded">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-semibold">
-                        {r.user?.username || r.user?.email || "Anonymous"}
+                        {r.user?.username ||
+                          r.user?.email ||
+                          "Anonymous"}
                       </span>
                       <span className="text-yellow-400">
                         {"★".repeat(r.rating)}
@@ -250,11 +266,19 @@ export default function BookDetailsPage() {
 
             {/* add review */}
             <h3 className="text-xl font-medium mt-6">Add a Review</h3>
-            <StarRating rating={reviewRating} onChange={setReviewRating} />
-            <form onSubmit={handleSubmitReview} className="mt-2">
+            <StarRating
+              rating={reviewRating}
+              onChange={setReviewRating}
+            />
+            <form
+              onSubmit={handleSubmitReview}
+              className="mt-2"
+            >
               <textarea
                 value={reviewComment}
-                onChange={(e) => setReviewComment(e.target.value)}
+                onChange={(e) =>
+                  setReviewComment(e.target.value)
+                }
                 placeholder="Write your review…"
                 className="w-full p-2 rounded bg-gray-700"
               />
@@ -266,7 +290,9 @@ export default function BookDetailsPage() {
               />
             </form>
             {reviewMessage && (
-              <p className="mt-1 text-sm text-green-400">{reviewMessage}</p>
+              <p className="mt-1 text-sm text-green-400">
+                {reviewMessage}
+              </p>
             )}
           </div>
         </div>
@@ -277,15 +303,13 @@ export default function BookDetailsPage() {
             Other books by {book.author}
           </h2>
           {otherBooks?.length ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {otherBooks.map((other) => (
-                <a
+                <Card
                   key={other.id}
-                  href={`/books/${other.id}`}
-                  className="block p-4 bg-gray-800 rounded hover:bg-gray-700 transition text-sm"
-                >
-                  <h3 className="font-bold">{other.title}</h3>
-                </a>
+                  book={other}
+                  stats={otherStats[other.id]}
+                />
               ))}
             </div>
           ) : (
@@ -296,4 +320,3 @@ export default function BookDetailsPage() {
     </div>
   );
 }
-
