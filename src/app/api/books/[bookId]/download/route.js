@@ -1,58 +1,36 @@
-/**
- *  GET /api/books/[id]/download?format=txt|pdf
- *
- *  • Logs a BookInteraction row (type DOWNLOAD)
- *  • Redirects to the real file URL (302) – keeps the file CDN‑fast
- */
-
 import { PrismaClient, InteractionType } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
 
-export async function GET(request, { params }) {
-  const bookId = Number(params.id);
-  if (Number.isNaN(bookId)) {
-    return NextResponse.json({ error: "Invalid book id" }, { status: 400 });
+export async function GET(req, { params }) {
+  const { bookId } = await params;                 // ✅ correct awaiting
+  const id = Number(bookId);
+  if (Number.isNaN(id)) {
+    return NextResponse.json({ error: "Invalid id" }, { status: 400 });
   }
 
-  /* -------- fetch book -------- */
+  const fmt = new URL(req.url).searchParams.get("format") || "txt";
   const book = await prisma.book.findUnique({
-    where: { id: bookId },
+    where: { id },
     select: { file_url: true, pdf_url: true },
   });
-  if (!book) {
-    return NextResponse.json({ error: "Book not found" }, { status: 404 });
-  }
+  if (!book) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  /* -------- pick format -------- */
-  const format = new URL(request.url).searchParams.get("format") ?? "txt";
-  const rawUrl =
-    format === "pdf" ? book.pdf_url : book.file_url;
-
-  if (!rawUrl) {
+  const raw = fmt === "pdf" ? book.pdf_url : book.file_url;
+  if (!raw)
     return NextResponse.json(
-      { error: `No ${format.toUpperCase()} available for this book.` },
-      { status: 404 }
+      { error: `No ${fmt.toUpperCase()} available` },
+      { status: 404 },
     );
-  }
 
-  /* -------- log the interaction -------- */
-  try {
-    const sid = cookies().get("lo_sid")?.value ?? "anon";
-    await prisma.bookInteraction.create({
-      data: { bookId, sessionId: sid, type: InteractionType.DOWNLOAD },
-    });
-  } catch (err) {
-    // Don’t block the download if logging fails
-    console.error("BookInteraction logging failed:", err);
-  }
+  /* log interaction BEFORE redirect */
+  const sid =
+    (await cookies()).get("lo_sid")?.value ?? "anon"; // ✅ await cookies
+  await prisma.bookInteraction.create({
+    data: { bookId: id, sessionId: sid, type: InteractionType.DOWNLOAD },
+  });
 
-  /* -------- redirect to the actual file -------- */
-  // If you store files on Azure Blob, build a short‑lived SAS URL here:
-  // const redirectUrl = await getSignedBlobUrl(rawUrl);
-  const redirectUrl = rawUrl;
-
-  return NextResponse.redirect(redirectUrl, 302);
+  return NextResponse.redirect(raw, { status: 302 });
 }
