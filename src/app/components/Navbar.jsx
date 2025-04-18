@@ -22,9 +22,7 @@ export default function Navbar() {
     { href: "/", title: "Kalevala’s Hearth", Icon: AiFillHome },
     { href: "/books", title: "Saga Haven", Icon: PiBooksDuotone },
     { href: "/my-reading-lists", title: "My Saga Lists", Icon: ImList2 },
-    { href: "/about", title: "Lönnrot’s Tale", Icon: SiAboutdotme },
-    { href: "/documentation", title: "Kantele’s Guide", Icon: BsFiletypeDoc },
-    { href: "/documentation/api-doc", title: "API", Icon: SiBackendless },
+    { href: "/about", title: "Kantele’s Guide", Icon: SiAboutdotme },
   ];
 
   const mobileLinks = [
