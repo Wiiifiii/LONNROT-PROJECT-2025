@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/Navbar";
@@ -36,35 +36,40 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div
+      className="min-h-screen bg-cover bg-center flex flex-col"
+      style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+    >
       <Navbar />
-      <div className="pt-20 max-w-5xl mx-auto flex">
-        {/* Tabs */}
-        <ul className="w-1/4 bg-gray-800 rounded-l-lg overflow-hidden">
-          {TABS.map((tab) => (
-            <li key={tab}>
-              <button
-                onClick={() => setActive(tab)}
-                className={`w-full px-4 py-3 text-left text-sm ${
-                  active === tab
-                    ? "bg-gray-700 text-white font-semibold"
-                    : "text-gray-400 hover:bg-gray-700"
-                }`}
-              >
-                {tab}
-              </button>
-            </li>
-          ))}
-        </ul>
+      <div className="flex flex-grow items-center justify-center">
+        <div className="max-w-5xl w-full flex">
+          {/* Tabs */}
+          <ul className="w-1/4 bg-gray-800 rounded-l-lg overflow-hidden">
+            {TABS.map((tab) => (
+              <li key={tab}>
+                <button
+                  onClick={() => setActive(tab)}
+                  className={`w-full px-4 py-3 text-left text-sm ${
+                    active === tab
+                      ? "bg-gray-700 text-white font-semibold"
+                      : "text-gray-400 hover:bg-gray-700"
+                  }`}
+                >
+                  {tab}
+                </button>
+              </li>
+            ))}
+          </ul>
 
-        {/* Tab content */}
-        <div className="w-3/4 bg-gray-800 rounded-r-lg p-6">
-          {active === "Overview" && <OverviewTab />}
-          {active === "Activity" && <ActivityTab />}
-          {active === "Security" && <SecurityTab />}
-          {active === "Notifications" && <NotificationsTab />}
-          {active === "Appearance" && <AppearanceTab />}
-          {active === "Danger Zone" && <DangerTab />}
+          {/* Tab content */}
+          <div className="w-3/4 bg-gray-800 rounded-r-lg p-6">
+            {active === "Overview" && <OverviewTab />}
+            {active === "Activity" && <ActivityTab />}
+            {active === "Security" && <SecurityTab />}
+            {active === "Notifications" && <NotificationsTab />}
+            {active === "Appearance" && <AppearanceTab />}
+            {active === "Danger Zone" && <DangerTab />}
+          </div>
         </div>
       </div>
     </div>

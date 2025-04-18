@@ -7,8 +7,11 @@ import { FiArrowRight } from 'react-icons/fi';
 
 const Home = () => {
     return (
-        <div>
-            <section className="py-5 bg-gray-900">
+        <div
+          className="min-h-screen bg-cover bg-center"
+          style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+        >
+            <section className="py-5 bg-gray-900 bg-opacity-75">
                 <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 items-center">
                     <div className="text-white p-6">
                         <h1 className="text-4xl md:text-6xl font-extrabold mb-4">
@@ -37,7 +40,7 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-            <section className="py-8 bg-gray-800 text-white">
+            <section className="py-8 bg-gray-800 bg-opacity-75 text-white">
                 <div className="container mx-auto p-4">
                     <h2 className="text-3xl font-semibold mb-4">Our Mission</h2>
                     <p>

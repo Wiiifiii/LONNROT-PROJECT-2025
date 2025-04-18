@@ -27,7 +27,7 @@ export default function ReviewsList({ bookId }) {
     return <div style={{ color: "red" }}>Error: {error}</div>;
   }
   if (!reviews.length) {
-    return <div>No reviews yet.</div>;
+    return <div>Empty Saga Yet.</div>;
   }
 
   return (

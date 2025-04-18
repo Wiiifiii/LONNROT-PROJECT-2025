@@ -21,11 +21,11 @@ export async function GET(request) {
     const year        = searchParams.get("year");
     const language    = searchParams.get("language");
     const author      = searchParams.get("author");
-    const downloadable = searchParams.get("downloadable");
+    const downloadable = searchParams.get("Sampo’s Bounty");
 
-    if (genre && genre !== "Coming Soon")     where.genres = { has: genre };
-    if (year  && year  !== "Coming Soon")     where.publicationYear = Number(year);
-    if (language && language !== "Coming Soon") where.language = language;
+    if (genre && genre !== "Loom of Tomorrow")     where.genres = { has: genre };
+    if (year  && year  !== "Loom of Tomorrow")     where.publicationYear = Number(year);
+    if (language && language !== "Loom of Tomorrow") where.language = language;
     if (author && author !== "All")           where.author = author;
     if (downloadable === "true")              where.file_url = { not: null };
 

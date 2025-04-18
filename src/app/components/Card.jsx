@@ -46,8 +46,8 @@ export default function Card({ book, stats: initialStats }) {
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-md p-4 flex flex-col space-y-2">
-      <div className="flex items-center gap-2">
+<div className="bg-gray-800 rounded-lg shadow-md p-6 flex flex-col space-y-4 h-full">
+        <div className="flex items-center gap-2">
         <FaInfoCircle className="text-3xl text-gray-400" />
         <div>
           <h3 className="text-lg font-bold">
@@ -66,7 +66,7 @@ export default function Card({ book, stats: initialStats }) {
       <div className="flex gap-2">
         <Button
           icon={FaEye}
-          text="View"
+          text="Open the Saga"
           onClick={() => {
             router.push(`/books/${book.id}/read`);
           }}
@@ -74,7 +74,7 @@ export default function Card({ book, stats: initialStats }) {
         />
         <Button
           icon={FaInfoCircle}
-          text="Details"
+          text="Seek the Lore"
           onClick={() =>
             router.push(`/books/${book.id}/bookdetail`)
           }
@@ -88,9 +88,9 @@ export default function Card({ book, stats: initialStats }) {
           onClick={bumpDownload}
           target="_blank"
           rel="noopener"
-          className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm"
+         className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base"
         >
-          <FaDownload /> TXT
+          <FaDownload /> Take the Sampo TXT
         </a>
         <a
           href={`/api/books/${book.id}/download?format=pdf`}
@@ -100,7 +100,7 @@ export default function Card({ book, stats: initialStats }) {
           className={`inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm ${book.pdf_url ? "" : "opacity-50 cursor-not-allowed"
             }`}
         >
-          <FaDownload /> PDF
+          <FaDownload /> Take the Sampo PDF
         </a>
       </div>
     </div>

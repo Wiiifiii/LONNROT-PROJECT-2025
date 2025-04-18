@@ -1,4 +1,3 @@
-// Summary: Home page that applies global styles, displays a hero section with a background image overlay, and renders the Hero and Navbar components.
 "use client";
 export const dynamic = "force-dynamic";
 import './styles/globals.css';
@@ -7,7 +6,10 @@ import Navbar from './components/Navbar';
 
 export default function Home() {
   return (
-    <main className="relative flex min-h-screen flex-col bg-[#1e2328]">
+    <main
+      className="relative flex min-h-screen flex-col bg-cover bg-center"
+      style={{ backgroundImage: "url('/images/ep.png')" }}
+    >
       <div className="relative z-10 container mt-24 mx-auto px-12 py-4">
         <Hero />
         <Navbar />
@@ -15,3 +17,4 @@ export default function Home() {
     </main>
   );
 }
+

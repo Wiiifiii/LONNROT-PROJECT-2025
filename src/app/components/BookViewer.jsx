@@ -53,12 +53,12 @@ export default function BookViewer({ bookId, pdfUrl, book }) {
         <Button icon={FaBookmark} text="Mark" onClick={markPage} />
         <Button
           icon={FaListUl}
-          text="Bookshelf"
+          text="Saga Haven"
           onClick={() => router.push("/bookshelf")}
         />
         <Button
           icon={FaInfoCircle}
-          text="Details"
+          text="Seek the Lore"
           onClick={() => router.push(`/books/${bookId}/bookdetail`)}
         />
         <Button

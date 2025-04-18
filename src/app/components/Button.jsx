@@ -6,7 +6,7 @@ const Button = ({ icon: Icon, text, tooltip, onClick, className, type = 'button'
   return (
     <button      type={type}
      onClick={onClick}
-      className={`inline-flex items-center gap-1 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300 text-sm ${className}`}
+     className={`inline-flex items-center gap-2 px-6 py-3 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300 text-base ${className}`}
       title={tooltip}
     >
       {Icon && <Icon className="mr-1" />}

@@ -7,9 +7,8 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+      backgroundImage: {
+        'login-pattern': "url('/images/LogInPage.png')",
       },
     },
   },

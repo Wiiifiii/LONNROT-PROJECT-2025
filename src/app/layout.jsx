@@ -17,7 +17,8 @@ export default function RootLayout({ children }) {
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body>
+      
+      <body className="bg-[url('/images/LogInPage.png')] bg-cover bg-center">
         <Providers>
           {children}
          

@@ -19,11 +19,11 @@ export default function Navbar() {
   const user = session?.user;
 
   const navLinks = [
-    { href: "/", title: "Home", Icon: AiFillHome },
-    { href: "/books", title: "Bookshelf", Icon: PiBooksDuotone },
-    { href: "/my-reading-lists", title: "My Lists", Icon: ImList2 },
-    { href: "/about", title: "About", Icon: SiAboutdotme },
-    { href: "/documentation", title: "Doc", Icon: BsFiletypeDoc },
+    { href: "/", title: "Kalevala’s Hearth", Icon: AiFillHome },
+    { href: "/books", title: "Saga Haven", Icon: PiBooksDuotone },
+    { href: "/my-reading-lists", title: "My Saga Lists", Icon: ImList2 },
+    { href: "/about", title: "Lönnrot’s Tale", Icon: SiAboutdotme },
+    { href: "/documentation", title: "Kantele’s Guide", Icon: BsFiletypeDoc },
     { href: "/documentation/api-doc", title: "API", Icon: SiBackendless },
   ];
 

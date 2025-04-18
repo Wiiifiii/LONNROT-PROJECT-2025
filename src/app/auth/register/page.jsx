@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "../../components/Button";
 import { SiCodeproject } from "react-icons/si";
+import { FiArrowRight, FiArrowLeft, FiX } from "react-icons/fi"; // Added FiArrowLeft
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function RegisterPage() {
     displayName: "",
     bio: "",
     socialMediaLinks: { twitter: "", linkedin: "", website: "" },
-    profileImage: "", // will hold Base64 data URL
+    profileImage: "",
   });
 
   const update = (field) => (e) =>
@@ -33,7 +34,6 @@ export default function RegisterPage() {
       socialMediaLinks: { ...f.socialMediaLinks, [platform]: e.target.value },
     }));
 
-  // handle file→Base64 for profile Image
   const handleFile = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -43,23 +43,18 @@ export default function RegisterPage() {
     reader.readAsDataURL(file);
   };
 
-  // VALIDATION RULES
   const canProceedUsername = formData.username.trim().length >= 3;
-
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordsMatch = formData.password === formData.confirmPassword;
   const canProceedEmail =
     emailRegex.test(formData.email) &&
     formData.password.length >= 8 &&
     passwordsMatch;
-
   const dob = formData.dateOfBirth ? new Date(formData.dateOfBirth) : null;
   const today = new Date();
   const canProceedDOB = dob instanceof Date && dob < today;
-
   const canProceedGender = !!formData.gender;
-
-  const canProceedProfile = true; // no required fields here
+  const canProceedProfile = true;
 
   const handleNext = () => {
     if (step === 1 && canProceedUsername) setStep(2);
@@ -82,7 +77,6 @@ export default function RegisterPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Registration failed");
-      // on success, redirect to login
       router.push("/auth/login");
     } catch (err) {
       setError(err.message);
@@ -92,11 +86,17 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
+    // Updated outer container with background image
+    <div
+      className="min-h-screen flex items-center justify-center p-6 bg-cover bg-center"
+      style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+    >
       <div className="w-full max-w-md bg-gray-800 rounded-2xl shadow-lg p-8 space-y-6">
         <div className="flex items-center justify-center">
           <SiCodeproject className="text-blue-400 mr-2" size={28} />
-          <h1 className="text-2xl text-white font-bold">Join LÖNNROT</h1>
+          <h1 className="text-2xl text-white font-bold">
+            Craft Your Rune with Lönnrot
+          </h1>
         </div>
         <p className="text-gray-400 text-sm">Step {step} of 6</p>
 
@@ -206,9 +206,7 @@ export default function RegisterPage() {
         {/* STEP 5: Profile & Social */}
         {step === 5 && (
           <>
-            <h2 className="text-xl font-semibold text-white">
-              Tell us more
-            </h2>
+            <h2 className="text-xl font-semibold text-white">Tell us more</h2>
             <input
               type="text"
               placeholder="Display name (optional)"
@@ -319,13 +317,21 @@ export default function RegisterPage() {
             <Button
               onClick={handleBack}
               text="Back"
+              icon={FiArrowLeft}
               className="px-6 bg-gray-600 hover:bg-gray-500"
             />
           )}
+          <Button
+            onClick={() => router.push("/auth/login")}
+            text="Cancel"
+            icon={FiX}
+            className="px-6 bg-[#374151] hover:bg-[#111827]"
+          />
           {step < 6 ? (
             <Button
               onClick={handleNext}
               text="Next"
+              icon={FiArrowRight}
               className={`px-6 ${
                 (step === 1 && !canProceedUsername) ||
                 (step === 2 && !canProceedEmail) ||
