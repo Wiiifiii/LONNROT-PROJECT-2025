@@ -29,7 +29,8 @@ export default function MyReadingListsPage() {
       if (!res.ok || !data.success) {
         setError(data.error || "Failed to fetch reading lists");
       } else {
-        const userLists = data.data.filter((list) => list.userId === currentUserId);
+        const numericUserId = Number(currentUserId);
+        const userLists = data.data.filter((list) => list.userId === numericUserId);
         setLists(userLists);
       }
     } catch (err) {
@@ -178,8 +179,10 @@ export default function MyReadingListsPage() {
   }
 
   return (
-    
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div
+      className="min-h-screen bg-cover bg-center text-white"
+      style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+    >
       <Navbar />
       <div className="container mx-auto pt-24 px-4">
         <h1 className="text-3xl font-bold mb-4">My Reading Lists</h1>

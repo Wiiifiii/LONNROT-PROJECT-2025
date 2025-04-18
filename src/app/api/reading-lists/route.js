@@ -1,9 +1,7 @@
 // Summary: Handles API endpoints for GET and POST operations on reading lists using Prisma ORM.
 
-import { PrismaClient } from "@prisma/client";
-import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
+import { NextResponse } from 'next/server'
+import prisma from '@/lib/prisma'
 
 export async function GET() {
   try {
@@ -17,22 +15,21 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const body = await request.json();
-    if (!body.name || !body.userId) {
-      return NextResponse.json({ success: false, error: "Name and userId are required" }, { status: 400 });
+    const body = await request.json()
+    const { name, userId } = body
+    // Convert userId to an integer
+    const parsedUserId = parseInt(userId, 10)
+    if (isNaN(parsedUserId)) {
+      return NextResponse.json({ success: false, error: "Invalid userId" }, { status: 400 })
     }
-    const newList = await prisma.readingList.create({
+    const list = await prisma.readingList.create({
       data: {
-        name: body.name,
-        userId: body.userId,
+        name,
+        userId: parsedUserId,
       },
-    });
-    return NextResponse.json({ success: true, data: newList }, { status: 201 });
+    })
+    return NextResponse.json({ success: true, data: list }, { status: 201 })
   } catch (error) {
-    console.error("POST /api/reading-lists error:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to create reading list", details: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
   }
 }
