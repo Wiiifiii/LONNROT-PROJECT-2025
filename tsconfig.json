@@ -13,15 +13,22 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    // Make `@` map directly to `src/`
+    "baseUrl": ".",
+    "paths": {
+     "@/*":    ["src/*"],       // still points at everything
+    "@ui/*":  ["src/app/components/*"]  // “ui” maps to src/components
+    },
     "plugins": [
       {
         "name": "next"
       }
-    ],
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/layout.jsx", "src/app/page.jsx"],
+  "include": [
+    "next-env.d.ts",
+    "src/**/*.{ts,tsx,js,jsx}",
+    ".next/types/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }

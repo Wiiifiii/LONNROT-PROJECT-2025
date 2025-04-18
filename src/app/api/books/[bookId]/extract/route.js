@@ -5,7 +5,7 @@ import unzipper from "unzipper";
 import { PrismaClient } from "@prisma/client";
 import { PDFDocument } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
-import parseBook from "../../../../../../scripts/parseBook.js"; // Ensure the path is correct
+import parseBook from "@/scripts/parseBook.js"; // Ensure the path is correct
 
 const prisma = new PrismaClient();
 
