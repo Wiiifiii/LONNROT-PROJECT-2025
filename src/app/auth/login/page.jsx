@@ -6,7 +6,7 @@ import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Button from "../../components/Button"; // adjust if your path differs
-import { FiEye, FiEyeOff, FiLogIn } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiLogIn, FiBookOpen } from "react-icons/fi";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -45,9 +45,7 @@ export default function LoginPage() {
       {/* Right: Form */}
       <div className="flex flex-1 items-center justify-center p-8">
         <div className="w-full max-w-md bg-gray-800 rounded-2xl shadow-lg p-8 space-y-6">
-          <h2 className="text-3xl font-bold text-center text-white">
-            Login
-          </h2>
+          <h2 className="text-3xl font-bold text-center text-white">Login</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Username */}
@@ -63,9 +61,7 @@ export default function LoginPage() {
               />
               <label
                 htmlFor="username"
-                className="absolute left-4 top-2 text-gray-400 text-sm transition-all 
-                           peer-placeholder-shown:top-4 peer-placeholder-shown:text-base 
-                           peer-focus:top-2 peer-focus:text-sm"
+                className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm"
               >
                 Username
               </label>
@@ -84,9 +80,7 @@ export default function LoginPage() {
               />
               <label
                 htmlFor="password"
-                className="absolute left-4 top-2 text-gray-400 text-sm transition-all 
-                           peer-placeholder-shown:top-4 peer-placeholder-shown:text-base 
-                           peer-focus:top-2 peer-focus:text-sm"
+                className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm"
               >
                 Password
               </label>
@@ -115,11 +109,17 @@ export default function LoginPage() {
           </form>
 
           {/* Secondary Actions */}
-          <div className="text-center mt-4">
+          <div className="text-center mt-4 space-y-2">
             <Button
               onClick={() => router.push("/auth/register")}
-              text="Don't have an account? Register"
+              text="Join the Adventure: Sign Up Now"
               className="w-full bg-gray-700 hover:bg-gray-600"
+            />
+            <Button
+              onClick={() => router.push("/hero")}
+              icon={FiBookOpen}
+              text="Dive into Our Library, No Registration Required"
+              className="w-full bg-blue-600 hover:bg-blue-500"
             />
           </div>
         </div>
