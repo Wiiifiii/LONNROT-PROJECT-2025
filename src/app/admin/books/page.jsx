@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import Navbar from "../../components/Navbar";
+import Navbar from "@/app/components/Navbar";
 import { FiEdit, FiTrash2, FiPlus, FiX, FiArrowLeft } from "react-icons/fi";
 import Link from "next/link";
 

@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Navbar from "../components/Navbar";
-import StatsCard from "../components/StatsCard";
+import Navbar from "@/app/components/Navbar";
+import StatsCard from "@/app/components/StatsCard";
 
 // import each tab
 import OverviewTab from "./tabs/OverviewTab";

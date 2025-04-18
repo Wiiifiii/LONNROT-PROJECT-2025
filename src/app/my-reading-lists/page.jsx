@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import Navbar from "../components/Navbar";
+import Navbar from "@/app/components/Navbar";
 import { FiAlertCircle } from "react-icons/fi";
 import { FaPlus, FaTrash, FaEdit, FaChevronDown, FaChevronUp, FaSave, FaTimes } from "react-icons/fa";
 
@@ -178,6 +178,7 @@ export default function MyReadingListsPage() {
   }
 
   return (
+    
     <div className="min-h-screen bg-gray-900 text-white">
       <Navbar />
       <div className="container mx-auto pt-24 px-4">

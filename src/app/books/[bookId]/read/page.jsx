@@ -1,7 +1,7 @@
 // src/app/books/[bookId]/read/page.jsx
 import React from "react";
-import Navbar from "../../../components/Navbar";
-import BookViewer from "../../../components/BookViewer";
+import Navbar from "@/app/components/Navbar";
+import BookViewer from "@//app/components/BookViewer";
 
 export default async function ReaderPage({ params }) {
   const { bookId } = await params;

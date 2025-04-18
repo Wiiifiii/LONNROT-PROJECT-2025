@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 import React from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
+import Navbar from "@/app/components/Navbar";
 import { FaBook, FaUsers, FaCommentAlt } from "react-icons/fa";
 import { AiOutlineDashboard } from "react-icons/ai";
 

@@ -3,7 +3,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Button from "../../components/Button";
+import Button from "@/app/components/Button"; // Adjust if your path differs
 import { SiCodeproject } from "react-icons/si";
 import { FiArrowRight, FiArrowLeft, FiX } from "react-icons/fi"; // Added FiArrowLeft
 

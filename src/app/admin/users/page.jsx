@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import React from "react";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
+import Navbar from "@/app/components/Navbar";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { FiPlus } from "react-icons/fi";
 import { FaFastBackward } from "react-icons/fa";

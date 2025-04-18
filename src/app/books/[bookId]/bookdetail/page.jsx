@@ -12,8 +12,8 @@ import {
   FaBookmark,
 } from "react-icons/fa";
 import { BsFillSendPlusFill } from "react-icons/bs";
-import StarRating from "../../../components/StarRating";
-import ReadingListSelector from "../../../components/ReadingListSelector";
+import StarRating          from '../../../components/StarRating'
+import ReadingListSelector from '../../../components/ReadingListSelector'
 
 export default function BookDetailsPage() {
   const { bookId } = useParams();
@@ -142,182 +142,181 @@ export default function BookDetailsPage() {
   const coverImage = book.cover_url || "/images/lonnrotkey.jpg";
 
   return (
- 
-      <div className="bg-gray-900 min-h-screen text-white">
-        <Navbar />
-        <div className="container mx-auto pt-24 px-4">
-          <div className="flex flex-col md:flex-row gap-8">
-            {/* -------- left column -------- */}
-            <div className="md:w-1/2">
-              <img
-                src={coverImage}
-                alt="Book cover"
-                className="w-50 max-h-40 object-cover rounded"
-              />
-              <h1 className="text-3xl font-bold mt-4">{book.title}</h1>
-              <p className="text-xl mt-1">{book.author}</p>
-              <p className="mt-4">{book.description}</p>
 
-              {/* actions */}
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Button
-                  icon={FaEye}
-                  text="Open the Saga"
-                  tooltip="Open reader"
-                  onClick={() =>
-                    (window.location.href = `/books/${book.id}/read`)
-                  }
-                  className="flex-1 justify-center"
-                />
-                <Button
-                  icon={FaDownload}
-                  text="Take the Sampo TXT"
-                  tooltip="Download original txt"
-                  className="flex-1 justify-center"
-                  onClick={() => {
-                    window.open(
-                      `/api/books/${book.id}/download?format=txt`,
-                      "_blank",
-                      "noopener"
-                    );
-                    handleDownloadClick();
-                  }}
-                />
-                <Button
-                  icon={FaDownload}
-                  text="Keep the Rune PDF"
-                  tooltip={
-                    book.pdf_url
-                      ? "Download generated PDF"
-                      : "PDF not available yet"
-                  }
-                  className={`flex-1 justify-center ${
-                    book.pdf_url ? "" : "opacity-50 cursor-not-allowed"
+    <div className="bg-gray-900 min-h-screen text-white">
+      <Navbar />
+      <div className="container mx-auto pt-24 px-4">
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* -------- left column -------- */}
+          <div className="md:w-1/2">
+            <img
+              src={coverImage}
+              alt="Book cover"
+              className="w-50 max-h-40 object-cover rounded"
+            />
+            <h1 className="text-3xl font-bold mt-4">{book.title}</h1>
+            <p className="text-xl mt-1">{book.author}</p>
+            <p className="mt-4">{book.description}</p>
+
+            {/* actions */}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button
+                icon={FaEye}
+                text="Open the Saga"
+                tooltip="Open reader"
+                onClick={() =>
+                  (window.location.href = `/books/${book.id}/read`)
+                }
+                className="flex-1 justify-center"
+              />
+              <Button
+                icon={FaDownload}
+                text="Take the Sampo TXT"
+                tooltip="Download original txt"
+                className="flex-1 justify-center"
+                onClick={() => {
+                  window.open(
+                    `/api/books/${book.id}/download?format=txt`,
+                    "_blank",
+                    "noopener"
+                  );
+                  handleDownloadClick();
+                }}
+              />
+              <Button
+                icon={FaDownload}
+                text="Keep the Rune PDF"
+                tooltip={
+                  book.pdf_url
+                    ? "Download generated PDF"
+                    : "PDF not available yet"
+                }
+                className={`flex-1 justify-center ${book.pdf_url ? "" : "opacity-50 cursor-not-allowed"
                   }`}
-                  onClick={(e) => {
-                    if (!book.pdf_url) {
-                      e.preventDefault();
-                      return;
-                    }
-                    window.open(
-                      `/api/books/${book.id}/download?format=pdf`,
-                      "_blank",
-                      "noopener"
-                    );
-                    handleDownloadClick();
-                  }}
-                />
-                <Button
-                  icon={FaBookmark}
-                  text="Add to List"
-                  tooltip="Add to your reading list"
-                  onClick={handleAddToReadingList}
-                  className="flex-1 justify-center"
-                />
-              </div>
-
-              {/* stats */}
-              {stats && (
-                <div className="mt-2 text-xs text-gray-400 space-x-4">
-                  <span>Downloads: {stats.DOWNLOAD}</span>
-                  <span>Reads: {stats.READ_START}</span>
-                </div>
-              )}
-
-              {/* reading‐list selector */}
-              {showListSelector && (
-                <div className="mt-2">
-                  <ReadingListSelector onSelect={handleListSelect} />
-                  {listMessage && (
-                    <p className="mt-1 text-sm text-green-400">
-                      {listMessage}
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* -------- right column (reviews) -------- */}
-            <div className="md:w-1/2">
-              <h2 className="text-2xl font-semibold mb-4">
-              Stars & Sagas
-              </h2>
-
-              {reviews?.length ? (
-                <div className="space-y-4 max-h-96 overflow-y-auto">
-                  {reviews.map((r) => (
-                    <div key={r.id} className="p-4 bg-gray-800 rounded">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold">
-                          {r.user?.username ||
-                            r.user?.email ||
-                            "Anonymous"}
-                        </span>
-                        <span className="text-yellow-400">
-                          {"★".repeat(r.rating)}
-                        </span>
-                      </div>
-                      <p>{r.comment}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p>Empty Saga Yet.</p>
-              )}
-
-              {/* add review */}
-              <h3 className="text-xl font-medium mt-6">Sing Your Verse</h3>
-              <StarRating
-                rating={reviewRating}
-                onChange={setReviewRating}
-              />
-              <form
-                onSubmit={handleSubmitReview}
-                className="mt-2"
-              >
-                <textarea
-                  value={reviewComment}
-                  onChange={(e) =>
-                    setReviewComment(e.target.value)
+                onClick={(e) => {
+                  if (!book.pdf_url) {
+                    e.preventDefault();
+                    return;
                   }
-                  placeholder="Write your review…"
-                  className="w-full p-2 rounded bg-gray-700"
-                />
-                <Button
-                  icon={BsFillSendPlusFill}
-                  text="Pen Your Lore"
-                  tooltip="Submit"
-                  className="mt-2"
-                />
-              </form>
-              {reviewMessage && (
-                <p className="mt-1 text-sm text-green-400">
-                  {reviewMessage}
-                </p>
-              )}
+                  window.open(
+                    `/api/books/${book.id}/download?format=pdf`,
+                    "_blank",
+                    "noopener"
+                  );
+                  handleDownloadClick();
+                }}
+              />
+              <Button
+                icon={FaBookmark}
+                text="Add to List"
+                tooltip="Add to your reading list"
+                onClick={handleAddToReadingList}
+                className="flex-1 justify-center"
+              />
             </div>
+
+            {/* stats */}
+            {stats && (
+              <div className="mt-2 text-xs text-gray-400 space-x-4">
+                <span>Downloads: {stats.DOWNLOAD}</span>
+                <span>Reads: {stats.READ_START}</span>
+              </div>
+            )}
+
+            {/* reading‐list selector */}
+            {showListSelector && (
+              <div className="mt-2">
+                <ReadingListSelector onSelect={handleListSelect} />
+                {listMessage && (
+                  <p className="mt-1 text-sm text-green-400">
+                    {listMessage}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* other books */}
-          <div className="mt-8">
+          {/* -------- right column (reviews) -------- */}
+          <div className="md:w-1/2">
             <h2 className="text-2xl font-semibold mb-4">
-            More by the Bard {book.author}
+              Stars & Sagas
             </h2>
-            {otherBooks?.length ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {otherBooks.map((other) => (
-                  <Card
-                    key={other.id}
-                    book={other}
-                    stats={otherStats[other.id]}
-                  />
+
+            {reviews?.length ? (
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {reviews.map((r) => (
+                  <div key={r.id} className="p-4 bg-gray-800 rounded">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold">
+                        {r.user?.username ||
+                          r.user?.email ||
+                          "Anonymous"}
+                      </span>
+                      <span className="text-yellow-400">
+                        {"★".repeat(r.rating)}
+                      </span>
+                    </div>
+                    <p>{r.comment}</p>
+                  </div>
                 ))}
               </div>
             ) : (
-              <p>No other books found.</p>
+              <p>Empty Saga Yet.</p>
+            )}
+
+            {/* add review */}
+            <h3 className="text-xl font-medium mt-6">Sing Your Verse</h3>
+            <StarRating
+              rating={reviewRating}
+              onChange={setReviewRating}
+            />
+            <form
+              onSubmit={handleSubmitReview}
+              className="mt-2"
+            >
+              <textarea
+                value={reviewComment}
+                onChange={(e) =>
+                  setReviewComment(e.target.value)
+                }
+                placeholder="Write your review…"
+                className="w-full p-2 rounded bg-gray-700"
+              />
+              <Button
+                icon={BsFillSendPlusFill}
+                text="Pen Your Lore"
+                tooltip="Submit"
+                className="mt-2"
+              />
+            </form>
+            {reviewMessage && (
+              <p className="mt-1 text-sm text-green-400">
+                {reviewMessage}
+              </p>
             )}
           </div>
         </div>
+
+        {/* other books */}
+        <div className="mt-8">
+          <h2 className="text-2xl font-semibold mb-4">
+            More by the Bard {book.author}
+          </h2>
+          {otherBooks?.length ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {otherBooks.map((other) => (
+                <Card
+                  key={other.id}
+                  book={other}
+                  stats={otherStats[other.id]}
+                />
+              ))}
+            </div>
+          ) : (
+            <p>No other books found.</p>
+          )}
+        </div>
       </div>
+    </div>
   );
 }

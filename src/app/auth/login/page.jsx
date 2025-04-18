@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Button from "../../components/Button"; // Adjust if your path differs
+import Button from "@/app/components/Button";
 import { FiEye, FiEyeOff, FiLogIn, FiBookOpen, FiUserPlus } from "react-icons/fi";
 
 export default function LoginPage() {
