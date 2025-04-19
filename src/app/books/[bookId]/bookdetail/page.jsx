@@ -8,7 +8,7 @@ import BookCardCompact from "../../../components/BooksCardCompact";
 import { SiMagic } from "react-icons/si";
 import { FaEye, FaDownload, FaBookmark } from "react-icons/fa";
 import { BsFillSendPlusFill } from "react-icons/bs";
-import { GiMagicGate } from "react-icons/gi";
+import { GiMagicGate, GiMagicAxe } from "react-icons/gi";
 import StarRating from "../../../components/StarRating";
 import ReadingListSelector from "../../../components/ReadingListSelector";
 
@@ -151,11 +151,17 @@ export default function BookDetailsPage() {
         <div className="flex flex-col md:flex-row gap-8">
           {/* -------- left column -------- */}
           <div className="md:w-1/2">
-            <img
-              src={coverImage}
-              alt="Book cover"
-              className="w-50 max-h-40 object-cover rounded"
-            />
+            {book.cover_url ? (
+              <img
+                src={book.cover_url}
+                alt="Book cover"
+                className="w-50 max-h-40 object-cover rounded"
+              />
+            ) : (
+              <div className="w-50 h-40 flex items-center justify-center bg-gray-700 rounded">
+                <GiMagicAxe className="text-white text-5xl" />
+              </div>
+            )}
             <h1 className="text-3xl font-bold mt-4">{book.title}</h1>
             <p className="text-xl mt-1">{book.author}</p>
             <p className="mt-4">{book.description}</p>

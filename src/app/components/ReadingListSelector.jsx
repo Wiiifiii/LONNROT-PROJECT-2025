@@ -43,7 +43,7 @@ export default function ReadingListSelector({ onSelect }) {
         className="p-2 rounded bg-gray-700 text-white text-sm"
         onChange={handleChange}
       >
-        <option value="">Select a reading list</option>
+        <option value="">Select Saga list</option>
         {lists.map((list) => (
           <option key={list.id} value={list.id}>
             {list.name}
@@ -55,7 +55,7 @@ export default function ReadingListSelector({ onSelect }) {
         onClick={() => router.push("/my-reading-lists")}
       >
         <MdFormatListBulletedAdd />
-        <span>Create New List</span>
+        <span>Create Saga List</span>
       </button>
     </>
   );
