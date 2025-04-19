@@ -51,6 +51,7 @@ export default function BooksPage() {
   // ④ Called by Filters → normal paged search
   const handleApply = filters => {
     setApplied(filters)
+    setApplied({ ...filters, sortBy: '' })
     setPage(1)
     setLimit(20)      // go back to 20 items/page
   }
