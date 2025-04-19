@@ -1,19 +1,18 @@
-# keep your schema; only ignore migrations
+# Keep your Prisma schema, only ignore migrations folder
 prisma/migrations/
 
-# docs & tests
+# Docs & tests
 docs/
 tests/
 
-# any static design files you don't serve
+# Any static design files you don't serve
 public/**/*.psd
 public/**/*.pdf
 
-# prune heavy PDF/UI modules before slug packaging
+# Prune heavy PDF/UI modules before slug packaging
 node_modules/pdfjs-dist/
 node_modules/pdfkit/
 node_modules/pdfmake/
-node_modules/@pdf-lib/fontkit/
 node_modules/react-pdf/
 node_modules/react-syntax-highlighter/
 node_modules/react-tooltip/
