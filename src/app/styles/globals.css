@@ -3,15 +3,28 @@
 @tailwind utilities;
 
 @layer base {
-  html, body, #__next {
+  html,
+  body,
+  #__next {
     height: 100%;
+    margin: 0;
   }
+
   body {
+    /* keep your login‑pattern bg */
     @apply bg-login-pattern bg-cover bg-center bg-no-repeat;
     color: var(--foreground);
     font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ensure the PDF viewer itself can stretch */
+  .rpv-core__viewer {
+    height: 100% !important;
   }
 }
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -24,3 +37,15 @@
   }
 }
 
+
+/* ensure inner PDF page always fits its container */
+.rpv-core__inner-page {
+  max-width: 100% !important;
+  height: auto     !important;
+}
+
+/* center each page horizontally */
+.rpv-core__page-layer {
+  display: flex    !important;
+  justify-content: center !important;
+}
