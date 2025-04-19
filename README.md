@@ -14,6 +14,22 @@ heroku login
 
 This command is essential for configuring your app's connection to the production database on Heroku.
 
+## Deployment to Heroku
+
+Make sure you've set up your Heroku remote by running:
+
+```
+heroku git:remote --app lonnrot-project
+```
+
+Then, to push your latest changes on the main branch to Heroku, simply run:
+
+```
+git push heroku main
+```
+
+This will deploy your application to Heroku.
+
 ## Docker Commands
 
 To build the Docker image for your app, run:
