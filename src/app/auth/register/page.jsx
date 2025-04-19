@@ -45,11 +45,15 @@ export default function RegisterPage() {
 
   const canProceedUsername = formData.username.trim().length >= 3;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordPolicy = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/; // minimum 8 characters now
   const passwordsMatch = formData.password === formData.confirmPassword;
+
+  // Updated validation: password must match new policy
   const canProceedEmail =
     emailRegex.test(formData.email) &&
-    formData.password.length >= 8 &&
+    passwordPolicy.test(formData.password) &&
     passwordsMatch;
+
   const dob = formData.dateOfBirth ? new Date(formData.dateOfBirth) : null;
   const today = new Date();
   const canProceedDOB = dob instanceof Date && dob < today;
@@ -139,7 +143,7 @@ export default function RegisterPage() {
             )}
             <input
               type="password"
-              placeholder="Password (min 8 chars)"
+              placeholder="Password (min 8 chars, 1 uppercase, 1 number, 1 special)"
               className="w-full p-3 rounded-lg bg-gray-700 text-white focus:ring-blue-400 mb-2"
               value={formData.password}
               onChange={update("password")}
