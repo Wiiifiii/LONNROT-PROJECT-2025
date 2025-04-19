@@ -1,11 +1,12 @@
-// schema.prisma
+// prisma/schema.prisma
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
@@ -58,18 +59,18 @@ enum Gender {
 model User {
   id               Int      @id @default(autoincrement())
   username         String   @unique
-  displayName      String?   // Optional display name
-  email            String    @unique
+  displayName      String?
+  email            String   @unique
   password_hash    String?
-  dateOfBirth      DateTime? // Actual birthdate
-  gender           Gender?   // Added user’s gender
-  profileImage     Bytes?    // Stored as binary
-  settings         Json?    // store notifications, etc.
+  dateOfBirth      DateTime?
+  gender           Gender?
+  profileImage     Bytes?
+  settings         Json?
   bio              String?
-  socialMediaLinks Json?     // e.g. { twitter: "...", linkedin: "..." }
-  role             Role      @default(user)
-  created_at       DateTime  @default(now())
-  updated_at       DateTime  @updatedAt
+  socialMediaLinks Json?
+  role             Role     @default(user)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
 
   activityLogs     ActivityLog[]
   reviews          Review[]

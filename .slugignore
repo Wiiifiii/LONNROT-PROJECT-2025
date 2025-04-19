@@ -1,17 +1,15 @@
-# Prisma migrations & schema (you only need the generated client)
+# Keep the schema; only ignore migrations folder
 prisma/migrations/
-prisma/schema.prisma
 
-# Docs, tests, etc
+# Documentation & tests
 docs/
 tests/
-*.md
 
-# Any static PDFs or design files you don’t serve
-public/**/*.pdf
+# Any static design files you don't serve
 public/**/*.psd
+public/**/*.pdf
 
-# (Optional) Yank entire heavy modules you’re not actually using in production:
+# Prune heavy PDF/UI modules you don’t need at runtime
 node_modules/pdfjs-dist/
 node_modules/pdfkit/
 node_modules/pdfmake/
