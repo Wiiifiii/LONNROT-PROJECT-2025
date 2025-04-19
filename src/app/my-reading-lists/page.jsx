@@ -185,7 +185,7 @@ export default function MyReadingListsPage() {
     >
       <Navbar />
       <div className="container mx-auto pt-24 px-4">
-        <h1 className="text-3xl font-bold mb-4">My Reading Lists</h1>
+        <h1 className="text-3xl font-bold mb-4">My Saga Lists</h1>
         {message && <p className="text-green-500 mb-2">{message}</p>}
         {error && <p className="text-red-400 mb-2">{error}</p>}
         <form onSubmit={handleCreateList} className="mb-6 flex items-center space-x-2">
