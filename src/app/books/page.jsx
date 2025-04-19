@@ -1,32 +1,94 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Navbar from '@/app/components/Navbar'
 import Filters from '@/app/components/Filters'
-import SearchResults from '@/app/components/SearchResults'
 import Highlights from '@/app/components/Highlights'
+import SearchResults from '@/app/components/SearchResults'
 
 export default function BooksPage() {
-  // this object holds whatever the user applied
+  // ① Filters the user has applied
   const [applied, setApplied] = useState({
-    search: '', bookId: '', author: '', originalId: ''
+    search: '', bookId: '', author: '', originalId: '', sortBy: ''
   })
+
+  // ② Results + pagination state
+  const [results, setResults] = useState([])
+  const [total,   setTotal]   = useState(0)
+  const [page,    setPage]    = useState(1)
+
+  // now state so we can bump to 81 for highlights
+  const [limit,  setLimit]  = useState(20)
+
+  const [loading, setLoading] = useState(false)
+
+  // ③ Re‐fetch whenever filters, page or limit change
+  useEffect(() => {
+    async function fetchResults() {
+      setLoading(true)
+      const { search, bookId, author, originalId, sortBy } = applied
+
+      const params = new URLSearchParams()
+      if (search)     params.set('searchQuery', search)
+      if (bookId)     params.set('book',        bookId)
+      if (author)     params.set('author',      author)
+      if (originalId) params.set('origId',      originalId)
+      if (sortBy)     params.set('sort',        sortBy)
+      params.set('page',  String(page))
+      params.set('limit', String(limit))
+
+      const res  = await fetch(`/api/books?${params}`)
+      const json = await res.json()
+      if (json.success) {
+        setResults(json.data.books)
+        setTotal(json.data.total)
+      }
+      setLoading(false)
+    }
+
+    fetchResults()
+  }, [applied, page, limit])  // ← include limit here now
+
+  // ④ Called by Filters → normal paged search
+  const handleApply = filters => {
+    setApplied(filters)
+    setPage(1)
+    setLimit(20)      // go back to 20 items/page
+  }
+
+  const handleClear = () => {
+    setApplied({ search:'', bookId:'', author:'', originalId:'', sortBy:'' })
+    setPage(1)
+    setLimit(20)
+  }
+
+  // ⑤ Called by Highlights → “See all” 81‑item list
+  const handleHighlightFilter = sortKey => {
+    setApplied(a => ({ ...a, sortBy: sortKey }))
+    setPage(1)
+    setLimit(81)      // fetch 81 items for this highlight
+  }
 
   return (
     <>
       <Navbar />
 
-      <div
-        className="backdrop-brightness-50 min-h-screen px-6 py-8 space-y-8 pt-20" // added pt-20 so content starts below the navbar
-      >
+      <div className="backdrop-brightness-50 min-h-screen px-6 py-8 space-y-8 pt-20">
         <Filters
-          onApply={setApplied}
-          onClear={() => setApplied({ search: '', bookId: '', author: '', originalId: '' })}
+          onApply={handleApply}
+          onClear={handleClear}
         />
 
-        {/* ←– new highlights row */}
-        <Highlights />
+        <Highlights onFilter={handleHighlightFilter} />
 
-        <SearchResults filters={applied} />
+        <SearchResults
+          loading={loading}
+          books={results}
+          total={total}
+          page={page}
+          limit={limit}
+          filters={applied}
+          onPageChange={setPage}
+        />
       </div>
     </>
   )
