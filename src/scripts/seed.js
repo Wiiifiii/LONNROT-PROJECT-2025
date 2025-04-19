@@ -22,7 +22,7 @@ async function main() {
       displayName: "Administrator",
       bio: "Site administrator",
       socialMediaLinks: {}, // will default to empty JSON
-      // dateOfBirth: null,   // optional, can be omitted entirely
+      dateOfBirth: null,   // optional, can be omitted entirely
     },
   });
 
