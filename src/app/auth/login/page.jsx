@@ -4,7 +4,14 @@ import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Button from "@/app/components/Button";
-import { FiEye, FiEyeOff, FiLogIn, FiBookOpen, FiUserPlus } from "react-icons/fi";
+import {
+  FiEye,
+  FiEyeOff,
+  FiLogIn,
+  FiBookOpen,
+  FiUserPlus,
+  FiLock
+} from "react-icons/fi";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -102,6 +109,15 @@ export default function LoginPage() {
               icon={FiLogIn}
               text="Sing the Song of Entry"
               className="w-full justify-center"
+            />
+            
+            {/* Forgot password button moved here */}
+            <Button
+              type="button"
+              onClick={() => router.push("/auth/forgot")}
+              icon={FiLock}
+              text="Forgot password"
+              className="w-full justify-center bg-gray-700 hover:bg-gray-600"
             />
           </form>
 
