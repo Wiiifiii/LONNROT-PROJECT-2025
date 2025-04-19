@@ -1,31 +1,50 @@
 // src/app/components/Filters.jsx
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaSearch } from 'react-icons/fa'
 import Button from './Button'
-import Dropdown from './Dropdown' // your wrapper around <select>
+import Dropdown from './Dropdown'
 
 export default function Filters({ onApply, onClear }) {
-  const [q, setQ] = useState('')
-  const [selectedBook, setSelectedBook] = useState('')
+  const [q, setQ]                   = useState('')
+  const [selectedBook, setSelectedBook]     = useState('')
   const [selectedAuthor, setSelectedAuthor] = useState('')
-  const [selectedId, setSelectedId] = useState('')
+  const [selectedId, setSelectedId]         = useState('')
 
-  // Replace with your real options
-  const bookOptions = []
-  const authorOptions = []
-  const idOptions = []
+  // now populated from API
+  const [bookOptions,   setBookOptions]   = useState([])
+  const [authorOptions, setAuthorOptions] = useState([])
+  const [idOptions,     setIdOptions]     = useState([])
 
-  const onChangeQ = (e) => setQ(e.target.value)
-  const onChangeBook = (e) => setSelectedBook(e.target.value)
-  const onChangeAuthor = (e) => setSelectedAuthor(e.target.value)
-  const onChangeId = (e) => setSelectedId(e.target.value)
+  const onChangeQ      = e => setQ(e.target.value)
+  const onChangeBook   = e => setSelectedBook(e.target.value)
+  const onChangeAuthor = e => setSelectedAuthor(e.target.value)
+  const onChangeId     = e => setSelectedId(e.target.value)
+
+  // Fetch your actual /api/books/filters shape
+  useEffect(() => {
+    fetch('/api/books/filters')
+      .then(r => r.json())
+      .then(json => {
+        // your route returns { books, authors, originalIds }
+        setBookOptions(
+          json.books.map(b => ({ value: String(b.id), label: b.title }))
+        )
+        setAuthorOptions(
+          json.authors.map(a => ({ value: a, label: a }))
+        )
+        setIdOptions(
+          json.originalIds.map(id => ({ value: String(id), label: String(id) }))
+        )
+      })
+      .catch(console.error)
+  }, [])
 
   const applyFilters = () => {
     onApply({
-      search: q,
-      bookId: selectedBook,
-      author: selectedAuthor,
+      search:     q,
+      bookId:     selectedBook,
+      author:     selectedAuthor,
       originalId: selectedId,
     })
   }
