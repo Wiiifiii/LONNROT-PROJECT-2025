@@ -1,87 +1,110 @@
 // src/app/components/Filters.jsx
 'use client'
 import React, { useState } from 'react'
-import Dropdown from './Dropdown'
+import { FaSearch } from 'react-icons/fa'
 import Button from './Button'
-import { FiSearch, FiX, FiFilter } from 'react-icons/fi'
+import Dropdown from './Dropdown' // your wrapper around <select>
 
 export default function Filters({ onApply, onClear }) {
-  const [search, setSearch] = useState('')
-  const [selBook, setSelBook] = useState('')
-  const [selAuthor, setSelAuthor] = useState('')
-  const [selOriginalId, setSelOriginalId] = useState('')
+  const [q, setQ] = useState('')
+  const [selectedBook, setSelectedBook] = useState('')
+  const [selectedAuthor, setSelectedAuthor] = useState('')
+  const [selectedId, setSelectedId] = useState('')
 
-  // Define dummy options; replace with your real filter data as needed.
-  const books = []
-  const authors = []
-  const originalIds = []
+  // Replace with your real options
+  const bookOptions = []
+  const authorOptions = []
+  const idOptions = []
 
-  const handleApply = () =>
+  const onChangeQ = (e) => setQ(e.target.value)
+  const onChangeBook = (e) => setSelectedBook(e.target.value)
+  const onChangeAuthor = (e) => setSelectedAuthor(e.target.value)
+  const onChangeId = (e) => setSelectedId(e.target.value)
+
+  const applyFilters = () => {
     onApply({
-      search,
-      bookId: selBook,
-      author: selAuthor,
-      originalId: selOriginalId,
+      search: q,
+      bookId: selectedBook,
+      author: selectedAuthor,
+      originalId: selectedId,
     })
+  }
 
-  const handleClear = () => {
-    setSearch('')
-    setSelBook('')
-    setSelAuthor('')
-    setSelOriginalId('')
+  const clearFilters = () => {
+    setQ('')
+    setSelectedBook('')
+    setSelectedAuthor('')
+    setSelectedId('')
     onClear()
   }
 
   return (
-    <div className="flex flex-wrap items-end gap-4 bg-gray-800/75 backdrop-blur-sm p-4 rounded">
-      {/* Search input */}
-      <div className="flex-1">
-        <label className="block text-sm mb-1 text-gray-300">Search</label>
+    <div className="flex flex-wrap items-end gap-4 mb-6">
+      {/* Search box */}
+      <div className="w-full md:flex-1">
+        <label htmlFor="q" className="block text-sm text-gray-200 mb-1">
+          Search
+        </label>
         <div className="relative">
           <input
+            id="q"
             type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={q}
+            onChange={onChangeQ}
             placeholder="Keyword, author…"
-            className="w-full px-4 py-2 rounded-md bg-gray-700 text-white"
+            className="w-full px-4 py-2 bg-gray-700 rounded-md text-white"
           />
-          <FiSearch className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400" />
+          <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         </div>
       </div>
 
-      {/* Dropdowns */}
-      <Dropdown
-        label="Book"
-        placeholder="Select a book…"
-        options={books}
-        value={selBook}
-        onChange={(e) => setSelBook(e.target.value)}
-      />
-      <Dropdown
-        label="Author"
-        placeholder="Select an author…"
-        options={authors}
-        value={selAuthor}
-        onChange={(e) => setSelAuthor(e.target.value)}
-      />
-      <Dropdown
-        label="Orig. ID"
-        placeholder="Select ID…"
-        options={originalIds}
-        value={selOriginalId}
-        onChange={(e) => setSelOriginalId(e.target.value)}
-      />
+      {/* Book select */}
+      <div className="w-full md:flex-1">
+        <label htmlFor="book" className="block text-sm text-gray-200 mb-1">
+          Book
+        </label>
+        <Dropdown
+          id="book"
+          options={bookOptions}
+          value={selectedBook}
+          onChange={onChangeBook}
+          className="w-full"
+        />
+      </div>
 
-      {/* Apply button */}
-      <Button icon={FiFilter} text="Apply" onClick={handleApply} />
+      {/* Author select */}
+      <div className="w-full md:flex-1">
+        <label htmlFor="author" className="block text-sm text-gray-200 mb-1">
+          Author
+        </label>
+        <Dropdown
+          id="author"
+          options={authorOptions}
+          value={selectedAuthor}
+          onChange={onChangeAuthor}
+          className="w-full"
+        />
+      </div>
 
-      {/* Clear button */}
-      <Button
-        icon={FiX}
-        text="Clear"
-        onClick={handleClear}
-        className="bg-red-600 hover:bg-red-700"
-      />
+      {/* Orig. ID select */}
+      <div className="w-full md:flex-1">
+        <label htmlFor="origId" className="block text-sm text-gray-200 mb-1">
+          Orig. ID
+        </label>
+        <Dropdown
+          id="origId"
+          options={idOptions}
+          value={selectedId}
+          onChange={onChangeId}
+          className="w-full"
+        />
+      </div>
+
+      {/* Buttons */}
+      <div className="w-full md:w-auto flex gap-2">
+        <Button onClick={applyFilters} text="Apply" />
+        <Button onClick={clearFilters} text="Clear" />
+      </div>
     </div>
   )
 }

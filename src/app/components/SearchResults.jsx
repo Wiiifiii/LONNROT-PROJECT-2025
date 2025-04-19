@@ -3,14 +3,13 @@
 
 import React, { useEffect, useState } from 'react'
 import { FiArrowRight } from 'react-icons/fi'
+import { FaListAlt } from 'react-icons/fa'
 import Button from '@/app/components/Button'
-import BookCardCompact from '@/app/components/BooksCardCompact';
-
-
+import BookCardCompact from '@/app/components/BooksCardCompact'
 
 export default function SearchResults({ filters }) {
-  const [books, setBooks]   = useState([])       // 1) books state
-  const [total, setTotal]   = useState(0)
+  const [books, setBooks] = useState([])       // 1) books state
+  const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -25,7 +24,6 @@ export default function SearchResults({ filters }) {
     fetch(`/api/books?${params.toString()}`)
       .then((r) => r.json())
       .then((payload) => {
-        // payload = { success: true, data: { books: [...], total: N } }
         const list = Array.isArray(payload)
           ? payload
           : payload.data?.books ?? []
@@ -45,30 +43,13 @@ export default function SearchResults({ filters }) {
 
   return (
     <section className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-white">
-          Search Results ({total})
-        </h2>
-        {total > books.length && (
-          <Button
-            icon={FiArrowRight}
-            text="See all"
-            onClick={() =>
-              window.location.assign(
-                `/books?${new URLSearchParams({
-                  ...filters,
-                  limit: String(total),
-                }).toString()}`
-              )
-            }
-          />
-        )}
-      </div>
+      <h2 className="flex items-center justify-center gap-2 text-2xl font-bold text-white my-8">
+        <FaListAlt /> Search Results ({total})
+      </h2>
 
       <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         {books.map((b) => (
-        <BookCardCompact key={b.id} book={b} />
-
+          <BookCardCompact key={b.id} book={b} />
         ))}
       </div>
     </section>
