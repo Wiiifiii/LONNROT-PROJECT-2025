@@ -16,6 +16,19 @@ enum Role {
   admin
 }
 
+/// Store one‑time tokens for “forgot password” flows
+model PasswordReset {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  expiresAt DateTime
+  used      Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_resets")
+}
+
 // Books Model
 model Book {
   id              Int       @id @default(autoincrement())
@@ -57,10 +70,10 @@ enum Gender {
 
 // Users Model
 model User {
-  id               Int      @id @default(autoincrement())
-  username         String   @unique
+  id               Int       @id @default(autoincrement())
+  username         String    @unique
   displayName      String?
-  email            String   @unique
+  email            String    @unique
   password_hash    String?
   dateOfBirth      DateTime?
   gender           Gender?
@@ -68,14 +81,15 @@ model User {
   settings         Json?
   bio              String?
   socialMediaLinks Json?
-  role             Role     @default(user)
-  created_at       DateTime @default(now())
-  updated_at       DateTime @updatedAt
+  role             Role      @default(user)
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
 
   activityLogs     ActivityLog[]
   reviews          Review[]
   readingLists     ReadingList[]
   readingPositions ReadingPosition[]
+  passwordResets   PasswordReset[]
 
   @@map("users")
 }
@@ -154,11 +168,11 @@ model ReadingPosition {
 }
 
 model BookInteraction {
-  id        Int              @id @default(autoincrement())
+  id        Int             @id @default(autoincrement())
   bookId    Int
   type      InteractionType
-  sessionId String?          @db.VarChar(64)
-  createdAt DateTime         @default(now())
+  sessionId String?         @db.VarChar(64)
+  createdAt DateTime        @default(now())
 
   book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
 
