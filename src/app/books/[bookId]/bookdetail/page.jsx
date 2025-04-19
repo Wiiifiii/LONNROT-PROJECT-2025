@@ -1,22 +1,20 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Navbar from "../../../components/Navbar";
-import Card from "../../../components/Card";
 import Button from "../../../components/Button";
-
-import {
-  FaEye,
-  FaDownload,
-  FaBookmark,
-} from "react-icons/fa";
+import BookCardCompact from "../../../components/BooksCardCompact";
+import { SiMagic } from "react-icons/si";
+import { FaEye, FaDownload, FaBookmark } from "react-icons/fa";
 import { BsFillSendPlusFill } from "react-icons/bs";
-import StarRating          from '../../../components/StarRating'
-import ReadingListSelector from '../../../components/ReadingListSelector'
+import { GiMagicGate } from "react-icons/gi";
+import StarRating from "../../../components/StarRating";
+import ReadingListSelector from "../../../components/ReadingListSelector";
 
 export default function BookDetailsPage() {
   const { bookId } = useParams();
+  const router = useRouter();
   const [bookData, setBookData] = useState(null);
   const [stats, setStats] = useState(null);
   const [otherStats, setOtherStats] = useState({});
@@ -142,10 +140,14 @@ export default function BookDetailsPage() {
   const coverImage = book.cover_url || "/images/lonnrotkey.jpg";
 
   return (
-
-    <div className="bg-gray-900 min-h-screen text-white">
+    // Outer wrapper with the background image applied only here.
+    <div
+      className="min-h-screen text-white bg-cover bg-no-repeat bg-center"
+      style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+    >
       <Navbar />
-      <div className="container mx-auto pt-24 px-4">
+      {/* Container without any padding except top padding for the navbar */}
+      <div className="container mx-auto bg-transparent pt-24">
         <div className="flex flex-col md:flex-row gap-8">
           {/* -------- left column -------- */}
           <div className="md:w-1/2">
@@ -164,16 +166,13 @@ export default function BookDetailsPage() {
                 icon={FaEye}
                 text="Open the Saga"
                 tooltip="Open reader"
-                onClick={() =>
-                  (window.location.href = `/books/${book.id}/read`)
-                }
+                onClick={() => router.push(`/books/${book.id}/read`)}
                 className="flex-1 justify-center"
               />
               <Button
                 icon={FaDownload}
                 text="Take the Sampo TXT"
                 tooltip="Download original txt"
-                className="flex-1 justify-center"
                 onClick={() => {
                   window.open(
                     `/api/books/${book.id}/download?format=txt`,
@@ -182,6 +181,7 @@ export default function BookDetailsPage() {
                   );
                   handleDownloadClick();
                 }}
+                className="flex-1 justify-center"
               />
               <Button
                 icon={FaDownload}
@@ -191,8 +191,6 @@ export default function BookDetailsPage() {
                     ? "Download generated PDF"
                     : "PDF not available yet"
                 }
-                className={`flex-1 justify-center ${book.pdf_url ? "" : "opacity-50 cursor-not-allowed"
-                  }`}
                 onClick={(e) => {
                   if (!book.pdf_url) {
                     e.preventDefault();
@@ -205,12 +203,21 @@ export default function BookDetailsPage() {
                   );
                   handleDownloadClick();
                 }}
+                className={`flex-1 justify-center ${
+                  book.pdf_url ? "" : "opacity-50 cursor-not-allowed"
+                }`}
               />
               <Button
-                icon={FaBookmark}
-                text="Add to List"
+                icon={SiMagic}
+                text="Add to Saga Lists"
                 tooltip="Add to your reading list"
                 onClick={handleAddToReadingList}
+                className="flex-1 justify-center"
+              />
+              <Button
+                icon={GiMagicGate}
+                text="To Saga Haven"
+                onClick={() => router.push("/books")}
                 className="flex-1 justify-center"
               />
             </div>
@@ -265,15 +272,14 @@ export default function BookDetailsPage() {
             )}
 
             {/* add review */}
-            <h3 className="text-xl font-medium mt-6">Sing Your Verse</h3>
+            <h3 className="text-xl font-medium mt-6">
+              Sing Your Verse
+            </h3>
             <StarRating
               rating={reviewRating}
               onChange={setReviewRating}
             />
-            <form
-              onSubmit={handleSubmitReview}
-              className="mt-2"
-            >
+            <form onSubmit={handleSubmitReview} className="mt-2">
               <textarea
                 value={reviewComment}
                 onChange={(e) =>
@@ -300,12 +306,12 @@ export default function BookDetailsPage() {
         {/* other books */}
         <div className="mt-8">
           <h2 className="text-2xl font-semibold mb-4">
-            More by the Bard {book.author}
+            More by the Bard:  {book.author}
           </h2>
           {otherBooks?.length ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {otherBooks.map((other) => (
-                <Card
+                <BookCardCompact
                   key={other.id}
                   book={other}
                   stats={otherStats[other.id]}
