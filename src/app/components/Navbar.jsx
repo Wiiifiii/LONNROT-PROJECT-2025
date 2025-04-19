@@ -4,14 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { Menu } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
-import { AiFillHome } from "react-icons/ai";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
-import { SiBackendless, SiCodeproject, SiAboutdotme } from "react-icons/si";
-import { PiBooksDuotone } from "react-icons/pi";
-import { BsFiletypeDoc } from "react-icons/bs";
-import { ImList2 } from "react-icons/im";
+import { SiCodeproject } from "react-icons/si";
 import { useSession, signOut } from "next-auth/react";
 import MenuOverlay from "./MenuOverlay";
+import { GiHeartburn } from "react-icons/gi";
+import { GiMagicGate } from "react-icons/gi";
+import { SiMagic } from "react-icons/si";
+import { GiMagickTrick } from "react-icons/gi";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,10 +19,10 @@ export default function Navbar() {
   const user = session?.user;
 
   const navLinks = [
-    { href: "/", title: "Kalevala’s Hearth", Icon: AiFillHome },
-    { href: "/books", title: "Saga Haven", Icon: PiBooksDuotone },
-    { href: "/my-reading-lists", title: "My Saga Lists", Icon: ImList2 },
-    { href: "/about", title: "Kantele’s Guide", Icon: SiAboutdotme },
+    { href: "/", title: "Kalevala’s Hearth", Icon: GiHeartburn },
+    { href: "/books", title: "Saga Haven", Icon: GiMagicGate  },
+    { href: "/my-reading-lists", title: "My Saga Lists", Icon: SiMagic  },
+    { href: "/about", title: "Kantele’s Guide", Icon: GiMagickTrick  },
   ];
 
   const mobileLinks = [
