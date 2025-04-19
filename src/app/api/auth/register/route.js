@@ -7,7 +7,8 @@ const prisma = new PrismaClient();
 
 export async function POST(req) {
   try {
-    const { username, email, password, confirmPassword } = await req.json();
+    const body = await req.json();
+    const { username, email, password, confirmPassword } = body;
     if (!username || !email || !password || !confirmPassword) {
       return new Response(JSON.stringify({ error: "All fields are required" }), { status: 400 });
     }
@@ -18,19 +19,24 @@ export async function POST(req) {
     if (existingUser) {
       return new Response(JSON.stringify({ error: "Email is already registered" }), { status: 400 });
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await prisma.user.create({
+    const hash = await bcrypt.hash(password, 10);
+    const created = await prisma.user.create({
       data: {
-        username,
-        email,
-        password_hash: hashedPassword,
-        role: "user",
+        username: body.username,
+        email: body.email,
+        password_hash: hash,
+        dateOfBirth: new Date(body.dateOfBirth),
+        gender: body.gender,       // <-- added gender
+        displayName: body.displayName,
+        bio: body.bio,
+        socialMediaLinks: body.socialMediaLinks,
+        // … add any additional fields as needed
       },
     });
     return new Response(
       JSON.stringify({
         message: "User registered successfully",
-        user: { id: newUser.id, email: newUser.email },
+        user: { id: created.id, email: created.email },
       }),
       { status: 201 }
     );

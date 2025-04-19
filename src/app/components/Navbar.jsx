@@ -6,27 +6,34 @@ import { Menu } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { SiCodeproject } from "react-icons/si";
-import { useSession, signOut } from "next-auth/react";
-import MenuOverlay from "./MenuOverlay";
 import { GiHeartburn } from "react-icons/gi";
 import { GiMagicGate } from "react-icons/gi";
 import { SiMagic } from "react-icons/si";
 import { GiMagickTrick } from "react-icons/gi";
+import { AiFillHome, AiOutlineDashboard } from "react-icons/ai";
+import { PiBooksDuotone } from "react-icons/pi";
+import MenuOverlay from "./MenuOverlay";
+import { useSession, signOut } from "next-auth/react";
+
+const navLinks = [
+  { href: "/admin", title: "Dashboard", Icon: AiOutlineDashboard },
+  { href: "/", title: "Home", Icon: AiFillHome },
+  { href: "/books", title: "Bookshelf", Icon: GiMagicGate },
+  { href: "/my-reading-lists", title: "My Saga Lists", Icon: SiMagic },
+  { href: "/about", title: "Kantele’s Guide", Icon: GiMagickTrick },
+];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
   const user = session?.user;
 
-  const navLinks = [
-    { href: "/", title: "Kalevala’s Hearth", Icon: GiHeartburn },
-    { href: "/books", title: "Saga Haven", Icon: GiMagicGate  },
-    { href: "/my-reading-lists", title: "My Saga Lists", Icon: SiMagic  },
-    { href: "/about", title: "Kantele’s Guide", Icon: GiMagickTrick  },
-  ];
-
   const mobileLinks = [
-    ...navLinks,
+    { href: "/admin", title: "Dashboard", Icon: AiOutlineDashboard },
+    { href: "/", title: "Home", Icon: AiFillHome },
+    { href: "/books", title: "Bookshelf", Icon: PiBooksDuotone },
+    { href: "/my-reading-lists", title: "My Saga Lists", Icon: SiMagic },
+    { href: "/about", title: "Kantele’s Guide", Icon: GiMagickTrick },
     !user
       ? { href: "/auth/login", title: "Login", Icon: FiLogIn }
       : { href: "#", title: "Logout", Icon: FiLogOut, action: () => signOut() },
@@ -49,7 +56,10 @@ export default function Navbar() {
           <ul className="hidden md:flex items-center gap-4">
             {navLinks.map(({ href, title, Icon }, i) => (
               <li key={i}>
-                <Link href={href} className="flex items-center text-slate-200 hover:text-blue-400 gap-1">
+                <Link
+                  href={href}
+                  className="flex items-center text-slate-200 hover:text-blue-400 gap-1"
+                >
                   <Icon />
                   <span>{title}</span>
                 </Link>
@@ -60,7 +70,10 @@ export default function Navbar() {
           {/* Right side (avatar or login) */}
           <div className="hidden md:flex items-center gap-4">
             {!user ? (
-              <Link href="/auth/login" className="flex items-center text-slate-200 hover:text-blue-400 gap-1">
+              <Link
+                href="/auth/login"
+                className="flex items-center text-slate-200 hover:text-blue-400 gap-1"
+              >
                 <FiLogIn />
                 <span>Login</span>
               </Link>
@@ -84,7 +97,9 @@ export default function Navbar() {
                     {({ active }) => (
                       <Link
                         href="/profile"
-                        className={`block px-4 py-2 text-sm ${active ? "bg-gray-700" : ""}`}
+                        className={`block px-4 py-2 text-sm ${
+                          active ? "bg-gray-700" : ""
+                        }`}
                       >
                         Profile
                       </Link>
@@ -94,7 +109,9 @@ export default function Navbar() {
                     {({ active }) => (
                       <Link
                         href="/settings"
-                        className={`block px-4 py-2 text-sm ${active ? "bg-gray-700" : ""}`}
+                        className={`block px-4 py-2 text-sm ${
+                          active ? "bg-gray-700" : ""
+                        }`}
                       >
                         Settings
                       </Link>
@@ -104,7 +121,9 @@ export default function Navbar() {
                     {({ active }) => (
                       <button
                         onClick={() => signOut({ callbackUrl: "/" })}
-                        className={`w-full text-left px-4 py-2 text-sm ${active ? "bg-gray-700" : ""}`}
+                        className={`w-full text-left px-4 py-2 text-sm ${
+                          active ? "bg-gray-700" : ""
+                        }`}
                       >
                         Logout
                       </button>
@@ -121,7 +140,11 @@ export default function Navbar() {
               onClick={() => setIsOpen((v) => !v)}
               className="text-slate-200 p-2 border rounded border-slate-200 hover:text-blue-400 hover:border-blue-400"
             >
-              {isOpen ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
+              {isOpen ? (
+                <XMarkIcon className="h-5 w-5" />
+              ) : (
+                <Bars3Icon className="h-5 w-5" />
+              )}
             </button>
           </div>
         </div>

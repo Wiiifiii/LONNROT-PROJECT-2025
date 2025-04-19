@@ -1,95 +1,134 @@
-"use client";
-export const dynamic = "force-dynamic";
-
-import React from "react";
+'use client';
+import React, { useState, useEffect } from 'react';
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Navbar from "@/app/components/Navbar";
-import { FaBook, FaUsers, FaCommentAlt } from "react-icons/fa";
-import { AiOutlineDashboard } from "react-icons/ai";
+import BackgroundWrapper from "@/app/components/BackgroundWrapper";
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  LineChart,
+  Line,
+} from 'recharts';
+
+// Simple card component
+function StatCard({ title, value }) {
+  return (
+    <div className="bg-gray-800 p-4 rounded-lg shadow">
+      <h3 className="text-sm text-gray-400">{title}</h3>
+      <p className="text-2xl font-bold text-white">{value}</p>
+    </div>
+  );
+}
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
+  const [users, setUsers] = useState(null);
+  const [books, setBooks] = useState(null);
+  const [interactions, setInteractions] = useState(null);
 
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex justify-center items-center bg-gray-900">
-        <p className="text-white text-xl">Loading...</p>
-      </div>
-    );
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/admin/metrics/users').then(r => r.json()),
+      fetch('/api/admin/metrics/books').then(r => r.json()),
+      fetch('/api/admin/metrics/interactions').then(r => r.json()),
+    ])
+      .then(([u, b, i]) => {
+        setUsers(u);
+        setBooks(b);
+        setInteractions(i);
+      })
+      .catch(console.error);
+  }, []);
+
+  if (!users || !books || !interactions) {
+    return <p className="text-white p-8">Loading dashboard…</p>;
   }
 
-  if (!session) {
-    return (
-      <div className="min-h-screen flex justify-center items-center bg-gray-900">
-        <div className="max-w-md w-full bg-gray-800 text-white p-8 rounded-lg shadow-lg text-center">
-          <h2 className="text-3xl font-semibold mb-6">
-            Please log in to access the admin dashboard.
-          </h2>
-          <Link
-            href="/auth/login"
-            className="w-full inline-block p-3 bg-[#374151] hover:bg-[#111827] rounded-full transition text-white font-semibold text-sm"
-          >
-            Go to Login
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (session.user.role !== "admin") {
-    return (
-      <div className="min-h-screen flex justify-center items-center bg-gray-900">
-        <p className="text-red-500 text-2xl text-center">
-          403 Forbidden: Admins only
-        </p>
-      </div>
-    );
-  }
+  const genderData = Object.entries(users.byGender).map(([name, value]) => ({ name, value }));
+  const ageData = Object.entries(users.byAge).map(([bucket, count]) => ({ bucket, count }));
+  const { readsLast10Days, downloadsLast10Days } = interactions;
+  const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042'];
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen px-4 py-8">
-      <div className="relative z-10 container mt-20 mx-auto px-12">
-        <Navbar />
-      </div>
-      <div className="bg-gray-800 p-6 rounded-lg shadow-md mt-8">
-        <h1 className="flex justify-center items-center space-x-2 text-4xl font-extrabold text-white mb-6">
-          <AiOutlineDashboard size={28} />
-          <span>Admin Dashboard</span>
-        </h1>
-        <p className="text-center text-lg text-gray-300 mb-8">
-          Welcome, <span className="font-semibold">{session.user.email}</span> (Role: {session.user.role})
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          <div className="bg-[#1f2937] p-4 rounded-full shadow-lg hover:bg-[#111827] transition-all">
-            <Link
-              href="/admin/books"
-              className="block text-xl text-white font-semibold text-center inline-flex items-center justify-center space-x-2 text-sm"
-            >
-              <FaBook size={20} />
-              <span>Manage Books</span>
-            </Link>
+    <BackgroundWrapper>
+      <Navbar />
+      <div className="pt-20 px-4 py-8 space-y-8">
+        <div className="bg-gray-800 text-white p-6 rounded-lg shadow-md space-y-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <StatCard title="Total Users" value={users.totalUsers} />
+            <StatCard title="Total Books" value={books.totalBooks} />
+            <StatCard title="Total Reads" value={interactions.totalReads} />
+            <StatCard title="Total Downloads" value={interactions.totalDownloads} />
           </div>
-          <div className="bg-[#1f2937] p-4 rounded-full shadow-lg hover:bg-[#111827] transition-all">
-            <Link
-              href="/admin/users"
-              className="block text-xl text-white font-semibold text-center inline-flex items-center justify-center space-x-2 text-sm"
-            >
-              <FaUsers size={20} />
-              <span>Manage Users</span>
-            </Link>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {/* Gender Pie */}
+          <div className="bg-gray-800 p-4 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">Users by Gender</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie data={genderData} dataKey="value" nameKey="name" outerRadius={80} label>
+                  {genderData.map((_, idx) => (
+                    <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
-          <div className="bg-[#1f2937] p-4 rounded-full shadow-lg hover:bg-[#111827] transition-all">
-            <Link
-              href="/admin/Reviews"
-              className="block text-xl text-white font-semibold text-center inline-flex items-center justify-center space-x-2 text-sm"
-            >
-              <FaCommentAlt size={20} />
-              <span>Manage Reviews</span>
-            </Link>
+
+          {/* Age Bar */}
+          <div className="bg-gray-800 p-4 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">Users by Age Group</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={ageData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="bucket" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="count" fill="#82ca9d" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Reads Line */}
+          <div className="bg-gray-800 p-4 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">Reads (Last 10 Days)</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={readsLast10Days}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="count" stroke="#8884d8" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Downloads Line */}
+          <div className="bg-gray-800 p-4 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">Downloads (Last 10 Days)</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={downloadsLast10Days}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="count" stroke="#ffc658" />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
-    </div>
+    </BackgroundWrapper>
   );
 }

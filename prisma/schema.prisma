@@ -46,6 +46,13 @@ model Book {
   @@map("books")
 }
 
+// Enum for gender selection
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
 // Users Model
 model User {
   id               Int      @id @default(autoincrement())
@@ -54,6 +61,7 @@ model User {
   email            String    @unique
   password_hash    String?
   dateOfBirth      DateTime? // Actual birthdate
+  gender           Gender?   // Added user’s gender
   profileImage     Bytes?    // Stored as binary
   settings         Json?    // store notifications, etc.
   bio              String?
