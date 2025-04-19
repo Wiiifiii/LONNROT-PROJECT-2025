@@ -3,15 +3,21 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Button from "@/app/components/Button"; // Adjust if your path differs
+import Button from "@/app/components/Button";
+import Notification from "@/app/components/Notification";
 import { SiCodeproject } from "react-icons/si";
-import { FiArrowRight, FiArrowLeft, FiX } from "react-icons/fi"; // Added FiArrowLeft
+import { FiArrowRight, FiArrowLeft, FiX } from "react-icons/fi";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [notify, setNotify] = useState({
+    show: false,
+    type: "success",
+    message: "",
+  });
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -27,13 +33,11 @@ export default function RegisterPage() {
 
   const update = (field) => (e) =>
     setFormData((f) => ({ ...f, [field]: e.target.value }));
-
   const updateSocial = (platform) => (e) =>
     setFormData((f) => ({
       ...f,
       socialMediaLinks: { ...f.socialMediaLinks, [platform]: e.target.value },
     }));
-
   const handleFile = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -45,15 +49,12 @@ export default function RegisterPage() {
 
   const canProceedUsername = formData.username.trim().length >= 3;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordPolicy = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/; // minimum 8 characters now
+  const passwordPolicy = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
   const passwordsMatch = formData.password === formData.confirmPassword;
-
-  // Updated validation: password must match new policy
   const canProceedEmail =
     emailRegex.test(formData.email) &&
     passwordPolicy.test(formData.password) &&
     passwordsMatch;
-
   const dob = formData.dateOfBirth ? new Date(formData.dateOfBirth) : null;
   const today = new Date();
   const canProceedDOB = dob instanceof Date && dob < today;
@@ -67,7 +68,6 @@ export default function RegisterPage() {
     else if (step === 4 && canProceedGender) setStep(5);
     else if (step === 5 && canProceedProfile) setStep(6);
   };
-
   const handleBack = () => step > 1 && setStep((s) => s - 1);
 
   const handleSubmit = async () => {
@@ -81,7 +81,15 @@ export default function RegisterPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Registration failed");
-      router.push("/auth/login");
+
+      // 📣 Show welcome toast
+      setNotify({
+        show: true,
+        type: "success",
+        message: "Welcome to the Kalevala community! 🎉",
+      });
+      // Redirect after a short pause:
+      setTimeout(() => router.push("/auth/login"), 2000);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -90,11 +98,18 @@ export default function RegisterPage() {
   };
 
   return (
-    // Updated outer container with background image
     <div
       className="min-h-screen flex items-center justify-center p-6 bg-cover bg-center"
       style={{ backgroundImage: "url('/images/LogInPage.png')" }}
     >
+      {notify.show && (
+        <Notification
+          type={notify.type}
+          message={notify.message}
+          onClose={() => setNotify((n) => ({ ...n, show: false }))}
+        />
+      )}
+
       <div className="w-full max-w-md bg-gray-800 rounded-2xl shadow-lg p-8 space-y-6">
         <div className="flex items-center justify-center">
           <SiCodeproject className="text-blue-400 mr-2" size={28} />
@@ -148,6 +163,12 @@ export default function RegisterPage() {
               value={formData.password}
               onChange={update("password")}
             />
+            {!passwordPolicy.test(formData.password) && (
+              <p className="text-red-500 text-sm">
+                Password must be at least 8 characters, include an uppercase
+                letter, a number, and a special character.
+              </p>
+            )}
             <input
               type="password"
               placeholder="Confirm password"
