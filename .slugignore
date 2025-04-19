@@ -1,0 +1,21 @@
+# Prisma migrations & schema (you only need the generated client)
+prisma/migrations/
+prisma/schema.prisma
+
+# Docs, tests, etc
+docs/
+tests/
+*.md
+
+# Any static PDFs or design files you don’t serve
+public/**/*.pdf
+public/**/*.psd
+
+# (Optional) Yank entire heavy modules you’re not actually using in production:
+node_modules/pdfjs-dist/
+node_modules/pdfkit/
+node_modules/pdfmake/
+node_modules/@pdf-lib/fontkit/
+node_modules/react-pdf/
+node_modules/react-syntax-highlighter/
+node_modules/react-tooltip/
