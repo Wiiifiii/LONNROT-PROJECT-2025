@@ -2,9 +2,11 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import Card from '@/app/components/Card'          // <-- full Card component
 import { FiArrowRight } from 'react-icons/fi'
 import Button from '@/app/components/Button'
+import BookCardCompact from '@/app/components/BooksCardCompact';
+
+
 
 export default function SearchResults({ filters }) {
   const [books, setBooks]   = useState([])       // 1) books state
@@ -65,7 +67,8 @@ export default function SearchResults({ filters }) {
 
       <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         {books.map((b) => (
-          <Card key={b.id} book={b} />
+        <BookCardCompact key={b.id} book={b} />
+
         ))}
       </div>
     </section>
