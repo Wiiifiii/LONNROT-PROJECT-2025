@@ -48,7 +48,7 @@ model Book {
   @@map("books")
 }
 
-// Enum for gender selection
+// Enum for gender
 enum Gender {
   MALE
   FEMALE
@@ -80,7 +80,7 @@ model User {
   @@map("users")
 }
 
-// Activity Logs Model
+// ActivityLog
 model ActivityLog {
   id        Int      @id @default(autoincrement())
   userId    Int?
@@ -95,7 +95,7 @@ model ActivityLog {
   @@map("activity_logs")
 }
 
-// Book Reviews Model
+// Review
 model Review {
   id        Int      @id @default(autoincrement())
   bookId    Int
@@ -111,7 +111,7 @@ model Review {
   @@map("reviews")
 }
 
-// Reading Lists
+// ReadingList
 model ReadingList {
   id        Int      @id @default(autoincrement())
   name      String

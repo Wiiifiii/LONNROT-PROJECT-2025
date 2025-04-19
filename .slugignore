@@ -1,15 +1,15 @@
-# Keep your schema (only ignore migrations)
+# keep your schema; only ignore migrations
 prisma/migrations/
 
-# Documentation & tests
+# docs & tests
 docs/
 tests/
 
-# Static design files you don’t serve
+# any static design files you don't serve
 public/**/*.psd
 public/**/*.pdf
 
-# Prune heavy PDF/UI modules before slug packaging
+# prune heavy PDF/UI modules before slug packaging
 node_modules/pdfjs-dist/
 node_modules/pdfkit/
 node_modules/pdfmake/
