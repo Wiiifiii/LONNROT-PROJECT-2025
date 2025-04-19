@@ -9,10 +9,11 @@ async function main() {
   const passwordHash = await bcrypt.hash(plain, 10);
 
   const adminUser = await prisma.user.upsert({
-    where: { email: "admin@lonnrot.com" },  // changed to email, which is unique
+    where: { username: "admin" },       // ← use username as the unique key
     update: {
-      // in case the user already exists, just ensure they have admin role
+      // in case the user already exists, ensure they have admin role and sync email if needed
       role: "admin",
+      email: "admin@lonnrot.com",
     },
     create: {
       username: "admin",
