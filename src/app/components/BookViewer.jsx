@@ -11,7 +11,10 @@ import {
   FaListUl,
   FaInfoCircle,
 } from "react-icons/fa";
+import { IoPin } from "react-icons/io5";
 import { FiBookOpen } from "react-icons/fi";
+import { GiMagicGate } from "react-icons/gi";
+import { SiMagic } from "react-icons/si";
 
 export default function BookViewer({ bookId, pdfUrl, book }) {
   const router = useRouter();
@@ -50,11 +53,11 @@ export default function BookViewer({ bookId, pdfUrl, book }) {
         <Button icon={FaArrowLeft} text="Prev" onClick={goPrev} />
         <span>Page {pageNumber}</span>
         <Button icon={FaArrowRight} text="Next" onClick={goNext} />
-        <Button icon={FaBookmark} text="Mark" onClick={markPage} />
+        <Button icon={IoPin } text="Pin the Saga" onClick={markPage} />
         <Button
-          icon={FaListUl}
-          text="Saga Haven"
-          onClick={() => router.push("/bookshelf")}
+          icon={GiMagicGate}
+          text="To Saga Haven"
+          onClick={() => router.push("/books")}
         />
         <Button
           icon={FaInfoCircle}
@@ -62,8 +65,8 @@ export default function BookViewer({ bookId, pdfUrl, book }) {
           onClick={() => router.push(`/books/${bookId}/bookdetail`)}
         />
         <Button
-          icon={FaBookmark}
-          text="Add to List"
+          icon={SiMagic}
+          text="Add to Saga Lists"
           onClick={() => setShowListSelector((v) => !v)}
         />
       </div>
