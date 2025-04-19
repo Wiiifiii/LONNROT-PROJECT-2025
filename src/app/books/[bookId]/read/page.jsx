@@ -1,12 +1,12 @@
 // src/app/books/[bookId]/read/page.jsx
 import React from "react";
 import Navbar from "@/app/components/Navbar";
-import BookViewer from "@//app/components/BookViewer";
+import BookViewer from "@/app/components/BookViewer";
 
 export default async function ReaderPage({ params }) {
-  const { bookId } = await params;
+  // 👇 no more `await params`
+  const { bookId } = params;
 
-  // Fetch metadata only for display or other logic
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const res = await fetch(`${base}/api/books/${bookId}`, { cache: "no-store" });
   const json = await res.json();
@@ -20,16 +20,15 @@ export default async function ReaderPage({ params }) {
   }
 
   return (
-    <>
+    <div className="flex flex-col h-screen">
       <Navbar />
-      <div className="bg-gray-900 min-h-screen pt-16 p-4">
-
-        {/* Always hit our download endpoint—this will proxy or generate the PDF */}
+      <div className="flex-1 bg-gray-900 pt-16">
         <BookViewer
           pdfUrl={`/api/books/${bookId}/download?format=pdf`}
           bookId={bookId}
+          book={json.data}
         />
       </div>
-    </>
+    </div>
   );
 }
