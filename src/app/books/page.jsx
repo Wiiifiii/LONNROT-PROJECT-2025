@@ -12,10 +12,7 @@ export default function BooksPage() {
   })
 
   return (
-    <div
-      className="min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: "url('/images/LogInPage.png')" }}
-    >
+    <>
       <Navbar />
 
       <div
@@ -31,6 +28,6 @@ export default function BooksPage() {
 
         <SearchResults filters={applied} />
       </div>
-    </div>
+    </>
   )
 }
