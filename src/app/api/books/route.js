@@ -1,128 +1,112 @@
-/*  app/api/books/route.js
-    ─────────────────────────────────────────────────────────────────
-    Updates
-    • Filters now check for "Coming Soon" (placeholder) instead of "All".
-    • Pagination logic unchanged – you still fetch all books in pages.
-------------------------------------------------------------------- */
-
-import { PrismaClient } from "@prisma/client";
-import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
+// src/app/api/books/route.js
+import { NextResponse } from "next/server"
+import prisma from "@/lib/prisma"
+import { subDays } from "date-fns"
 
 export async function GET(request) {
   try {
-    const { searchParams } = new URL(request.url);
+    const url         = new URL(request.url)
+    const searchQuery = url.searchParams.get("searchQuery") || ""
+    const bookId      = url.searchParams.get("book")       || ""
+    const author      = url.searchParams.get("author")     || ""
+    const origId      = url.searchParams.get("origId")     || ""
+    const sortParam   = url.searchParams.get("sort")       || ""
+    const page        = parseInt(url.searchParams.get("page")  || "1", 10)
+    const limit       = parseInt(url.searchParams.get("limit") || "20", 10)
 
-    /* ---------- build WHERE object ---------- */
-    const where = {};
-
-    const genre       = searchParams.get("genre");
-    const year        = searchParams.get("year");
-    const language    = searchParams.get("language");
-    const author      = searchParams.get("author");
-    const downloadable = searchParams.get("Sampo’s Bounty");
-
-    if (genre && genre !== "Loom of Tomorrow")     where.genres = { has: genre };
-    if (year  && year  !== "Loom of Tomorrow")     where.publicationYear = Number(year);
-    if (language && language !== "Loom of Tomorrow") where.language = language;
-    if (author && author !== "All")           where.author = author;
-    if (downloadable === "true")              where.file_url = { not: null };
-
-    const searchQuery = searchParams.get("searchQuery");
-    if (searchQuery) {
-      where.OR = [
-        { title:  { contains: searchQuery, mode: "insensitive" } },
-        { author: { contains: searchQuery, mode: "insensitive" } },
-      ];
+    // If they asked for trending, do that special logic:
+    if (sortParam === "trending") {
+      const weekAgo = subDays(new Date(), 7)
+      const group = await prisma.bookInteraction.groupBy({
+        by: ["bookId"],
+        where: { createdAt: { gte: weekAgo } },
+        _count: { bookId: true },
+        orderBy: { _count: { bookId: "desc" } },
+        take: limit,
+      })
+      const ids = group.map(r => r.bookId)
+      const books = await prisma.book.findMany({
+        where: { id: { in: ids }, isDeleted: false },
+        select: { id: true, title: true, author: true, cover_url: true },
+      })
+      return NextResponse.json({
+        success: true,
+        data: { books, total: books.length, page: 1, limit },
+      })
     }
 
-    /* ---------- pagination only if page/limit present ---------- */
-    const page  = Number(searchParams.get("page"));
-    const limit = Number(searchParams.get("limit"));
+    // If they asked for Lönnrot’s works:
+    if (sortParam === "lonnrot") {
+      const books = await prisma.book.findMany({
+        where: {
+          isDeleted: false,
+          author: { contains: "Lönnrot", mode: "insensitive" },
+        },
+        orderBy: { upload_date: "desc" },
+        take: limit,
+        select: { id: true, title: true, author: true, cover_url: true },
+      })
+      return NextResponse.json({
+        success: true,
+        data: { books, total: books.length, page: 1, limit },
+      })
+    }
 
-    const usePagination = page > 0 && limit > 0;   // ✅ only paginate if both set
+    // Build filters for default search
+    const where = { isDeleted: false }
+    if (searchQuery) {
+      where.OR = [
+        { title: { contains: searchQuery, mode: "insensitive" } },
+        { author: { contains: searchQuery, mode: "insensitive" } },
+      ]
+    }
+    if (bookId)   where.id     = Number(bookId)
+    if (author)   where.author = author
+    if (origId)   where.origId = origId
 
+    // Determine ordering based on sortParam
+    let orderBy
+    switch (sortParam) {
+      case "downloads_desc":
+        orderBy = { bookInteractions: { _count: "desc" } }
+        break
+      case "upload_date_desc":
+        orderBy = { upload_date: "desc" }
+        break
+      default:
+        orderBy = { title: "asc" }
+    }
+
+    // Pagination
+    const skip = (page - 1) * limit
+    const take = limit
+
+    // Fetch count + page of books
     const [books, total] = await Promise.all([
       prisma.book.findMany({
         where,
-        ...(usePagination && { skip: (page - 1) * limit, take: limit }),
+        orderBy,
+        skip,
+        take,
+        select: {
+          id: true,
+          title: true,
+          author: true,
+          cover_url: true,
+        },
       }),
       prisma.book.count({ where }),
-    ]);
+    ])
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: {
-          books,
-          total,
-          ...(usePagination && {
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-          }),
-        },
-      },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      success: true,
+      data: { books, total, page, limit },
+    })
   } catch (err) {
-    console.error("GET /api/books error:", err);
+    console.error("GET /api/books error:", err)
     return NextResponse.json(
       { success: false, error: "Failed to fetch books" },
       { status: 500 }
-    );
-  }
-}
-
-export async function POST(req) {
-  try {
-    const body = await req.json();
-    if (!body.title || !body.author) {
-      return NextResponse.json(
-        { success: false, error: "Title and Author are required" },
-        { status: 400 }
-      );
-    }
-
-    /* Parse metadata if stringified */
-    let metadataParsed = {};
-    if (typeof body.metadata === "string" && body.metadata.trim() !== "") {
-      metadataParsed = JSON.parse(body.metadata);
-    } else if (typeof body.metadata === "object" && body.metadata !== null) {
-      metadataParsed = body.metadata;
-    }
-
-    const createdBook = await prisma.book.create({
-      data: {
-        title: body.title,
-        author: body.author,
-        description: body.description ?? "",
-        file_name: body.file_name ?? null,
-        file_url: body.file_url ?? null,
-        pdf_url: body.pdf_url ?? null,      // if you store generated PDFs
-        cover_url: body.cover_url ?? null,
-        genres:
-          Array.isArray(body.genres) && body.genres.length ? body.genres : [],
-        publicationYear: body.publicationYear
-          ? Number(body.publicationYear)
-          : null,
-        language: body.language ?? null,
-        metadata: metadataParsed,
-        isDeleted: body.isDeleted === true,
-        upload_date: new Date(),
-      },
-    });
-
-    return NextResponse.json(
-      { success: true, data: createdBook },
-      { status: 201 }
-    );
-  } catch (err) {
-    console.error("POST /api/books error:", err);
-    return NextResponse.json(
-      { success: false, error: "Failed to create book", details: err.message },
-      { status: 500 }
-    );
+    )
   }
 }
