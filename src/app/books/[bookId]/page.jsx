@@ -1,5 +1,4 @@
 // Summary: Server-rendered page that fetches book details by bookId and renders the BookDetail client component with fresh data.
-
 import React from "react";
 import BookDetail from "./bookdetail/page";
 
@@ -21,7 +20,16 @@ export default async function BookDetailPage({ params }) {
   }
 
   return (
-    <main style={{ padding: "1rem" }}>
+    <main
+      style={{
+        padding: "1rem",
+        minHeight: "100vh",
+        backgroundImage: "url('/images/LogInPage.png')",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+      }}
+    >
       <BookDetail bookData={data.data} />
     </main>
   );
