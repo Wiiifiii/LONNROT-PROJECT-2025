@@ -1,6 +1,8 @@
 // src/app/layout.jsx
 import { Providers } from "./providers";
-import "./styles/globals.css";
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import './styles/globals.css';
 
 export const metadata = {
   title: "Lonnrot Library",
