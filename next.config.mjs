@@ -1,12 +1,14 @@
+import { createRequire } from 'module';
 /** @type {import('next').NextConfig} */
+const require = createRequire(import.meta.url);
+
 const nextConfig = {
   webpack(config) {
     config.resolve.fallback = {
       ...(config.resolve.fallback || {}),
-      // Disable canvas polyfill
       canvas: false,
-      // Provide a fallback for 'inherits' used by unzipper/readable-stream
       inherits: require.resolve('inherits'),
+      'readable-stream': require.resolve('readable-stream'),
     };
     return config;
   },
