@@ -1,4 +1,3 @@
-// src/app/api/auth/[...nextauth]/authOptions.js
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
 import { compare } from "bcryptjs";
