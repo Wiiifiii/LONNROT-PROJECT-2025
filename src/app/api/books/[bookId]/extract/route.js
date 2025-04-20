@@ -6,6 +6,8 @@ import { PrismaClient } from "@prisma/client";
 import { PDFDocument } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import parseBook from "@/scripts/parseBook.js"; // Ensure the path is correct
+export const runtime = 'nodejs';
+
 
 const prisma = new PrismaClient();
 
