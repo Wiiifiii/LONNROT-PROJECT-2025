@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import Navbar from "@/app/components/Navbar";
 import BackgroundWrapper from "@/app/components/BackgroundWrapper";
 import {
