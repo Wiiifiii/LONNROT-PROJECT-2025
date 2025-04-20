@@ -4,6 +4,8 @@ import * as cheerio from 'cheerio';
 import axios from 'axios';
 import { PrismaClient } from '@prisma/client';
 
+import dotenv from 'dotenv';
+dotenv.config();  // Load environment variables from .env file
 const prisma = new PrismaClient();
 
 async function fetchBooks(url) {
