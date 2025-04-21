@@ -1,51 +1,68 @@
 // src/app/api/admin/metrics/interactions/route.js
-import { NextResponse } from "next/server"
-import prisma from "@/lib/prisma"
-import { subDays } from "date-fns"
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
-export async function GET() {
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
+import { subDays } from 'date-fns';
+import { getToken } from 'next-auth/jwt';  // Import NextAuth's getToken for session handling
+
+export async function GET(request) {
   try {
+    // Fetch the token to verify the user's authentication status
+    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+
+    // If the user is not authenticated or not an admin, return an error
+    if (!token || token.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized: Admins only' }, { status: 401 });
+    }
+
+    await prisma.$connect();
+
     // Totals
-    const totalReads     = await prisma.bookInteraction.count({ where: { type: "READ_START" } })
-    const totalDownloads= await prisma.bookInteraction.count({ where: { type: "DOWNLOAD" } })
+    const totalReads = await prisma.bookInteraction.count({ where: { type: 'READ_START' } });
+    const totalDownloads = await prisma.bookInteraction.count({ where: { type: 'DOWNLOAD' } });
 
     // Last 10 days trends
-    const today   = new Date()
-    const since   = subDays(today, 9) // inclusive of today = 10 days
-    const raw     = await prisma.bookInteraction.groupBy({
-      by: ["type", "createdAt"],
-      where: {
-        createdAt: { gte: since }
-      },
-      _count: { createdAt: true },
-    })
+    const today = new Date();
+    const since = subDays(today, 9); // include today = 10 days
 
-    // Normalize to per-day counts
-    const readsLast10 = {}
-    const dlLast10    = {}
+    const raw = await prisma.bookInteraction.groupBy({
+      by: ['type', 'createdAt'],
+      where: { createdAt: { gte: since } },
+      _count: { createdAt: true }
+    });
+
+    // Initialize per-day buckets
+    const readsMap = {}, downloadsMap = {};
     for (let i = 0; i < 10; i++) {
-      const d = subDays(today, i).toISOString().slice(0, 10)
-      readsLast10[d] = 0
-      dlLast10[d]    = 0
+      const day = subDays(today, i).toISOString().slice(0, 10);
+      readsMap[day] = 0;
+      downloadsMap[day] = 0;
     }
-    raw.forEach(r => {
-      const day = r.createdAt.toISOString().slice(0, 10)
-      if (r.type === "READ_START") readsLast10[day] = r._count.createdAt
-      if (r.type === "DOWNLOAD")  dlLast10[day]    = r._count.createdAt
-    })
 
-    // Convert objects to sorted arrays
-    const readsByDay    = Object.entries(readsLast10).sort(([a],[b])=>a.localeCompare(b)).map(([date, count])=>({ date, count }))
-    const downloadsByDay= Object.entries(dlLast10).sort(([a],[b])=>a.localeCompare(b)).map(([date, count])=>({ date, count }))
+    raw.forEach(r => {
+      const day = r.createdAt.toISOString().slice(0, 10);
+      if (r.type === 'READ_START') readsMap[day] = r._count.createdAt;
+      if (r.type === 'DOWNLOAD') downloadsMap[day] = r._count.createdAt;
+    });
+
+    const readsLast10Days = Object.entries(readsMap)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, count]) => ({ date, count }));
+
+    const downloadsLast10Days = Object.entries(downloadsMap)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, count]) => ({ date, count }));
 
     return NextResponse.json({
       totalReads,
       totalDownloads,
-      readsLast10Days: readsByDay,
-      downloadsLast10Days: downloadsByDay
-    })
+      readsLast10Days,
+      downloadsLast10Days
+    });
   } catch (err) {
-    console.error("GET /api/admin/metrics/interactions error:", err)
-    return NextResponse.json({ error: "Failed to load interaction metrics" }, { status: 500 })
+    console.error('GET /api/admin/metrics/interactions error:', err);
+    return NextResponse.json({ error: 'Failed to load interaction metrics' }, { status: 500 });
   }
 }
