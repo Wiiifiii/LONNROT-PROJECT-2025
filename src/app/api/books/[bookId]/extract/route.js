@@ -9,35 +9,39 @@ import { PrismaClient } from "@prisma/client";
 import { PDFDocument } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import parseBook from "@/scripts/parseBook.js";
-
-
+import { getToken } from "next-auth/jwt"; // Import NextAuth's getToken for session management
 
 const prisma = new PrismaClient();
 
 export async function GET(request, ctx) {
   const { bookId } = await ctx.params;
   const id = Number(bookId);
+
   try {
+    // Fetch user session to track interaction
+    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+    const sessionId = token ? `user_${token.id}` : request.cookies.get("lo_sid")?.value ?? "anon";
+
+    // Log the extraction interaction
+    await prisma.bookInteraction.create({
+      data: { bookId: id, sessionId, type: "EXTRACT" },
+    });
+
     // Download and process the book file from the ZIP.
     const { book: rawText } = await processBook(id);
-    // Use parseBook.js to extract metadata from the raw text.
-    // The updated parseBook now extracts additional fields such as genres and language.
-    const parsedBook = parseBook(rawText);
-    // Optionally generate the PDF using the raw text. Here we generate the PDF from the entire rawText.
-    const pdfBytes = await createPdfFromRawText(rawText);
+    const parsedBook = parseBook(rawText); // Extract metadata like genres and language
+    const pdfBytes = await createPdfFromRawText(rawText); // Generate PDF
     const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
 
-    // Attach the id to the parsed book data.
+    // Attach the book ID to parsed data
     parsedBook.id = id;
 
-    // Fetch other books by the same author (excluding this one).
+    // Fetch other books by the same author (excluding the current one)
     const otherBooks = await getOtherBooksByAuthor(parsedBook.metadata.author, id);
-    
-   
+
     return new Response(
       JSON.stringify({
         success: true,
-        // Return the entire parsed object (which now includes genres and language) 
         book: parsedBook,
         pdfBase64,
         otherBooks,
@@ -95,7 +99,6 @@ async function processBook(id) {
     fs.unlinkSync(zipPath);
   }
 
-  // ZIP file names are four-digit padded strings.
   const paddedId = id.toString().padStart(4, "0");
   const dlPath = `http://www.lonnrot.net/kirjat/${paddedId}.zip`;
 
