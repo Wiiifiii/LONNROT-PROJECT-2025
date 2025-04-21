@@ -10,6 +10,7 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+
 // Enum for roles
 enum Role {
   user
@@ -185,4 +186,5 @@ enum InteractionType {
   DOWNLOAD
   READ_START
   READ_FINISH
+  EXTRACT
 }
