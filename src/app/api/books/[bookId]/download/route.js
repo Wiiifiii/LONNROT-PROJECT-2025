@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getToken } from "next-auth/jwt";  // Import NextAuth's getToken for authentication
+import { InteractionType } from "@/lib/constants"; // Import the InteractionType constants
 
 const prisma = new PrismaClient();
 
@@ -28,7 +29,7 @@ export async function GET(request, context) {
 
   // Log the download interaction, whether the user is authenticated or not
   await prisma.bookInteraction.create({
-    data: { bookId: Number(bookId), sessionId, type: "DOWNLOAD" },
+    data: { bookId: Number(bookId), sessionId, type: InteractionType.DOWNLOAD }, // Use InteractionType constant
   });
 
   // Handle TXT format

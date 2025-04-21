@@ -1,10 +1,11 @@
 // src/app/api/books/[bookId]/reviews/route.js
-export const dynamic = 'force-dynamic'
-export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt"; // Use NextAuth's getToken for session management
 import { PrismaClient } from "@prisma/client";
+import { InteractionType } from "@/lib/constants";  // Import the InteractionType constant
 
 const prisma = new PrismaClient();
 
@@ -38,12 +39,12 @@ export async function POST(request, { params }) {
       },
     });
 
-    // Optionally, log the interaction (e.g., adding a review) for analytics
+    // Log the interaction (e.g., adding a review)
     await prisma.bookInteraction.create({
       data: {
         bookId: bookIdNum,
-        sessionId: token.user.id,
-        type: "REVIEW",
+        sessionId: token.user.id,  // Use user ID for the session
+        type: InteractionType.REVIEW,  // Use InteractionType constant
       },
     });
 

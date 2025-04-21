@@ -10,6 +10,7 @@ import { PDFDocument } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import parseBook from "@/scripts/parseBook.js";
 import { getToken } from "next-auth/jwt"; // Import NextAuth's getToken for session management
+import { InteractionType } from "@/lib/constants"; // Import InteractionType constants
 
 const prisma = new PrismaClient();
 
@@ -24,7 +25,7 @@ export async function GET(request, ctx) {
 
     // Log the extraction interaction
     await prisma.bookInteraction.create({
-      data: { bookId: id, sessionId, type: "EXTRACT" },
+      data: { bookId: id, sessionId, type: InteractionType.EXTRACT }, // Use InteractionType constant
     });
 
     // Download and process the book file from the ZIP.
