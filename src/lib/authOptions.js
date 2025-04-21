@@ -1,11 +1,14 @@
-import CredentialsProvider from "next-auth/providers/credentials"; // Correct import
+import NextAuth from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import prisma from "./prisma";  // Correct import style: default import
-import { compare } from "bcryptjs";
+import { PrismaClient } from "@prisma/client"; // Import PrismaClient
+import CredentialsProvider from "next-auth/providers/credentials"; // Credentials provider for login
+//import prisma from "./prisma";  // Prisma client import
+import { compare } from "bcryptjs";  // Password comparison
+// Create Prisma client instance
+const prisma = new PrismaClient();
 
-/** @type {import("next-auth").NextAuthOptions} */
 export const authOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma), // Use PrismaAdapter with PrismaClient
   providers: [
     CredentialsProvider({
       name: "Username & Password",
@@ -17,12 +20,19 @@ export const authOptions = {
         if (!credentials?.username || !credentials.password) {
           throw new Error("Missing credentials");
         }
+
+        // Fetch user from Prisma
         const user = await prisma.user.findUnique({
           where: { username: credentials.username },
         });
+
         if (!user) throw new Error("Invalid username or password");
+
+        // Check password using bcryptjs
         const isValid = await compare(credentials.password, user.password_hash);
+
         if (!isValid) throw new Error("Invalid username or password");
+
         return {
           id: user.id.toString(),
           name: user.username,
@@ -58,3 +68,5 @@ export const authOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
+
+export default (req, res) => NextAuth(req, res, authOptions);
