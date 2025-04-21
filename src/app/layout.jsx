@@ -1,5 +1,5 @@
 // src/app/layout.jsx
-import { Providers } from "./providers";
+import { Providers } from "./providers";  // Import Providers from providers.jsx
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import './styles/globals.css';
@@ -17,12 +17,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* make it responsive on mobile/ipad */}
+        {/* Meta tag to make it responsive on mobile/ipad */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className="min-h-screen flex flex-col bg-[url('/images/LogInPage.png')] bg-cover bg-center">
         <Providers>
-          {children}
+          {children} {/* Ensures that the Providers component wraps all children */}
         </Providers>
       </body>
     </html>
