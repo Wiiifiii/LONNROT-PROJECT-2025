@@ -1,25 +1,25 @@
 // src/app/api/users/me/settings/route.js
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import authOptions from "../../../auth/[...nextauth]/authOptions";
+import { getToken } from "next-auth/jwt";  // Import NextAuth's getToken for session management
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET() {
-  // 1) Authenticate
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "Not authenticated" },
-      { status: 401 }
-    );
+export async function GET(request) {
+  // Fetch the token to verify the user's authentication status
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+
+  // If the user is not authenticated, return an error
+  if (!token?.user?.id) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const userId = parseInt(session.user.id, 10);
+  const userId = parseInt(token.user.id, 10);
 
-  // 2) Fetch settings
+  // Fetch the user's settings
   let record;
   try {
     record = await prisma.user.findUnique({
@@ -34,26 +34,25 @@ export async function GET() {
     );
   }
 
-  // 3) Return settings or empty object
+  // Return settings or an empty object if no settings found
   return NextResponse.json(record?.settings || {});
 }
 
-export async function PUT(req) {
-  // 1) Authenticate
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "Not authenticated" },
-      { status: 401 }
-    );
+export async function PUT(request) {
+  // Fetch the token to verify the user's authentication status
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+
+  // If the user is not authenticated, return an error
+  if (!token?.user?.id) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const userId = parseInt(session.user.id, 10);
+  const userId = parseInt(token.user.id, 10);
 
-  // 2) Parse new settings
+  // Parse the new settings from the request body
   let newSettings;
   try {
-    newSettings = await req.json();
+    newSettings = await request.json();
   } catch {
     return NextResponse.json(
       { error: "Invalid JSON" },
@@ -61,7 +60,7 @@ export async function PUT(req) {
     );
   }
 
-  // 3) Update in database
+  // Update the user's settings in the database
   try {
     await prisma.user.update({
       where: { id: userId },
@@ -75,6 +74,6 @@ export async function PUT(req) {
     );
   }
 
-  // 4) Return success
+  // Return success response
   return NextResponse.json({ success: true });
 }
