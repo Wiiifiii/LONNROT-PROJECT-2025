@@ -12,7 +12,7 @@
 
   body {
     /* keep your login‑pattern bg */
-    @apply bg-login-pattern bg-cover bg-center bg-no-repeat;
+    @apply bg-login-pattern bg-cover bg-center bg-repeat;
     color: var(--foreground);
     font-family: Arial, Helvetica, sans-serif;
     display: flex;

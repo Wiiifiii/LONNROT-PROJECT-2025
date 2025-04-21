@@ -26,7 +26,7 @@ export default async function BookDetailPage({ params }) {
         minHeight: "100vh",
         backgroundImage: "url('/images/LogInPage.png')",
         backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
+        backgroundRepeat: "repeat",
         backgroundPosition: "center",
       }}
     >

@@ -73,7 +73,15 @@ export default function BooksPage() {
     <>
       <Navbar />
 
-      <div className="backdrop-brightness-50 min-h-screen px-6 py-8 space-y-8 pt-20">
+      <div
+        className="backdrop-brightness-50 min-h-screen px-6 py-8 space-y-8 pt-20"
+        style={{
+          backgroundImage: "url('/images/your-bg-image.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "repeat"
+        }}
+      >
         <Filters
           onApply={handleApply}
           onClear={handleClear}
@@ -92,5 +100,34 @@ export default function BooksPage() {
         />
       </div>
     </>
+  )
+}
+
+import { FaDownload } from 'react-icons/fa'
+
+export function BookViewer({ book, bumpDownload }) {
+  return (
+    <div>
+      <a
+        href={`/api/books/${book.id}/download?format=pdf`}
+        onClick={bumpDownload}
+        target="_blank"
+        rel="noopener"
+        className={`inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm ${book.pdf_url ? "" : ""}`}
+      >
+        <FaDownload /> PDF
+      </a>
+
+      <a
+        href={`/api/books/${book.id}/download?format=txt`}
+        onClick={bumpDownload}
+        download
+        target="_blank"
+        rel="noopener"
+        className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm"
+      >
+        <FaDownload /> TXT
+      </a>
+    </div>
   )
 }

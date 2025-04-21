@@ -4,10 +4,10 @@ import React from 'react';
 export default function BackgroundWrapper({ children }) {
   return (
     <div
-      className="min-h-screen text-white bg-cover bg-no-repeat bg-center"
+      className="min-h-screen text-white bg-repeat bg-center"
       style={{ backgroundImage: "url('/images/LogInPage.png')" }}
     >
-      {children}
+      <div className="h-full">{children}</div>
     </div>
   );
 }

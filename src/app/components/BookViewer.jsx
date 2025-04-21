@@ -22,6 +22,25 @@ export default function BookViewer({ bookId, pdfUrl, book }) {
           </div>
         )}
         {/* You can add your own buttons here if you like */}
+        <a
+          href={`/api/books/${book.id}/download?format=pdf`}
+          onClick={bumpDownload}
+          target="_blank"
+          rel="noopener"
+          className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm"
+        >
+          <FaDownload /> PDF
+        </a>
+        <a
+          href={`/api/books/${book.id}/download?format=txt`}
+          onClick={bumpDownload}
+          download
+          target="_blank"
+          rel="noopener"
+          className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm"
+        >
+          <FaDownload /> TXT
+        </a>
       </div>
 
       {/* — PDF Viewer with full UI — */}
