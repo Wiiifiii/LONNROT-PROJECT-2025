@@ -1,36 +1,52 @@
 // src/app/api/users/me/route.js
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import authOptions from "../../auth/[...nextauth]/authOptions";
+import { getToken } from "next-auth/jwt";  // Use NextAuth's getToken for session management
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function DELETE() {
-  // 1) Ensure the user is authenticated
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "Not authenticated" },
-      { status: 401 }
-    );
+// GET current user session
+export async function GET(request) {
+  // Fetch the token from NextAuth to verify the user's authentication status
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+
+  // If the user is not authenticated, return null
+  if (!token?.user?.id) {
+    return NextResponse.json({ user: null });
   }
 
-  // 2) Delete the user (cascades via your onDelete rules)
-  const userId = parseInt(session.user.id, 10);
+  const userId = parseInt(token.user.id, 10);
+
+  // Fetch user details from the database
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, username: true, email: true, profileImage: true, role: true },
+  });
+
+  return NextResponse.json({ user });
+}
+
+// DELETE current user account
+export async function DELETE(request) {
+  // Fetch the token from NextAuth to verify the user's authentication status
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+
+  // If the user is not authenticated, return an error
+  if (!token?.user?.id) {
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  }
+
+  const userId = parseInt(token.user.id, 10);
+
   try {
-    await prisma.user.delete({
-      where: { id: userId },
-    });
+    // Delete the user from the database
+    await prisma.user.delete({ where: { id: userId } });
+    return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("Error deleting user:", err);
-    return NextResponse.json(
-      { error: "Failed to delete account" },
-      { status: 500 }
-    );
+    console.error('Error deleting user:', err);
+    return NextResponse.json({ error: 'Failed to delete account' }, { status: 500 });
   }
-
-  // 3) Return success
-  return NextResponse.json({ success: true });
 }
