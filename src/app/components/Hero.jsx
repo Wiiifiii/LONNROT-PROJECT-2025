@@ -1,5 +1,3 @@
-// Summary: Hero component that displays a welcome section with promotional text, a navigation link, and an "Our Mission" section.
-
 "use client";
 import React from 'react';
 import Link from 'next/link';
@@ -15,24 +13,22 @@ const Home = () => {
                 <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 items-center">
                     <div className="text-white p-6">
                         <h1 className="text-4xl md:text-6xl font-extrabold mb-4">
-                            Welcome to Projekti Lönnrot
+                            Step into Kalevala’s Realm
                         </h1>
                         <p className="text-lg mb-4">
-                            Vapaita e-kirjoja kaikille – A free digital library dedicated to preserving and sharing public domain literature.
+                            Tales for All, Woven by Lönnrot’s Quill – A mythical library where ancient stories breathe anew.
                         </p>
                         <p className="mb-6">
-                            Project LÖNNROT – This school project digitizes Finnish and Swedish-language works that are in the public domain.
-                            Its goal is to preserve and make accessible old literature that is hard to find and at risk of disappearing.
+                            Projekti Lönnrot – A quest to summon Finnish and Swedish tales from the shadows, preserving their magic before they fade into the mists of time.
                         </p>
                         <p className="mb-6">
-                            Projekti Lönnrot is a free digital library dedicated to preserving and sharing literary works in the public domain.
-                            Our mission is to make Finnish and other literary heritage accessible to everyone.
+                            Here, Väinämöinen’s songs echo through the ages, offering Finnish lore to all who seek the Sampo’s wisdom.
                         </p>
                         <Link
-                          href="/about"
+                          href="/secrets"
                           className="inline-flex items-center px-6 py-3 bg-[#374151] hover:bg-[#111827] rounded-full transition duration-300 text-sm"
                         >
-                          Learn More <FiArrowRight className="ml-2" size={20} />
+                          Unveil the Runes <FiArrowRight className="ml-2" size={20} />
                         </Link>
                     </div>
                     <div className="p-6">
@@ -42,10 +38,9 @@ const Home = () => {
             </section>
             <section className="py-8 bg-gray-800 bg-opacity-75 text-white">
                 <div className="container mx-auto p-4">
-                    <h2 className="text-3xl font-semibold mb-4">Our Mission</h2>
+                    <h2 className="text-3xl font-semibold mb-4">Our Sacred Quest</h2>
                     <p>
-                        Our goal is to preserve old literary works by digitizing and making them available for everyone.
-                        Dive deeper into our project details by exploring the About, Deciomintaions, and API documentation pages.
+                        We weave old tales into eternity, summoning their runes for all to hear. Seek deeper lore in the Kantele’s Guide, Lönnrot’s Tale, and the Sampo’s Codex.
                     </p>
                 </div>
             </section>
