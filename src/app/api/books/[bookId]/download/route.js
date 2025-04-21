@@ -1,16 +1,15 @@
+// src/app/api/books/[bookId]/download/route.js
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-
-
+import { getToken } from "next-auth/jwt";  // Import NextAuth's getToken for authentication
 
 const prisma = new PrismaClient();
-
 
 export async function GET(request, context) {
   const { bookId } = await context.params;
   const format = request.nextUrl.searchParams.get("format");
 
-  // only support pdf|txt
+  // Only support pdf and txt formats
   if (format !== "pdf" && format !== "txt") {
     return NextResponse.json({ error: "Only pdf or txt are supported" }, { status: 400 });
   }
@@ -23,7 +22,16 @@ export async function GET(request, context) {
     return NextResponse.json({ error: "Book not found" }, { status: 404 });
   }
 
-  // TXT proxy remains unchanged
+  // Fetch the user's session
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  const sessionId = token ? `user_${token.id}` : request.cookies.get("lo_sid")?.value;
+
+  // Log the download interaction, whether the user is authenticated or not
+  await prisma.bookInteraction.create({
+    data: { bookId: Number(bookId), sessionId, type: "DOWNLOAD" },
+  });
+
+  // Handle TXT format
   if (format === "txt") {
     if (!book.file_url) {
       return NextResponse.json({ error: "TXT not available" }, { status: 404 });
@@ -36,9 +44,8 @@ export async function GET(request, context) {
     });
   }
 
-  // PDF branch
+  // Handle PDF format
   if (book.pdf_url) {
-    // proxy pre‑generated PDF
     const upstream = await fetch(book.pdf_url);
     const pdf = await upstream.arrayBuffer();
     return new NextResponse(Buffer.from(pdf), {
@@ -47,7 +54,7 @@ export async function GET(request, context) {
     });
   }
 
-  // === NO pdf_url: call your existing extract endpoint ===
+  // If no PDF URL is available, use the extract endpoint
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const extractRes = await fetch(`${base}/api/books/${bookId}/extract`);
   if (!extractRes.ok) {
@@ -58,7 +65,7 @@ export async function GET(request, context) {
     return NextResponse.json({ error: extractJson.error }, { status: 500 });
   }
 
-  // `extractJson.pdfBase64` is the base64‐encoded PDF you already create
+  // Return the base64-encoded PDF if extraction was successful
   const pdfBytes = Buffer.from(extractJson.pdfBase64, "base64");
   return new NextResponse(pdfBytes, {
     status: 200,
