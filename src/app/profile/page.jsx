@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";  // Correct import for useSession
 import { useRouter } from "next/navigation";
 import Navbar from "@/app/components/Navbar";
 import StatsCard from "@/app/components/StatsCard";
