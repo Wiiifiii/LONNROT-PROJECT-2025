@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  const plain = "admin"; // your chosen admin password
+  const plain = "amdinPassword123!"; // your chosen admin password
   const passwordHash = await bcrypt.hash(plain, 10);
 
   const adminUser = await prisma.user.upsert({

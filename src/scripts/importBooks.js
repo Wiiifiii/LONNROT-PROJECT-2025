@@ -1,11 +1,10 @@
 // Summary: This file fetches an HTML page to extract book information and upserts the data into the database using Prisma.
 
+import 'dotenv/config';
 import * as cheerio from 'cheerio';
 import axios from 'axios';
 import { PrismaClient } from '@prisma/client';
 
-import dotenv from 'dotenv';
-dotenv.config();  // Load environment variables from .env file
 const prisma = new PrismaClient();
 
 async function fetchBooks(url) {
@@ -46,6 +45,11 @@ function extractFileName(url) {
   return parts.length > 0 ? parts[parts.length - 1] : null;
 }
 
+async function getHighestBookId() {
+  const highest = await prisma.book.findFirst({ orderBy: { id: 'desc' } });
+  return highest?.id ?? 0;
+}
+
 async function upsertBooks(books) {
   let newBooksCount = 0;
   for (const item of books) {
@@ -67,22 +71,12 @@ async function upsertBooks(books) {
       metadata: {},
     };
     try {
-      const upsertedBook = await prisma.book.upsert({
+      await prisma.book.upsert({
         where: { id: numericId },
-        update: {
-          title: transformedBook.title,
-          author: transformedBook.author,
-          description: transformedBook.description,
-          file_name: transformedBook.file_name,
-          file_url: transformedBook.file_url,
-          upload_date: transformedBook.upload_date,
-          metadata: transformedBook.metadata,
-        },
-        create: {
-          ...transformedBook,
-        },
+        update: transformedBook,
+        create: transformedBook,
       });
-      console.log(`Upserted book: "${upsertedBook.title}" with ID = ${upsertedBook.id}`);
+      console.log(`Upserted book: "${transformedBook.title}" with ID = ${transformedBook.id}`);
     } catch (error) {
       console.error(`Error upserting book "${item.kirjannimi}" with ID = ${numericId}:`, error);
     }
@@ -90,14 +84,8 @@ async function upsertBooks(books) {
   return newBooksCount;
 }
 
-async function getHighestBookId() {
-  const highestBook = await prisma.book.findFirst({
-    orderBy: { id: 'desc' },
-  });
-  return highestBook ? highestBook.id : 0;
-}
-
 export async function main() {
+  await prisma.$connect();
   const url = 'http://www.lonnrot.net/valmiit.html';
   console.log(`Fetching books from ${url}...`);
   const highestId = await getHighestBookId();
@@ -108,6 +96,7 @@ export async function main() {
   console.log(`Processing ${newBooks.length} new books only.`);
   if (newBooks.length === 0) {
     console.log("No new books to import.");
+    await prisma.$disconnect();
     return;
   }
   console.log('Upserting books into the database...');
@@ -116,10 +105,9 @@ export async function main() {
   await prisma.$disconnect();
 }
 
-if (process.argv[1] === new URL(import.meta.url).pathname) {
-  main().catch((error) => {
-    console.error(error);
-    prisma.$disconnect();
-    process.exit(1);
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((e) => {
+    console.error(e);
+    return prisma.$disconnect().then(() => process.exit(1));
   });
 }
