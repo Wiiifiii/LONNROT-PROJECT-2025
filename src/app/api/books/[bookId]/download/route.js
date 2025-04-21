@@ -24,7 +24,7 @@ export async function GET(request, context) {
 
   // Fetch the user's session
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-  const sessionId = token ? `user_${token.id}` : request.cookies.get("lo_sid")?.value;
+  const sessionId = token ? `user_${token.id}` : request.cookies.get("lo_sid")?.value ?? "anon";
 
   // Log the download interaction, whether the user is authenticated or not
   await prisma.bookInteraction.create({
