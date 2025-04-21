@@ -4,8 +4,7 @@ import Navbar from "@/app/components/Navbar";
 import BookViewer from "@/app/components/BookViewer";
 
 export default async function ReaderPage({ params }) {
-  // 👇 no more `await params`
-  const { bookId } = params;
+  const { bookId } = await params; // Ensure this is awaited
 
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const res = await fetch(`${base}/api/books/${bookId}`, { cache: "no-store" });

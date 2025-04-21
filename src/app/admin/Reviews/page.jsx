@@ -1,3 +1,4 @@
+// src/app/admin/reviews/page.jsx
 "use client";
 export const dynamic = "force-dynamic";
 
@@ -11,7 +12,6 @@ export default function AdminReviews() {
   return (
     <div className="bg-gray-900 text-white min-h-screen">
       <Navbar />
-      <div className="container mx-auto px-4 py-8"></div>
       <div className="flex flex-col items-center justify-center py-20">
         <AiOutlineClockCircle size={100} className="text-gray-500 mb-4" />
         <h1 className="text-5xl font-bold mb-4">Coming Soon</h1>
@@ -20,7 +20,7 @@ export default function AdminReviews() {
         </p>
         <Link
           href="/admin"
-          className="mt-4 flex items-center bg-[#1f2937] hover:bg-[#111827] text-white py-2 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          className="mt-4 inline-flex items-center bg-[#1f2937] hover:bg-[#111827] text-white py-2 px-6 rounded-full"
         >
           <FaFastBackward className="mr-2" size={18} />
           Back to Admin Dashboard
