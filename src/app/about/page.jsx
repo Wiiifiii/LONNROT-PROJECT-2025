@@ -21,9 +21,12 @@ export default function AboutPage() {
   const [active, setActive] = useState(TABS[0]);
 
   return (
-    <div className="min-h-screen bg-cover bg-center flex flex-col" style={{ backgroundImage: "url('/images/LogInPage.png')" }}>
+      <div
+          className="min-h-screen bg-cover bg-center flex flex-col pt-16" 
+     style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+  >
       <Navbar />
-      <div className="flex flex-grow items-center justify-center">
+      <div className="flex flex-grow items-start justify-center mt-4">
         <div className="max-w-5xl w-full flex">
           {/* tab list */}
           <ul className="w-1/4 bg-gray-800 rounded-l-lg overflow-hidden">
