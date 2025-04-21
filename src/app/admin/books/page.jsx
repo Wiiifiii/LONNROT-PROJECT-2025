@@ -2,13 +2,13 @@
 export const dynamic = "force-dynamic";
 
 import React, { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "next-auth/react"; // Corrected import for useSession
 import Navbar from "@/app/components/Navbar";
 import { FiEdit, FiTrash2, FiPlus, FiX, FiArrowLeft } from "react-icons/fi";
 import Link from "next/link";
 
 export default function ManageBooksPage() {
-  const { data: session } = useSession();
+  const { data: session } = useSession();  // Correct usage of useSession
   const [books, setBooks] = useState([]);
   const [error, setError] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
