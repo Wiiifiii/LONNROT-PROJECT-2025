@@ -87,7 +87,7 @@ You can run the following scripts using Node.js. Make sure you have Node install
   Manages periodic tasks such as scheduled imports or data cleanup.  
   **Command:**  
   ```
-  node src/scripts/scheduler.js
+ 
   ```
 
 ## Prisma Commands
@@ -110,3 +110,20 @@ You can run the following scripts using Node.js. Make sure you have Node install
 
 The app is deployed on Heroku with a domain registered via Name.com.  
 Visit the live website at: [https://lonnrotproject.live](https://lonnrotproject.live)
+
+
+# #.env.local
+
+# DATABASE_URL="postgresql://postgres:pass@localhost:5432/lonnrot?schema=public"
+# NEXTAUTH_URL="http://localhost:3000"
+# NEXTAUTH_SECRET="your-dev-secret"
+# JWT_SECRET="your-dev-jwt-secret"
+
+
+# SMTP_HOST=smtp.gmail.com
+# SMTP_PORT=587
+# SMTP_SECURE=false       
+# SMTP_USER=ufo.hamed@gmail.com
+# SMTP_PASS=kmceomllucuqlmfm  
+# SMTP_FROM="Project Lönnrot <no-reply@lonnrotproject.live>"
+# NEXT_PUBLIC_BASE_URL=http://localhost:3000
