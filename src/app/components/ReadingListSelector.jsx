@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { FaTimes, FaPlus } from "react-icons/fa"; // Added icons for button styling
+import { FaTimes, FaPlus } from "react-icons/fa";
 
-export default function ReadingListSelector({ bookId, onClose }) {
+export default function ReadingListSelector({ bookId, onClose, onAddSuccess }) {
   const [lists, setLists] = useState([]);
   const [selectedList, setSelectedList] = useState("");
   const [loading, setLoading] = useState(true);
@@ -29,13 +29,21 @@ export default function ReadingListSelector({ bookId, onClose }) {
   const handleAdd = async () => {
     if (!selectedList) return;
     try {
-      const res = await fetch(`/api/reading-lists/${selectedList}/items`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bookId }),
-      });
+      const res = await fetch(
+        `/api/reading-lists/${selectedList}/items`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ bookId }),
+        }
+      );
       const json = await res.json();
-      if (!res.ok || !json.success) throw new Error(json.error);
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || "Failed to add book");
+      }
+      // notify parent
+      onAddSuccess();
+      // then close
       onClose();
     } catch (e) {
       setError(e.message);
@@ -44,13 +52,19 @@ export default function ReadingListSelector({ bookId, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      {/* Background image applied and softer rounded modal */}
-      <div className="bg-gray-800 p-6 rounded-2xl w-[450px] space-y-4 bg-cover bg-center"
+      <div
+        className="bg-gray-800 p-6 rounded-2xl w-[450px] space-y-4 bg-cover bg-center"
         style={{ backgroundImage: "url('/images/LogInPage.png')" }}
       >
         <div className="flex justify-between items-center">
-          <h2 className="text-white text-xl font-semibold">Add to Saga List</h2>
-          <button onClick={onClose} className="text-white text-xl">
+          <h2 className="text-white text-xl font-semibold">
+            Add to Saga List
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-white text-xl"
+            aria-label="Close"
+          >
             <FaTimes />
           </button>
         </div>
@@ -74,7 +88,6 @@ export default function ReadingListSelector({ bookId, onClose }) {
           </select>
         )}
 
-        {/* Buttons with consistent styling */}
         <div className="flex justify-between items-center space-x-4 mt-4">
           <button
             onClick={onClose}
@@ -85,7 +98,9 @@ export default function ReadingListSelector({ bookId, onClose }) {
           <button
             onClick={handleAdd}
             disabled={!selectedList}
-            className={`inline-flex items-center gap-2 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300 ${!selectedList && "cursor-not-allowed opacity-50"}`}
+            className={`inline-flex items-center gap-2 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300 ${
+              !selectedList && "cursor-not-allowed opacity-50"
+            }`}
           >
             <FaPlus /> Add
           </button>

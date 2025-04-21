@@ -142,7 +142,7 @@ export default function BookDetailsPage() {
   return (
     // Outer wrapper with the background image applied only here.
     <div
-      className="min-h-screen text-white bg-cover bg-repeat bg-center"
+      className="min-h-screen text-white bg-cover bg-no-repeat bg-center"
       style={{ backgroundImage: "url('/images/LogInPage.png')" }}
     >
       <Navbar />
