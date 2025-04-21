@@ -1,8 +1,9 @@
-// src/app/api/books/[bookId]/download/route.js
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { getToken } from "next-auth/jwt";  // Import NextAuth's getToken for authentication
-import { InteractionType } from "@/lib/constants"; // Import the InteractionType constants
+import { getToken } from "next-auth/jwt";
+import { InteractionType } from "@/lib/constants";
+import archiver from "archiver"; // Import archiver to create ZIP files
+
 
 const prisma = new PrismaClient();
 
@@ -23,13 +24,11 @@ export async function GET(request, context) {
     return NextResponse.json({ error: "Book not found" }, { status: 404 });
   }
 
-  // Fetch the user's session
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
   const sessionId = token ? `user_${token.id}` : request.cookies.get("lo_sid")?.value ?? "anon";
 
-  // Log the download interaction, whether the user is authenticated or not
   await prisma.bookInteraction.create({
-    data: { bookId: Number(bookId), sessionId, type: InteractionType.DOWNLOAD }, // Use InteractionType constant
+    data: { bookId: Number(bookId), sessionId, type: InteractionType.DOWNLOAD },
   });
 
   // Handle TXT format
@@ -37,15 +36,26 @@ export async function GET(request, context) {
     if (!book.file_url) {
       return NextResponse.json({ error: "TXT not available" }, { status: 404 });
     }
+
+    // Download the TXT file
     const upstream = await fetch(book.file_url);
-    const text = await upstream.arrayBuffer();
-    return new NextResponse(Buffer.from(text), {
+    const text = await upstream.text(); // Read as text
+
+    // Create a zip file
+    const zipStream = archiver("zip", { zlib: { level: 9 } }); // Create a ZIP stream
+    zipStream.append(text, { name: `${book.file_name || 'book'}.txt` });
+
+    // Return the ZIP file as a response
+    return new NextResponse(zipStream, {
       status: 200,
-      headers: { "Content-Type": "text/plain; charset=utf-8" },
+      headers: {
+        "Content-Type": "application/zip",
+        "Content-Disposition": `attachment; filename=${book.file_name || 'book'}.zip`,
+      },
     });
   }
 
-  // Handle PDF format
+  // Handle PDF format (unchanged)
   if (book.pdf_url) {
     const upstream = await fetch(book.pdf_url);
     const pdf = await upstream.arrayBuffer();
@@ -55,7 +65,7 @@ export async function GET(request, context) {
     });
   }
 
-  // If no PDF URL is available, use the extract endpoint
+  // Additional logic for PDF extraction remains unchanged
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const extractRes = await fetch(`${base}/api/books/${bookId}/extract`);
   if (!extractRes.ok) {
@@ -66,14 +76,11 @@ export async function GET(request, context) {
     return NextResponse.json({ error: extractJson.error }, { status: 500 });
   }
 
-  // Return the base64-encoded PDF if extraction was successful
   const pdfBytes = Buffer.from(extractJson.pdfBase64, "base64");
   return new NextResponse(pdfBytes, {
     status: 200,
     headers: {
       "Content-Type": "application/pdf",
-      // Optional: force-download
-      // "Content-Disposition": `attachment; filename="${book.file_name || bookId}.pdf"`,
     },
   });
 }
