@@ -14,7 +14,7 @@ export default function Notification({
   type = "info",
   message,
   onClose,
-  duration = 3000,
+  duration = 5000,
 }) {
   useEffect(() => {
     const t = setTimeout(onClose, duration);
