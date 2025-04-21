@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-import { signOut } from "next-auth/react";
+import { signOut } from "next-auth/react"; // Correct import for useSession
 import Button from "@/app/components/Button";
 
 export default function DangerTab() {
