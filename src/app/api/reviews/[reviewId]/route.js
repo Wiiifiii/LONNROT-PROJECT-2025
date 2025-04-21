@@ -1,72 +1,82 @@
 // src/app/api/reviews/[reviewId]/route.js
-// Summary: Provides GET, PUT, and DELETE operations on a single review by its ID using Prisma ORM.
-
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { getToken } from "next-auth/jwt";  // Import NextAuth's getToken for session management
 
 const prisma = new PrismaClient();
 
 export async function GET(request, context) {
-  const { params } = await context; // ✅ await params
-  const reviewId = Number(params.reviewId);
-  const cookieStore = await cookies(); // ✅ await cookies
-  const sid = cookieStore.get("lo_sid")?.value ?? "anon";
-
+  const { reviewId } = context.params;
+  
   try {
+    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+
+    // Check if the user is authenticated
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const review = await prisma.review.findUnique({
-      where: { id: reviewId },
+      where: { id: Number(reviewId) },
       include: {
         user: { select: { id: true, username: true, email: true } },
         book: { select: { id: true, title: true } },
       },
     });
     if (!review) {
-      return NextResponse.json(
-        { success: false, error: "Review not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Review not found" }, { status: 404 });
     }
-    return NextResponse.json({ success: true, data: review, sid }, { status: 200 });
+
+    return NextResponse.json({ success: true, data: review }, { status: 200 });
   } catch (error) {
     console.error("GET /api/reviews/[reviewId] error:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to fetch review" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch review" }, { status: 500 });
   }
 }
 
-export async function PUT(request, { params }) {
+export async function PUT(request, context) {
+  const { reviewId } = context.params;
+  const body = await request.json();
+
+  // Check if the user is authenticated and is an admin
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token || token.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden: Admins only" }, { status: 403 });
+  }
+
   try {
-    const { reviewId } = params;
-    const id = parseInt(reviewId, 10);
-    const body = await request.json();
-    if (body.rating === undefined) {
-      return NextResponse.json({ success: false, error: "Rating is required" }, { status: 400 });
-    }
     const updatedReview = await prisma.review.update({
-      where: { id },
+      where: { id: Number(reviewId) },
       data: {
-        rating: Number(body.rating),
+        rating: body.rating,
         comment: body.comment || "",
       },
     });
+
     return NextResponse.json({ success: true, data: updatedReview }, { status: 200 });
   } catch (error) {
     console.error("PUT /api/reviews/[reviewId] error:", error);
-    return NextResponse.json({ success: false, error: "Failed to update review", details: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to update review" }, { status: 500 });
   }
 }
 
-export async function DELETE(request, { params }) {
+export async function DELETE(request, context) {
+  const { reviewId } = context.params;
+
+  // Check if the user is authenticated and is an admin
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token || token.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden: Admins only" }, { status: 403 });
+  }
+
   try {
-    const { reviewId } = params;
-    const id = parseInt(reviewId, 10);
-    await prisma.review.delete({ where: { id } });
+    await prisma.review.delete({
+      where: { id: Number(reviewId) },
+    });
+
     return NextResponse.json({ success: true, message: "Review deleted" }, { status: 200 });
   } catch (error) {
     console.error("DELETE /api/reviews/[reviewId] error:", error);
-    return NextResponse.json({ success: false, error: "Failed to delete review", details: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to delete review" }, { status: 500 });
   }
 }
