@@ -1,16 +1,20 @@
-import CredentialsProvider from "next-auth/providers/credentials";  // Ensure this import is correct
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import prisma from "./prisma";  // Ensure prisma is correctly imported
-import { compare } from "bcryptjs";  // Ensure bcryptjs is installed
+// app/auth.js
+import NextAuth from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
-/** @type {import("next-auth").NextAuthOptions} */
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { prisma } from "@/lib/prisma";
+import { compare } from "bcryptjs";
+
 export const authOptions = {
-  adapter: PrismaAdapter(prisma),  // Use PrismaAdapter for session management
+  adapter: PrismaAdapter(prisma),
   providers: [
-    CredentialsProvider({
+    {
+      id: "credentials",
       name: "Username & Password",
+      type: "credentials",
       credentials: {
-        username: { label: "Username", type: "text" },
+        username: { label: "Username", type: "text", placeholder: "your username" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -21,8 +25,8 @@ export const authOptions = {
           where: { username: credentials.username },
         });
         if (!user) throw new Error("Invalid username or password");
-        const isValid = await compare(credentials.password, user.password_hash);
-        if (!isValid) throw new Error("Invalid username or password");
+        const valid = await compare(credentials.password, user.password_hash);
+        if (!valid) throw new Error("Invalid username or password");
         return {
           id: user.id.toString(),
           name: user.username,
@@ -31,9 +35,11 @@ export const authOptions = {
           profileImage: user.profileImage,
         };
       },
-    }),
+    },
   ],
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -52,5 +58,11 @@ export const authOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,  // Ensure this is properly set in .env
+  pages: {
+    signIn: "/auth/login",
+    error: "/auth/login",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 };
+
+export default NextAuth(authOptions);
