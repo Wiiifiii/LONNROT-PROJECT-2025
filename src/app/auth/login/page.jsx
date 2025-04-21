@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";  // Correct import for useSession and signIn
 import { useRouter } from "next/navigation";
 import Button from "@/app/components/Button";
 import {
