@@ -1,8 +1,9 @@
+// src/auth/page.jsx
 "use client";
 
 export const dynamic = "force-dynamic";
 
-import { signIn } from "next-auth/react";
+import { signIn } from "next-auth/react"; // Import NextAuth's signIn method for authentication
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiArrowRight } from "react-icons/fi";
@@ -29,11 +30,13 @@ export default function AuthPage() {
     setMessage("");
 
     if (isRegistering) {
+      // Check password confirmation
       if (password !== confirmPassword) {
         setMessage("Error: Passwords do not match");
         return;
       }
       try {
+        // Register the user through the API (backend implementation needed)
         const res = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -49,15 +52,17 @@ export default function AuthPage() {
         setMessage(`Request failed: ${error.message}`);
       }
     } else {
+      // Sign in the user using NextAuth's signIn method
       const result = await signIn("credentials", {
         username,
         password,
-        remember
+        redirect: false,  // Don't automatically redirect; we'll handle it
       });
-      if (result.error) {
+
+      if (result?.error) {
         setMessage("Login failed: " + result.error);
       } else {
-        router.push("/profile");
+        router.push("/profile");  // Redirect to the profile page if login is successful
       }
     }
   };
@@ -68,7 +73,7 @@ export default function AuthPage() {
   };
 
   const continueWithoutSigningIn = () => {
-    router.push("/books");
+    router.push("/books");  // Redirect to books page without signing in
   };
 
   return (
