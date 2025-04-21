@@ -1,16 +1,13 @@
-// src/lib/prisma.js
-import { PrismaClient } from '@prisma/client'
+// lib/prisma.js
+import { PrismaClient } from '@prisma/client';
 
-let prisma
+const prismaClientSingleton = () => {
+  return new PrismaClient();
+};
 
-// In development, use a global to avoid exhausting your connection pool
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient()
-} else {
-  if (!global.prisma) {
-    global.prisma = new PrismaClient()
-  }
-  prisma = global.prisma
-}
+const globalForPrisma = globalThis;
+const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
 
-export default prisma
+export default prisma;
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
