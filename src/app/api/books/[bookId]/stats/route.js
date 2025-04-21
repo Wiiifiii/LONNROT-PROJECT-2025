@@ -36,6 +36,8 @@ export async function GET(req, { params }) {
   const out = { DOWNLOAD: 0, READ_START: 0, READ_FINISH: 0 };
   rows.forEach((r) => (out[r.type] = r._count._all));
 
+  // Optionally, log the access or interaction in some way for analytics
+
   return NextResponse.json(out, {
     status: 200,
     headers: { "Cache-Control": "s-maxage=60" }, // 1‑minute CDN cache
