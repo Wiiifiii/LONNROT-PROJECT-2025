@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";  // Correct import for useSession
 import { useRouter, useSearchParams } from "next/navigation";
 import { FiAlertCircle } from "react-icons/fi";
 import {
