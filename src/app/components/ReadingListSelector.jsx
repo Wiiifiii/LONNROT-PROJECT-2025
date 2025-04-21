@@ -1,6 +1,6 @@
-// src/app/components/ReadingListSelector.jsx
 "use client";
 import React, { useState, useEffect } from "react";
+import { FaTimes, FaPlus } from "react-icons/fa"; // Added icons for button styling
 
 export default function ReadingListSelector({ bookId, onClose }) {
   const [lists, setLists] = useState([]);
@@ -29,14 +29,11 @@ export default function ReadingListSelector({ bookId, onClose }) {
   const handleAdd = async () => {
     if (!selectedList) return;
     try {
-      const res = await fetch(
-        `/api/reading-lists/${selectedList}/items`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ bookId }),
-        }
-      );
+      const res = await fetch(`/api/reading-lists/${selectedList}/items`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookId }),
+      });
       const json = await res.json();
       if (!res.ok || !json.success) throw new Error(json.error);
       onClose();
@@ -47,10 +44,16 @@ export default function ReadingListSelector({ bookId, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-gray-800 p-6 rounded-lg w-80 space-y-4">
-        <h2 className="text-white text-xl font-semibold">
-          Add to Saga List
-        </h2>
+      {/* Background image applied and softer rounded modal */}
+      <div className="bg-gray-800 p-6 rounded-2xl w-[450px] space-y-4 bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+      >
+        <div className="flex justify-between items-center">
+          <h2 className="text-white text-xl font-semibold">Add to Saga List</h2>
+          <button onClick={onClose} className="text-white text-xl">
+            <FaTimes />
+          </button>
+        </div>
 
         {loading ? (
           <p className="text-gray-300">Loading lists…</p>
@@ -60,7 +63,7 @@ export default function ReadingListSelector({ bookId, onClose }) {
           <select
             value={selectedList}
             onChange={(e) => setSelectedList(e.target.value)}
-            className="w-full p-2 bg-gray-700 text-white rounded"
+            className="w-full p-2 bg-gray-700 text-white rounded-lg"
           >
             <option value="">— Select a list —</option>
             {lists.map((l) => (
@@ -71,23 +74,24 @@ export default function ReadingListSelector({ bookId, onClose }) {
           </select>
         )}
 
-        <div className="flex justify-end space-x-2">
+        {/* Buttons with consistent styling */}
+        <div className="flex justify-between items-center space-x-4 mt-4">
           <button
             onClick={onClose}
-            className="px-3 py-1 bg-gray-600 rounded hover:bg-gray-500 text-white"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300"
           >
-            Cancel
+            <FaTimes /> Cancel
           </button>
           <button
             onClick={handleAdd}
             disabled={!selectedList}
-            className="px-3 py-1 bg-blue-600 rounded hover:bg-blue-500 text-white disabled:opacity-50"
+            className={`inline-flex items-center gap-2 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300 ${!selectedList && "cursor-not-allowed opacity-50"}`}
           >
-            Add
+            <FaPlus /> Add
           </button>
         </div>
 
-        <div className="text-center">
+        <div className="text-center mt-4">
           <a
             href={`/my-reading-lists?returnTo=${encodeURIComponent(
               `/books/${bookId}/read`
