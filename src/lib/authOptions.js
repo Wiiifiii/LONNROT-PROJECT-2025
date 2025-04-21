@@ -1,11 +1,11 @@
-import CredentialsProvider from "next-auth/providers/credentials";  // Ensure this import is correct
+import CredentialsProvider from "next-auth/providers/credentials"; // Correct import
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import prisma from "./prisma";  // Ensure prisma is correctly imported
-import { compare } from "bcryptjs";  // Ensure bcryptjs is installed
+import prisma from "./prisma";  // Correct import style: default import
+import { compare } from "bcryptjs";
 
 /** @type {import("next-auth").NextAuthOptions} */
 export const authOptions = {
-  adapter: PrismaAdapter(prisma),  // Use PrismaAdapter for session management
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: "Username & Password",
@@ -52,5 +52,9 @@ export const authOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,  // Ensure this is properly set in .env
+  pages: {
+    signIn: "/auth/login",
+    error: "/auth/login",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 };
