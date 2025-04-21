@@ -13,7 +13,7 @@ import { GiMagickTrick } from "react-icons/gi";
 import { AiFillHome, AiOutlineDashboard } from "react-icons/ai";
 import { PiBooksDuotone } from "react-icons/pi";
 import MenuOverlay from "./MenuOverlay";
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";  // Correct import for useSession and signOut
 
 const navLinks = [
   { href: "/admin", title: "Dashboard", Icon: AiOutlineDashboard },
