@@ -1,23 +1,20 @@
 // components/Button.jsx
 import React from 'react';
 import PropTypes from 'prop-types';
+import Tooltip from './Tooltip';
 
-const Button = ({ icon: Icon, text, tooltip, onClick, className = '', type = 'button' }) => {
-  return (
+const Button = ({ icon: Icon, text, tooltip, onClick, className = '' }) => {
+  const btn = (
     <button
-      type={type}
       onClick={onClick}
-      className={`inline-flex items-center gap-2 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300 text-base w-auto min-w-fit ${className}`}
-      title={tooltip}
-      disabled={className.includes('cursor-not-allowed')} // Disable button if it's visually inactive
+      className={`inline-flex items-center gap-1 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300 text-sm ${className}`}
     >
       {Icon && <Icon className="mr-1" />}
       {text}
     </button>
   );
+  return tooltip ? <Tooltip text={tooltip}>{btn}</Tooltip> : btn;
 };
-
-
 
 Button.propTypes = {
   icon: PropTypes.elementType,
@@ -25,7 +22,6 @@ Button.propTypes = {
   tooltip: PropTypes.string,
   onClick: PropTypes.func,
   className: PropTypes.string,
-  type: PropTypes.oneOf(['button','submit','reset']),
 };
 
 export default Button;
