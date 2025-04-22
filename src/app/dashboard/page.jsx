@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useSession } from "next-auth/react";  // Correct import for useSession
+import { useSession } from "next-auth/react";
 import Navbar from "@/app/components/Navbar";
 import BackgroundWrapper from "@/app/components/BackgroundWrapper";
 import {
@@ -52,9 +52,14 @@ export default function AdminDashboard() {
     return <p className="text-white p-8">Loading dashboard…</p>;
   }
 
-  const genderData = Object.entries(users.byGender).map(([name, value]) => ({ name, value }));
-  const ageData = Object.entries(users.byAge).map(([bucket, count]) => ({ bucket, count }));
-  const { readsLast10Days, downloadsLast10Days } = interactions;
+  // Safely handle undefined grouping data
+  const genderData = Object.entries(users.byGender ?? {}).map(
+    ([name, value]) => ({ name, value })
+  );
+  const ageData = Object.entries(users.byAge ?? {}).map(
+    ([bucket, count]) => ({ bucket, count })
+  );
+  const { readsLast10Days = [], downloadsLast10Days = [] } = interactions;
   const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042'];
 
   return (
@@ -75,7 +80,13 @@ export default function AdminDashboard() {
             <h3 className="text-lg font-semibold mb-4">Users by Gender</h3>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
-                <Pie data={genderData} dataKey="value" nameKey="name" outerRadius={80} label>
+                <Pie
+                  data={genderData}
+                  dataKey="value"
+                  nameKey="name"
+                  outerRadius={80}
+                  label
+                >
                   {genderData.map((_, idx) => (
                     <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
                   ))}
