@@ -14,6 +14,7 @@ import { AiFillHome, AiOutlineDashboard } from "react-icons/ai";
 import { PiBooksDuotone } from "react-icons/pi";
 import MenuOverlay from "./MenuOverlay";
 import { useSession, signOut } from "next-auth/react";  // Correct import for useSession and signOut
+import Tooltip from "./Tooltip";
 
 const navLinks = [
   { href: "/admin", title: "Dashboard", Icon: AiOutlineDashboard },
@@ -134,16 +135,20 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile hamburger */}
+          {/* Mobile hamburger with Tooltip */}
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen((v) => !v)}
               className="text-slate-200 p-2 border rounded border-slate-200 hover:text-blue-400 hover:border-blue-400"
             >
               {isOpen ? (
-                <XMarkIcon className="h-5 w-5" />
+                <Tooltip text="Close Menu">
+                  <XMarkIcon className="h-5 w-5" />
+                </Tooltip>
               ) : (
-                <Bars3Icon className="h-5 w-5" />
+                <Tooltip text="Open Menu">
+                  <Bars3Icon className="h-5 w-5" />
+                </Tooltip>
               )}
             </button>
           </div>
