@@ -1,16 +1,16 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-const { createRequire } = require('module');
-const requireModule = createRequire(__filename);
-const path = require('path');
+// next.config.js
+import path from 'path';
+import { createRequire } from 'module';
+const requireModule = createRequire(import.meta.url);
 
 /** @type {import('next').NextConfig} */
-module.exports = {
+const nextConfig = {
   webpack(config) {
-    // Add path aliases for `@` and `@ui` as you had in your `tsconfig.json`
+    // Add path aliases for `@` and `@ui`
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@': path.resolve(__dirname, 'src'), // maps `@` to `src/`
-      '@ui': path.resolve(__dirname, 'src/app/components'), // maps `@ui` to `src/app/components/`
+      '@': path.resolve(process.cwd(), 'src'),
+      '@ui': path.resolve(process.cwd(), 'src/app/components'),
     };
 
     config.resolve.fallback = {
@@ -26,3 +26,5 @@ module.exports = {
     serverComponentsExternalPackages: ['@prisma/client', 'bcryptjs'],
   },
 };
+
+export default nextConfig;
