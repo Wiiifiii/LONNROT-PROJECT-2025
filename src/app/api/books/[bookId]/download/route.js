@@ -4,8 +4,8 @@ import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getToken } from 'next-auth/jwt';
 import { InteractionType } from '@/lib/constants';
-import archiver from 'archiver';
-import { PassThrough } from 'stream';
+
+import { fileSlug } from "@/lib/slugify.js";
 
 const prisma = new PrismaClient();
 
@@ -25,7 +25,7 @@ export async function GET(request, context) {
   // load book metadata
   const book = await prisma.book.findUnique({
     where: { id: Number(bookId) },
-    select: { file_url: true, pdf_url: true, file_name: true },
+    select: { file_url: true, pdf_url: true, file_name: true, txt_url: true, title: true },
   });
 
   if (!book) {
@@ -49,39 +49,25 @@ export async function GET(request, context) {
   }
 
   // ─── TXT → ZIP branch ───────────────────────────────────────────────────────
-  if (format === 'txt') {
-    if (!book.file_url) {
-      return NextResponse.json({ error: 'TXT not available' }, { status: 404 });
+  if (format === "txt") {
+    if (!book.txt_url) {
+      return NextResponse.json({ error: "TXT not available" }, { status: 404 });
     }
 
     try {
-      const upstream = await fetch(book.file_url);
-      if (!upstream.ok) {
-        throw new Error(`Failed to fetch TXT file: ${upstream.statusText}`);
-      }
-
+      const upstream = await fetch(book.txt_url);
       const text = await upstream.text();
-      const passThrough = new PassThrough();
-      const archive = archiver('zip', { zlib: { level: 9 } });
 
-      archive.on('error', (err) => {
-        console.error('Archive error:', err);
-        passThrough.end();
-      });
-      archive.pipe(passThrough);
-      archive.append(text, { name: `${book.file_name || 'book'}.txt` });
-      await archive.finalize();
-
-      return new NextResponse(passThrough, {
-        status: 200,
+      // Return as plain text rather than zipped content
+      return new NextResponse(text, {
         headers: {
-          'Content-Type': 'application/zip',
-          'Content-Disposition': `attachment; filename="${book.file_name || 'book'}.zip"`,
+          "Content-Type": "text/plain; charset=utf-8",
+          "Content-Disposition": `attachment; filename="${fileSlug(book.id, book.title, "txt")}"`,
         },
       });
     } catch (error) {
       console.error(error);
-      return NextResponse.json({ error: 'Failed to fetch TXT file' }, { status: 500 });
+      return NextResponse.json({ error: "Failed to fetch TXT file" }, { status: 500 });
     }
   }
 

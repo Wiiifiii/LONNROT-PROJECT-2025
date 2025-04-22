@@ -39,7 +39,7 @@ export const authOptions = {
             name: user.username,
             email: user.email,
             role: user.role,
-            profileImage: user.profileImage
+            profileImage: user.avatar_url
           };
         } catch (error) {
           console.error('Auth error:', error.message);
@@ -54,7 +54,7 @@ export const authOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
-        token.profileImage = user.profileImage;
+        token.profileImage = user.avatar_url;
       }
       return token;
     },
@@ -62,7 +62,7 @@ export const authOptions = {
       if (session.user) {
         session.user.id = token.id;
         session.user.role = token.role;
-        session.user.profileImage = token.profileImage;
+        session.user.avatar_url = token.avatar_url;
       }
       return session;
     }

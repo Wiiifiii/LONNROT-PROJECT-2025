@@ -22,9 +22,9 @@ export async function GET(request) {
 
   // Fetch user details from the database
   const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { id: true, username: true, email: true, profileImage: true, role: true },
-  });
+        where: { id: userId },
+        select: { id: true, username: true, email: true, avatar_url: true, role: true },
+     });
 
   return NextResponse.json({ user });
 }
