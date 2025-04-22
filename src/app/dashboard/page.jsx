@@ -36,9 +36,9 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/admin/metrics/users').then(r => r.json()),
-      fetch('/api/admin/metrics/books').then(r => r.json()),
-      fetch('/api/admin/metrics/interactions').then(r => r.json()),
+      fetch('/api/dashboard/metrics/users').then(r => r.json()),
+      fetch('/api/dashboard/metrics/books').then(r => r.json()),
+      fetch('/api/dashboard/metrics/interactions').then(r => r.json()),
     ])
       .then(([u, b, i]) => {
         setUsers(u);
