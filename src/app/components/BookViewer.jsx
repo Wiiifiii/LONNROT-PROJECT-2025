@@ -20,11 +20,10 @@ export default function BookViewer({ bookId, pdfUrl, book }) {
 
   const handleDownload = useCallback(
     (format) => {
-      window.open(
-        `/api/books/${bookId}/download?format=${format}`,
-        "_blank",
-        "noopener noreferrer"
-      );
+      // pick the right URL
+     const url = format === "pdf" ? pdfUrl : book.txt_url;
+      if (!url) return;
+      window.open(url, "_blank", "noopener noreferrer");
       fetch(`/api/books/${bookId}/stats`).catch(() => {});
       setNotification({
         type: "success",

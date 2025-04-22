@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Button from './Button'
-import BookCardCompact from './BookCardCompact' // assume you’ll create or adapt this
+import Card from './Card' // assume you’ll create or adapt this
 
 export default function BookSection({
   title,
@@ -45,7 +45,7 @@ export default function BookSection({
 
       <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         {books.map((b) => (
-          <BookCardCompact key={b.id} book={b} />
+          <Card key={b.id} book={b} />
         ))}
       </div>
     </section>

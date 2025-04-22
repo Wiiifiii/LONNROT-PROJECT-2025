@@ -1,90 +1,97 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { FaEye, FaInfoCircle, FaDownload } from "react-icons/fa";
-import { useRouter } from "next/navigation";
-import Button from "./Button";
+'use client'
 
-const truncate = (s) => (s.length > 15 ? s.slice(0, 15) + "…" : s);
+import React from 'react'
+import { useRouter } from 'next/navigation'
+import Button from './Button'
+import { FaEye, FaInfoCircle, FaDownload } from 'react-icons/fa'
+import { GiMagicAxe } from 'react-icons/gi'
 
-export function Card({ book, stats: initialStats }) {
-  const router = useRouter();
-  const [stats, setStats] = useState(initialStats ?? { DOWNLOAD: 0, READ_START: 0 });
-
-  useEffect(() => {
-    fetch(`/api/books/${book.id}/stats`)
-      .then((r) => r.json())
-      .then(setStats)
-      .catch(() => {});
-  }, [book.id]);
-
-  const bumpDownload = () => {
-    fetch(`/api/books/${book.id}/stats`)
-      .then((r) => r.json())
-      .then(setStats)
-      .catch(() => {});
-  };
-
-  return (
-    <div className="bg-gray-800 rounded-lg shadow-md p-6 flex flex-col space-y-4 h-full">
-      <div className="flex items-center gap-2">
-        <FaInfoCircle className="text-3xl text-gray-400" />
-        <div>
-          <h3 className="text-lg font-bold">{truncate(book.title)}</h3>
-          <p className="text-gray-400 text-sm">{book.author}</p>
-        </div>
-      </div>
-
-      <p className="text-xs text-gray-400">
-        Downloads: {stats.DOWNLOAD} Views: {stats.READ_START}
-      </p>
-
-      <div className="flex gap-2">
-        <Button
-          icon={FaEye}
-          text="Open the Saga"
-          onClick={() => router.push(`/books/${book.id}/read`)}
-          className="flex-1 justify-center"
-        />
-        <Button
-          icon={FaInfoCircle}
-          text="Seek the Lore"
-          onClick={() => router.push(`/books/${book.id}/bookdetail`)}
-          className="flex-1 justify-center"
-        />
-      </div>
-
-      <div className="flex flex-col space-y-2">
-        <a
-          href={`/api/books/${book.id}/download?format=txt`}
-          onClick={bumpDownload}
-          target="_blank"
-          rel="noopener"
-          className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base"
-        >
-          <FaDownload /> Take the Sampo TXT
-        </a>
-        <a
-          href={`/api/books/${book.id}/download?format=pdf`}
-          onClick={bumpDownload}
-          target="_blank"
-          rel="noopener"
-          className={`inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm ${
-            book.pdf_url ? "" : ""
-          }`}
-        >
-          <FaDownload /> Take the Sampo PDF
-        </a>
-      </div>
-    </div>
-  );
+// Dummy bumpDownload function; update with your own logic if needed.
+const bumpDownload = (e) => {
+  console.log('Download action triggered')
 }
 
-export default function BookGrid({ books }) {
+export default function Card({ book }) {
+  const router = useRouter()
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {books.map((book) => (
-        <Card key={book.id} book={book} />
-      ))}
+    <div
+      onClick={() => router.push(`/books/${book.id}`)}
+      className="cursor-pointer rounded-lg p-4 flex flex-col items-center hover:shadow-lg transition-shadow"
+      style={{
+        backgroundImage: "url('/images/LogInPage.png')",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+      }}
+    >
+      {book.cover_url ? (
+        <img
+          src={book.cover_url}
+          alt={book.title}
+          className="h-32 w-24 object-cover rounded-md"
+        />
+      ) : (
+        <div className="h-32 w-24 bg-gray-700 rounded-md flex items-center justify-center">
+          <GiMagicAxe className="text-white text-4xl" />
+        </div>
+      )}
+
+      <h3 className="mt-2 text-sm font-semibold text-center line-clamp-2">
+        {book.title}
+      </h3>
+      <p className="text-xs text-white text-center">{book.author}</p>
+
+      {/* Action Buttons */}
+      <div className="mt-2 w-full">
+        {/* Button row using grid layout */}
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            icon={FaEye}
+            text="Open the Saga"
+            onClick={(e) => {
+              e.stopPropagation()
+              router.push(`/books/${book.id}/read`)
+            }}
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base"
+          />
+          <Button
+            icon={FaInfoCircle}
+            text="Seek the Lore"
+            onClick={(e) => {
+              e.stopPropagation()
+              router.push(`/books/${book.id}/bookdetail`)
+            }}
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base"
+          />
+        </div>
+        <div className="flex flex-col space-y-2 mt-2">
+          <a
+             href={book.txt_url}
+            onClick={(e) => {
+              e.stopPropagation()
+              bumpDownload(e)
+            }}
+            target="_blank"
+            rel="noopener"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base w-full"
+          >
+            <FaDownload /> Take the Sampo TXT
+          </a>
+          <a
+            href={book.pdf_url}
+            onClick={(e) => {
+              e.stopPropagation()
+              bumpDownload(e)
+            }}
+            target="_blank"
+            rel="noopener"
+            className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm w-full"
+          >
+            <FaDownload /> PDF
+          </a>
+        </div>
+      </div>
     </div>
-  );
+  )
 }

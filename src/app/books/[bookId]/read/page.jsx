@@ -18,9 +18,10 @@ export default async function ReaderPage({ params }) {
     );
   }
 
-  // json.data has shape { book: { title, author, ... }, otherBooks, reviews, ... }
+  // json.data has shape { book: { title, author, pdf_url, ... }, otherBooks, reviews, ... }
   const { book } = json.data;
-  const pdfUrl = `/api/books/${bookId}/download?format=pdf`;
+  // Use the direct Supabase‑hosted PDF URL instead of proxying through our API
+  const pdfUrl = book.pdf_url;
 
   return (
     <div className="flex flex-col h-screen">

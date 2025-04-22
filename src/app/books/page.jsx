@@ -109,7 +109,7 @@ export function BookViewer({ book, bumpDownload }) {
   return (
     <div>
       <a
-        href={`/api/books/${book.id}/download?format=pdf`}
+        href={book.pdf_url} 
         onClick={bumpDownload}
         target="_blank"
         rel="noopener"
@@ -119,7 +119,7 @@ export function BookViewer({ book, bumpDownload }) {
       </a>
 
       <a
-        href={`/api/books/${book.id}/download?format=txt`}
+         href={book.txt_url}
         onClick={bumpDownload}
         download
         target="_blank"

@@ -83,9 +83,9 @@ export default function Navbar() {
             ) : (
               <Menu as="div" className="relative">
                 <Menu.Button className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-600 hover:border-blue-400">
-                  {user.profileImage ? (
+                  {user.avatar_url ? (
                     <Image
-                      src={user.profileImage}
+                      src={user.avatar_url}
                       alt="Avatar"
                       width={32}
                       height={32}

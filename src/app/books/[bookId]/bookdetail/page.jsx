@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Navbar from "../../../components/Navbar";
 import Button from "../../../components/Button";
-import BookCardCompact from "../../../components/BooksCardCompact";
+import Card from "../../../components/Card";
 import { SiMagic } from "react-icons/si";
 import { FaEye, FaDownload } from "react-icons/fa";
 import { BsFillSendPlusFill } from "react-icons/bs";
@@ -187,7 +187,8 @@ export default function BookDetailsPage() {
                 text="Take the Sampo TXT"
                 tooltip="Download original TXT"
                 onClick={() =>
-                  handleDownload("TXT", `/api/books/${book.id}/download?format=txt`)
+                  bookData.book.txt_url &&
+                  handleDownload("TXT", bookData.book.txt_url)
                 }
                 className="flex-1 justify-center"
               />
@@ -200,8 +201,8 @@ export default function BookDetailsPage() {
                     : "PDF not available yet"
                 }
                 onClick={() =>
-                  book.pdf_url &&
-                  handleDownload("PDF", `/api/books/${book.id}/download?format=pdf`)
+                  bookData.book.pdf_url &&
+                  handleDownload("PDF", bookData.book.pdf_url)
                 }
                 className="flex-1 justify-center"
               />
@@ -310,7 +311,7 @@ export default function BookDetailsPage() {
           {otherBooks?.length ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {otherBooks.map((other) => (
-                <BookCardCompact
+                <Card
                   key={other.id}
                   book={other}
                   stats={otherStats[other.id]}

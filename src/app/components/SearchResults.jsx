@@ -3,7 +3,7 @@
 
 import React from 'react'
 import { FaListAlt } from 'react-icons/fa'
-import BooksCardCompact from './BooksCardCompact'
+import BooksCardCompact from './Card'
 import Button from './Button'
 
 export default function SearchResults({
