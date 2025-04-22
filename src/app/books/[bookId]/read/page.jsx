@@ -4,13 +4,10 @@ import Navbar from "@/app/components/Navbar";
 import BookViewer from "@/app/components/BookViewer";
 
 export default async function ReaderPage({ params }) {
-  const { bookId } = params;    // no need to await here
+  const { bookId } = await params;  // await params before destructuring
 
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const res = await fetch(
-    `${base}/api/books/${bookId}`,
-    { cache: "no-store" }
-  );
+  const res = await fetch(`${base}/api/books/${bookId}`, { cache: "no-store" });
   const json = await res.json();
 
   if (!res.ok || !json.success) {
@@ -29,11 +26,7 @@ export default async function ReaderPage({ params }) {
     <div className="flex flex-col h-screen">
       <Navbar />
       <div className="flex-1 bg-gray-900 pt-16">
-        <BookViewer
-          bookId={bookId}
-          pdfUrl={pdfUrl}
-          book={book}
-        />
+        <BookViewer bookId={bookId} pdfUrl={pdfUrl} book={book} />
       </div>
     </div>
   );

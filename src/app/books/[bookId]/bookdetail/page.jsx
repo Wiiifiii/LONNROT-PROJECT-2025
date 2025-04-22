@@ -6,20 +6,25 @@ import Navbar from "../../../components/Navbar";
 import Button from "../../../components/Button";
 import BookCardCompact from "../../../components/BooksCardCompact";
 import { SiMagic } from "react-icons/si";
-import { FaEye, FaDownload, FaBookmark } from "react-icons/fa";
+import { FaEye, FaDownload } from "react-icons/fa";
 import { BsFillSendPlusFill } from "react-icons/bs";
 import { GiMagicGate, GiMagicAxe } from "react-icons/gi";
 import StarRating from "../../../components/StarRating";
 import ReadingListSelector from "../../../components/ReadingListSelector";
+import Notification from "../../../components/Notification";
 
 export default function BookDetailsPage() {
   const { bookId } = useParams();
   const router = useRouter();
+
   const [bookData, setBookData] = useState(null);
   const [stats, setStats] = useState(null);
   const [otherStats, setOtherStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // in‑page notification
+  const [notif, setNotif] = useState(null);
 
   /* ------------- fetch book ------------- */
   useEffect(() => {
@@ -60,7 +65,9 @@ export default function BookDetailsPage() {
   }, [bookData]);
 
   /* ------------- refresh after download ------------- */
-  const handleDownloadClick = () => {
+  const handleDownload = (format, url) => {
+    window.open(url, "_blank", "noopener");
+    setNotif({ type: "success", message: `${format} download started!` });
     setTimeout(loadStats, 1000);
   };
 
@@ -86,8 +93,10 @@ export default function BookDetailsPage() {
         throw new Error(json.error || "Failed to add book");
       setListMessage("Book added to your reading list!");
       setShowListSelector(false);
+      setNotif({ type: "success", message: "Added to your list!" });
     } catch (err) {
       setListMessage(err.message);
+      setNotif({ type: "error", message: err.message });
     }
   };
 
@@ -113,12 +122,11 @@ export default function BookDetailsPage() {
       if (!res.ok || !json.success)
         throw new Error(json.error || "Failed to submit review");
       setReviewMessage("Review submitted successfully!");
-      setBookData((b) => ({
-        ...b,
-        reviews: [json.data, ...b.reviews],
-      }));
+      setBookData((b) => ({ ...b, reviews: [json.data, ...b.reviews] }));
+      setNotif({ type: "success", message: "Review submitted!" });
     } catch (err) {
       setReviewMessage(err.message);
+      setNotif({ type: "error", message: err.message });
     }
   };
 
@@ -137,7 +145,6 @@ export default function BookDetailsPage() {
     );
 
   const { book, otherBooks, reviews } = bookData;
-  const coverImage = book.cover_url || "/images/lonnrotkey.jpg";
 
   return (
     // Outer wrapper with the background image applied only here.
@@ -178,15 +185,10 @@ export default function BookDetailsPage() {
               <Button
                 icon={FaDownload}
                 text="Take the Sampo TXT"
-                tooltip="Download original txt"
-                onClick={() => {
-                  window.open(
-                    `/api/books/${book.id}/download?format=txt`,
-                    "_blank",
-                    "noopener"
-                  );
-                  handleDownloadClick();
-                }}
+                tooltip="Download original TXT"
+                onClick={() =>
+                  handleDownload("TXT", `/api/books/${book.id}/download?format=txt`)
+                }
                 className="flex-1 justify-center"
               />
               <Button
@@ -197,21 +199,11 @@ export default function BookDetailsPage() {
                     ? "Download generated PDF"
                     : "PDF not available yet"
                 }
-                onClick={(e) => {
-                  if (!book.pdf_url) {
-                    e.preventDefault();
-                    return;
-                  }
-                  window.open(
-                    `/api/books/${book.id}/download?format=pdf`,
-                    "_blank",
-                    "noopener"
-                  );
-                  handleDownloadClick();
-                }}
-                className={`flex-1 justify-center ${
-                  book.pdf_url ? "" : ""
-                }`}
+                onClick={() =>
+                  book.pdf_url &&
+                  handleDownload("PDF", `/api/books/${book.id}/download?format=pdf`)
+                }
+                className="flex-1 justify-center"
               />
               <Button
                 icon={SiMagic}
@@ -223,6 +215,7 @@ export default function BookDetailsPage() {
               <Button
                 icon={GiMagicGate}
                 text="To Saga Haven"
+                tooltip="Back to all books"
                 onClick={() => router.push("/books")}
                 className="flex-1 justify-center"
               />
@@ -297,7 +290,7 @@ export default function BookDetailsPage() {
               <Button
                 icon={BsFillSendPlusFill}
                 text="Pen Your Lore"
-                tooltip="Submit"
+                tooltip="Submit review"
                 className="mt-2"
               />
             </form>
@@ -329,6 +322,16 @@ export default function BookDetailsPage() {
           )}
         </div>
       </div>
+
+      {/* detail‑level toast */}
+      {notif && (
+        <Notification
+          type={notif.type}
+          message={notif.message}
+          onClose={() => setNotif(null)}
+          duration={5000}
+        />
+      )}
     </div>
   );
 }
