@@ -4,7 +4,6 @@ import React, { useState, useCallback } from "react";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import { FaDownload, FaListUl, FaInfoCircle, FaBook } from "react-icons/fa";
-import { FiX } from "react-icons/fi";
 import ReadingListSelector from "./ReadingListSelector";
 import Notification from "./Notification";
 import { useRouter } from "next/navigation";
@@ -18,25 +17,28 @@ export default function BookViewer({ bookId, pdfUrl, book }) {
   const router = useRouter();
   const layoutPluginInstance = defaultLayoutPlugin();
 
+  // Use the URLs directly provided by Prisma
+  const fileUrl = pdfUrl;
+  const txtUrl = book?.txt_url;
+
   const handleDownload = useCallback(
     (format) => {
-      // pick the right URL
-     const url = format === "pdf" ? pdfUrl : book.txt_url;
+      const url = format === "pdf" ? fileUrl : txtUrl;
       if (!url) return;
       window.open(url, "_blank", "noopener noreferrer");
       fetch(`/api/books/${bookId}/stats`).catch(() => {});
       setNotification({
         type: "success",
-        message: `${book.title} (${format.toUpperCase()}) download started!`,
+        message: `${book?.title} (${format.toUpperCase()}) download started!`,
       });
     },
-    [bookId, book]
+    [bookId, book, fileUrl, txtUrl]
   );
 
   const handleAddSuccess = () => {
     setNotification({
       type: "success",
-      message: `${book.title} added to your reading list!`,
+      message: `${book?.title} added to your reading list!`,
     });
   };
 
@@ -51,7 +53,7 @@ export default function BookViewer({ bookId, pdfUrl, book }) {
         />
       )}
 
-      {/* Responsive toolbar */}
+      {/* Toolbar */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between w-full bg-[#111827] p-3 rounded space-y-3 md:space-y-0">
         <div className="text-white max-w-xs">
           <h1 className="text-xl sm:text-2xl font-bold truncate">
@@ -81,14 +83,12 @@ export default function BookViewer({ bookId, pdfUrl, book }) {
           >
             <FaListUl /> Add to List
           </button>
-          {/* → Go to Book Details */}
           <button
             onClick={() => router.push(`/books/${bookId}/bookdetail`)}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm text-white"
           >
             <FaInfoCircle /> Details
           </button>
-          {/* → Back to All Books */}
           <button
             onClick={() => router.push("/books")}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm text-white"
@@ -98,7 +98,7 @@ export default function BookViewer({ bookId, pdfUrl, book }) {
         </div>
       </div>
 
-      {/* Add‑to‑List modal */}
+      {/* Reading List Selector */}
       {showListSelector && (
         <ReadingListSelector
           bookId={bookId}
@@ -108,15 +108,17 @@ export default function BookViewer({ bookId, pdfUrl, book }) {
       )}
 
       {/* PDF Viewer */}
-      <div className="w-full max-w-screen-lg flex-1 bg-gray-700 rounded overflow-hidden">
-        <Worker workerUrl="/pdf.worker.min.js">
-          <Viewer
-            fileUrl={pdfUrl}
-            plugins={[layoutPluginInstance]}
-            defaultScale={1}
-          />
-        </Worker>
-      </div>
+      {fileUrl && (
+        <div className="w-full max-w-screen-lg flex-1 bg-gray-700 rounded overflow-hidden">
+          <Worker workerUrl="/pdf.worker.min.js">
+            <Viewer
+              fileUrl={fileUrl}
+              plugins={[layoutPluginInstance]}
+              defaultScale={1}
+            />
+          </Worker>
+        </div>
+      )}
     </div>
   );
 }

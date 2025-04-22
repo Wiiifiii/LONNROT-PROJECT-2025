@@ -16,6 +16,7 @@ export async function GET(request, context) {
 
   const book = await prisma.book.findUnique({
     where: { id },
+    // include all the scalar fields (so pdf_url & txt_url come back)
     include: {
       reviews: {
         include: { user: { select: { username: true, email: true } } },
@@ -33,7 +34,7 @@ export async function GET(request, context) {
   });
 
   return NextResponse.json(
-    { success: true, data: { book, otherBooks, reviews: book.reviews } },
+    { success: true, data: { book, otherBooks } },
     { status: 200 }
   );
 }
@@ -59,6 +60,9 @@ export async function PUT(request, context) {
       file_name: body.file_name || null,
       file_url: body.file_url || null,
       cover_url: body.cover_url || null,
+      // hook up your new fields:
+      pdf_url: body.pdf_url ?? undefined,
+      txt_url: body.txt_url ?? undefined,
       genres:
         body.genres && Array.isArray(body.genres) ? body.genres : undefined,
       publicationYear: body.publicationYear

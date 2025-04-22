@@ -1,14 +1,14 @@
 // scripts/importBooks.js
-// Summary: This file fetches an HTML page to extract book information, processes the data,
-// uploads files to Supabase storage, and upserts the data into the database using Prisma.
+// Summary: Fetches book list from Lönnrot.net, processes each book’s text & PDF,
+// uploads both to Supabase, and upserts the resulting URLs into Postgres via Prisma.
 
 import 'dotenv/config';
 import * as cheerio from 'cheerio';
 import axios from 'axios';
-import { PrismaClient } from "@prisma/client";
-import { createClient } from "@supabase/supabase-js";
-import { fileSlug } from "../lib/slugify.js";
-import { processBook, createPdfFromRawText } from "./pdfHelpers.js";
+import { PrismaClient } from '@prisma/client';
+import { createClient } from '@supabase/supabase-js';
+import { fileSlug } from '../lib/slugify.js';
+import { processBook, createPdfFromRawText } from './pdfHelpers.js';
 
 const prisma = new PrismaClient();
 const supabase = createClient(
@@ -16,135 +16,163 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-async function fetchBooks(url) {
+// 1. Fetch the HTML from the source page
+async function fetchBooks(sourceUrl) {
   try {
-    const response = await axios.get(url);
-    return extractBooks(response.data);
-  } catch (error) {
-    console.error('Error fetching the HTML:', error);
+    const { data: html } = await axios.get(sourceUrl);
+    return extractBooks(html);
+  } catch (err) {
+    console.error('❌ Error fetching book list:', err);
     return [];
   }
 }
 
+// 2. Parse out the list of books using Cheerio & regex
 function extractBooks(html) {
   const $ = cheerio.load(html);
-  const bookData = [];
   const pattern = /(\d+)\.\s([^:]+):\s*<a href="(.*?)">(.*?)<\/a>/g;
+  const books = [];
+
   $('font').each((_, el) => {
     const content = $(el).html();
     if (!content) return;
     let match;
     while ((match = pattern.exec(content)) !== null) {
-      bookData.push({
-        id: match[1],
-        Kirjailija: match[2].trim(),
-        kirjannimi: match[4].trim(),
-        url: match[3].trim(),
+      books.push({
+        id:       Number(match[1]),
+        author:   match[2].trim(),
+        title:    match[4].trim(),
+        file_url: match[3].trim(),
       });
     }
   });
-  return bookData;
+
+  return books;
 }
 
+// 3. Find the highest existing book ID so we only import new ones
+async function getHighestBookId() {
+  const last = await prisma.book.findFirst({ orderBy: { id: 'desc' } });
+  return last?.id ?? 0;
+}
+
+// 4. Process & upload each new book
+async function upsertBooks(booksToImport) {
+  let imported = 0;
+
+  for (const { id, title, author, file_url } of booksToImport) {
+    console.log(`\n📦 Processing Book #${id}: "${title}" by ${author}`);
+
+    // Build the base record
+    const record = {
+      id,
+      title,
+      author,
+      file_name: extractFileName(file_url),
+      file_url,
+      txt_url: null,
+      pdf_url: null,
+      upload_date: new Date(),
+      metadata: {}
+    };
+
+    try {
+      // 4a. Fetch & normalize raw text
+      const { book: rawText } = await processBook(id);
+      const txtBuffer = Buffer.from(rawText, 'utf8');
+
+      // 4b. Generate PDF bytes
+      const pdfBytes = await createPdfFromRawText(rawText);
+
+      // 4c. Upload TXT
+      const txtKey = fileSlug(id, title, 'txt');
+      const { error: txtErr } = await supabase
+        .storage
+        .from('books-files')
+        .upload(txtKey, txtBuffer, {
+          contentType: 'text/plain; charset=utf-8',
+          upsert: true,
+        });
+      if (txtErr) {
+        console.error(`❌ TXT upload failed for #${id}:`, txtErr);
+      } else {
+        const { data: { publicUrl: txtUrl } } = supabase
+          .storage
+          .from('books-files')
+          .getPublicUrl(txtKey);
+        record.txt_url = txtUrl;
+        console.log(`   ✔️  TXT uploaded → ${txtUrl}`);
+      }
+
+      // 4d. Upload PDF
+      const pdfKey = fileSlug(id, title, 'pdf');
+      const { error: pdfErr } = await supabase
+        .storage
+        .from('books-files')
+        .upload(pdfKey, pdfBytes, {
+          contentType: 'application/pdf',
+          upsert: true,
+        });
+      if (pdfErr) {
+        console.error(`❌ PDF upload failed for #${id}:`, pdfErr);
+      } else {
+        const { data: { publicUrl: pdfUrl } } = supabase
+          .storage
+          .from('books-files')
+          .getPublicUrl(pdfKey);
+        record.pdf_url = pdfUrl;
+        console.log(`   ✔️  PDF uploaded → ${pdfUrl}`);
+      }
+
+      // 4e. Upsert into Postgres
+      await prisma.book.upsert({
+        where:  { id },
+        update: record,
+        create: record,
+      });
+      console.log(`   🎉 Book #${id} upserted successfully`);
+      imported++;
+
+    } catch (err) {
+      console.error(`❌ Failed to process Book #${id}:`, err);
+    }
+  }
+
+  return imported;
+}
+
+// Helper to extract filename from a URL
 function extractFileName(url) {
-  if (!url) return null;
   const parts = url.split('/');
   return parts[parts.length - 1] || null;
 }
 
-async function getHighestBookId() {
-  const highest = await prisma.book.findFirst({ orderBy: { id: 'desc' } });
-  return highest?.id ?? 0;
-}
-
-async function upsertBooks(books) {
-  let count = 0;
-  for (const item of books) {
-    const id = Number(item.id);
-    const transformedBook = {
-      id,
-      title: item.kirjannimi,
-      author: item.Kirjailija,
-      file_name: extractFileName(item.url),
-      file_url: item.url,
-      txt_url: null,
-      pdf_url: null,
-      upload_date: new Date(),
-      metadata: {},
-    };
-
-    // 1) Fetch & fix the raw text
-    const { book: rawText } = await processBook(id);
-    // 2) Generate PDF bytes
-    const pdfBytes = await createPdfFromRawText(rawText);
-    // 3) Create buffers for upload
-    const txtBuffer = Buffer.from(rawText, "utf8");
-
-    // 4) Upload TXT
-    const txtName = fileSlug(id, transformedBook.title, "txt");
-    await supabase.storage
-      .from("books-files")
-      .upload(txtName, txtBuffer, {
-        contentType: "text/plain; charset=utf-8",
-        upsert: true,
-      });
-    const { data: { publicUrl: txtUrl } } = supabase.storage
-      .from("books-files")
-      .getPublicUrl(txtName);
-    transformedBook.txt_url = txtUrl;
-
-    // 5) Upload PDF
-    const pdfName = fileSlug(id, transformedBook.title, "pdf");
-    await supabase.storage
-      .from("books-files")
-      .upload(pdfName, pdfBytes, {
-        contentType: "application/pdf",
-        upsert: true,
-      });
-    const { data: { publicUrl: pdfUrl } } = supabase.storage
-      .from("books-files")
-      .getPublicUrl(pdfName);
-    transformedBook.pdf_url = pdfUrl;
-
-    // 6) Upsert into your Postgres
-    await prisma.book.upsert({
-      where: { id },
-      update: transformedBook,
-      create: transformedBook,
-    });
-    count++;
-    console.log(`Imported book ${id}: ${transformedBook.title}`);
-  }
-  return count;
-}
-
+// Main entrypoint
 export async function main() {
   await prisma.$connect();
-  const sourceUrl = 'http://www.lonnrot.net/valmiit.html';
-  console.log(`Fetching books from ${sourceUrl}...`);
-  const highestId = await getHighestBookId();
-  console.log(`Current highest book ID in the database: ${highestId}`);
-  const allBooks = await fetchBooks(sourceUrl);
-  console.log(`Found ${allBooks.length} books on the source.`);
 
-  const newBooks = allBooks.filter(b => Number(b.id) > highestId);
-  console.log(`Processing ${newBooks.length} new books only.`);
+  const SOURCE_URL = 'http://www.lonnrot.net/valmiit.html';
+  console.log(`🔍 Fetching book list from ${SOURCE_URL}`);
+  const allBooks     = await fetchBooks(SOURCE_URL);
+  const highestId    = await getHighestBookId();
+  const newBooks     = allBooks.filter((b) => b.id > highestId);
+
+  console.log(`Found ${allBooks.length} total books. ${newBooks.length} new.`);
+
   if (newBooks.length === 0) {
-    console.log("No new books to import.");
-    await prisma.$disconnect();
-    return;
+    console.log('✅ No new books to import.');
+  } else {
+    const count = await upsertBooks(newBooks);
+    console.log(`\n🚀 Import complete: ${count} books added/updated.`);
   }
-
-  console.log('Upserting books into the database...');
-  const importedCount = await upsertBooks(newBooks);
-  console.log(`Import complete. New books added: ${importedCount}`);
 
   await prisma.$disconnect();
 }
 
+// If run directly, execute main()
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((e) => {
-    console.error(e);
+    console.error('💥 Import script failed:', e);
     prisma.$disconnect().then(() => process.exit(1));
   });
 }

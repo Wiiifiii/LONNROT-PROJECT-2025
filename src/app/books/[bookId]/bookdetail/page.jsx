@@ -186,10 +186,7 @@ export default function BookDetailsPage() {
                 icon={FaDownload}
                 text="Take the Sampo TXT"
                 tooltip="Download original TXT"
-                onClick={() =>
-                  bookData.book.txt_url &&
-                  handleDownload("TXT", bookData.book.txt_url)
-                }
+                onClick={() => book.txt_url && handleDownload("TXT", book.txt_url)}
                 className="flex-1 justify-center"
               />
               <Button
