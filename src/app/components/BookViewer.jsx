@@ -3,10 +3,11 @@
 import React, { useState, useCallback } from "react";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
-import { FaDownload, FaListUl } from "react-icons/fa";
+import { FaDownload, FaListUl, FaInfoCircle, FaBook } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
 import ReadingListSelector from "./ReadingListSelector";
 import Notification from "./Notification";
+import { useRouter } from "next/navigation";
 
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
@@ -14,6 +15,7 @@ import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 export default function BookViewer({ bookId, pdfUrl, book }) {
   const [showListSelector, setShowListSelector] = useState(false);
   const [notification, setNotification] = useState(null);
+  const router = useRouter();
   const layoutPluginInstance = defaultLayoutPlugin();
 
   const handleDownload = useCallback(
@@ -79,6 +81,20 @@ export default function BookViewer({ bookId, pdfUrl, book }) {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm text-white"
           >
             <FaListUl /> Add to List
+          </button>
+          {/* → Go to Book Details */}
+          <button
+            onClick={() => router.push(`/books/${bookId}/bookdetail`)}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm text-white"
+          >
+            <FaInfoCircle /> Details
+          </button>
+          {/* → Back to All Books */}
+          <button
+            onClick={() => router.push("/books")}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm text-white"
+          >
+            <FaBook /> Books
           </button>
         </div>
       </div>
