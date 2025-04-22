@@ -39,6 +39,7 @@ model Book {
   file_name       String?   @db.VarChar(255)
   file_url        String?   @db.VarChar(512)
   pdf_url         String?   @db.VarChar(512)
+  txt_url         String?   @db.VarChar(512)
   upload_date     DateTime? @default(now())
   cover_url       String?   @db.VarChar(512)
   genres          String[]
@@ -78,7 +79,7 @@ model User {
   password_hash    String?
   dateOfBirth      DateTime?
   gender           Gender?
-  profileImage     Bytes?
+  avatar_url       String?   @db.VarChar(512)
   settings         Json?
   bio              String?
   socialMediaLinks Json?
