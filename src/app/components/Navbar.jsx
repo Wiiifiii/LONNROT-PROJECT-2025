@@ -15,6 +15,8 @@ import { PiBooksDuotone } from "react-icons/pi";
 import MenuOverlay from "./MenuOverlay";
 import { useSession, signOut } from "next-auth/react";  // Correct import for useSession and signOut
 import Tooltip from "./Tooltip";
+import { GiTowerFlag } from "react-icons/gi";
+import { GiLion } from "react-icons/gi";
 
 const navLinks = [
   { href: "/admin", title: "Dashboard", Icon: AiOutlineDashboard },
@@ -47,7 +49,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between px-4 py-3">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <SiCodeproject className="text-blue-400" size={24} />
+            <GiLion className="text-blue-400" size={24} />
             <span className="text-2xl font-semibold text-white hover:text-blue-400">
               PROJECT LÖNNROT
             </span>

@@ -3,8 +3,8 @@
 
 import React from 'react'
 import { FaListAlt } from 'react-icons/fa'
-import BookCardCompact from '@/app/components/BooksCardCompact'
-import Button from '@/app/components/Button'
+import BooksCardCompact from './BooksCardCompact'
+import Button from './Button'
 
 export default function SearchResults({
   loading,
@@ -23,33 +23,35 @@ export default function SearchResults({
     return <p className="text-white">No books found.</p>
   }
 
+  const totalPages = Math.ceil(total / limit)
+
   return (
     <section className="space-y-6">
       <h2 className="flex items-center justify-center gap-2 text-2xl font-bold text-white my-8">
         <FaListAlt /> Search Results ({total})
       </h2>
 
-      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-        {books.map((b) => (
-          <BookCardCompact key={b.id} book={b} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {books.map(book => (
+          <BooksCardCompact key={book.id} book={book} />
         ))}
       </div>
 
-      {/* Simple pagination controls */}
+      {/* Updated pagination controls with smaller sizes on mobile */}
       {total > limit && (
-        <div className="flex justify-center space-x-4 mt-6">
+        <div className="flex justify-center items-center space-x-2 mt-8">
           <Button
             onClick={() => onPageChange(Math.max(1, page - 1))}
-            text="Previous"
+            text="‹ Prev"
+            className="px-2 py-1 text-xs sm:px-3 sm:py-1 sm:text-sm bg-gray-700 rounded disabled:opacity-50"
           />
-          <span className="text-white px-4 py-2">
-            Page {page} / {Math.ceil(total / limit)}
+          <span className="text-white px-2 py-1 text-xs sm:px-4 sm:py-2 sm:text-sm">
+            Page {page} / {totalPages}
           </span>
           <Button
-            onClick={() =>
-              onPageChange(Math.min(Math.ceil(total / limit), page + 1))
-            }
-            text="Next"
+            onClick={() => onPageChange(page + 1)}
+            text="Next ›"
+            className="px-2 py-1 text-xs sm:px-3 sm:py-1 sm:text-sm bg-gray-700 rounded disabled:opacity-50"
           />
         </div>
       )}
