@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function ComingSoon({ featureName = "This page" }) {
   return (
-    <BackgroundWrapper>
+    
       <div className="min-h-[80vh] flex flex-col items-center justify-center space-y-6 text-white p-4">
         <h1 className="text-4xl font-bold">🎉 {featureName} Coming Soon! 🎉</h1>
         <p className="text-lg text-gray-300">
@@ -19,6 +19,6 @@ export default function ComingSoon({ featureName = "This page" }) {
           ← Back to Home
         </Link>
       </div>
-    </BackgroundWrapper>
+   
   );
 }

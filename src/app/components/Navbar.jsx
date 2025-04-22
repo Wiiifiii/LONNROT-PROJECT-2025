@@ -19,7 +19,7 @@ import { GiTowerFlag } from "react-icons/gi";
 import { GiLion } from "react-icons/gi";
 
 const navLinks = [
-  { href: "/admin", title: "Dashboard", Icon: AiOutlineDashboard },
+  { href: "/dashboard", title: "Dashboard", Icon: AiOutlineDashboard },
   { href: "/", title: "Home", Icon: AiFillHome },
   { href: "/books", title: "Bookshelf", Icon: GiMagicGate },
   { href: "/my-reading-lists", title: "My Saga Lists", Icon: SiMagic },
