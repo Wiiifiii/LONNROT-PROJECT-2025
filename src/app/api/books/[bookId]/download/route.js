@@ -9,8 +9,9 @@ import { PassThrough } from 'stream';
 
 const prisma = new PrismaClient();
 
-export async function GET(request, { params }) {
-  const { bookId } = params;  // no await here, params are already extracted
+export async function GET(request, context) {
+  // Await the params before extracting properties:
+  const { bookId } = await Promise.resolve(context.params);
   const format = request.nextUrl.searchParams.get('format');
 
   // only support pdf & txt
