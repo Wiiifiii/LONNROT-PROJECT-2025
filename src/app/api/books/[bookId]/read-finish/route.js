@@ -1,7 +1,8 @@
 // src/app/api/books/[bookId]/read-finish/route.js
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";  // Import NextAuth's getToken for session management
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 import { InteractionType } from "@/lib/constants"; // Import InteractionType constants
 
 const prisma = new PrismaClient();
@@ -10,10 +11,13 @@ export async function POST(request, ctx) {
   const { bookId } = await ctx.params;
   const id = Number(bookId);
 
-  // Fetch the token to verify the user's authentication status
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-  // If not authenticated, fall back to the lo_sid cookie for anonymous session
-  const sessionId = token ? `user_${token.id}` : request.cookies.get("lo_sid")?.value ?? "anon";
+  // Fetch user session to verify authentication
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const userId = session.user.id;
+  const sessionId = `user_${userId}`;
 
   // Log the READ_FINISH interaction using the InteractionType constant
   await prisma.bookInteraction.create({

@@ -1,7 +1,8 @@
 // src/app/api/books/[bookId]/stats/route.js
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";  // Import getToken to check if the user is authenticated
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 
 const prisma = new PrismaClient();
 
@@ -17,12 +18,10 @@ export async function GET(req, { params }) {
     return NextResponse.json({ error: "Bad id" }, { status: 400 });
   }
 
-  // Fetch the token to verify the user's authentication status
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-
-  // Optionally, you could check if the user is authenticated here
-  if (!token) {
-    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+  // Fetch the session to verify the user's authentication status
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   // Fetch the interaction counts for the specified bookId

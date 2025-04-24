@@ -9,7 +9,8 @@ import { PrismaClient } from "@prisma/client";
 import { PDFDocument } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import parseBook from "@/scripts/parseBook.js";
-import { getToken } from "next-auth/jwt"; // Import NextAuth's getToken for session management
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 import { InteractionType } from "@/lib/constants"; // Import InteractionType constants
 
 const prisma = new PrismaClient();
@@ -20,8 +21,12 @@ export async function GET(request, ctx) {
 
   try {
     // Fetch user session to track interaction
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-    const sessionId = token ? `user_${token.id}` : request.cookies.get("lo_sid")?.value ?? "anon";
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = session.user.id;
+    const sessionId = `user_${userId}`;
 
     // Log the extraction interaction
     await prisma.bookInteraction.create({
