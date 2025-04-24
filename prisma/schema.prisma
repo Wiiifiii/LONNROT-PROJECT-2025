@@ -188,4 +188,5 @@ enum InteractionType {
   READ_START
   READ_FINISH
   EXTRACT
+  REVIEW
 }
