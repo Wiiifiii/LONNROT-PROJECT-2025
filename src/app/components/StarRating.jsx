@@ -1,13 +1,19 @@
-// Summary: Renders a star rating component that displays a row of 5 stars. Clicking a star updates the rating via a callback.
-
+// src/app/components/StarRating.jsx
 "use client";
 
 import React from "react";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
-export default function StarRating({ rating, onChange }) {
+/**
+ * @param {number} rating – Current rating value (1–5)
+ * @param {(number) => void} [onChange] – Callback when a star is clicked
+ * @param {boolean} [readOnly] – If true, disables clicking
+ */
+export default function StarRating({ rating = 0, onChange, readOnly = false }) {
   const handleStarClick = (value) => {
-    onChange(value);
+    if (!readOnly && onChange) {
+      onChange(value);
+    }
   };
 
   return (
@@ -16,7 +22,7 @@ export default function StarRating({ rating, onChange }) {
         <span
           key={value}
           onClick={() => handleStarClick(value)}
-          style={{ cursor: "pointer" }}
+          style={{ cursor: readOnly ? "default" : "pointer" }}
         >
           {value <= rating ? (
             <FaStar className="text-yellow-400" />

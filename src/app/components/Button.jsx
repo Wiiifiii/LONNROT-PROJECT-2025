@@ -7,9 +7,14 @@ const Button = ({ icon: Icon, text, tooltip, onClick, className = '' }) => {
   const btn = (
     <button
       onClick={onClick}
-      className={`w-full sm:w-auto inline-flex items-center gap-1 px-2 py-1 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300 text-ms ${className}`}
+      className={`
+        w-full sm:w-auto inline-flex items-center justify-center gap-2
+        px-4 py-2 bg-[#374151] text-white rounded-full
+        hover:bg-[#111827] transition duration-300 text-sm font-medium
+        ${className}
+      `}
     >
-      {Icon && <Icon className="mr-1" />}
+      {Icon && <Icon className="text-sm" />}
       {text}
     </button>
   );

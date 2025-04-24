@@ -32,7 +32,7 @@ const Home = () => {
                         </Link>
                     </div>
                     <div className="p-6">
-                        <img src="/images/el.jpg" alt="Elias Lönnrot" className="rounded shadow-lg" />
+                        <img src="/images/homepage.png" alt="Elias Lönnrot" className="rounded shadow-lg" />
                     </div>
                 </div>
             </section>
