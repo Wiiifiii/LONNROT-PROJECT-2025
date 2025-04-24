@@ -3,22 +3,21 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";  // Import NextAuth's getToken for session handling
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(request) {
-  // Fetch the token to verify the user's authentication status
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-
-  // If the user is not authenticated, return an error
-  if (!token?.user?.id) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+export async function GET() {
+  // Fetch the session to verify the user's authentication status
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const userIdStr = token.user.id.toString();
-  const userIdNum = parseInt(token.user.id, 10);
+  const userId = session.user.id;
+  const userIdStr = userId.toString();
+  const userIdNum = parseInt(userId, 10);
 
   // Fetch the stats: number of finished books and bookmarks
   let booksRead, bookmarks;

@@ -7,24 +7,20 @@ export default function IntroductionTab() {
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        <h2 className="text-3xl font-semibold">Welcome to Projekti Lönnrot</h2>
+        <h2 className="text-3xl font-semibold">Enter Lönnrot’s Mythic Hall</h2>
         <p>
-          Vapaita e‑kirjoja kaikille – a free digital library dedicated to
-          preserving and sharing public‑domain literature.
+          Tales for All, Sung in Eternity – a sacred library where the runes of public lore breathe anew.
         </p>
         <p>
-          Project LÖNNROT is a school project digitizing Finnish and
-          Swedish‑language public‑domain works to preserve them and make them
-          accessible to everyone.
+          Projekti Lönnrot, a quest born of learning, weaves Finnish and Swedish runes into the eternal tapestry, guided by Wiiifiii, scribe of the Nile and North, to summon lore for all to hear.
         </p>
         <p>
-          Our mission is to safeguard literary heritage and ensure our cultural
-          stories remain alive for future generations.
+          Our sacred vow is to guard the songs of old, ensuring the *Kalevala*’s whispers live on for generations yet to come.
         </p>
-           </div>
+      </div>
       <div className="flex justify-center">
         <Image
-          src="/images/el.jpg"
+          src="/images/IntroductionTab.png"
           alt="Elias Lönnrot"
           width={300}
           height={300}

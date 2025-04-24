@@ -1,16 +1,16 @@
 // src/app/api/reviews/route.js
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt"; // Import NextAuth's getToken to handle authentication
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 
 const prisma = new PrismaClient();
 
-export async function GET(request) {
+export async function GET() {
   try {
-    // Check if the user is authenticated
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-    
-    if (!token) {
+    // Check if the user is authenticated using server session
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

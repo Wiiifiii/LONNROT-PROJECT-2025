@@ -1,18 +1,17 @@
 // src/app/api/reviews/[reviewId]/route.js
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";  // Import NextAuth's getToken for session management
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 
 const prisma = new PrismaClient();
 
 export async function GET(request, context) {
   const { reviewId } = context.params;
-  
-  try {
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
-    // Check if the user is authenticated
-    if (!token) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -39,8 +38,8 @@ export async function PUT(request, context) {
   const body = await request.json();
 
   // Check if the user is authenticated and is an admin
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-  if (!token || token.role !== "admin") {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id || session.user.role !== "admin") {
     return NextResponse.json({ error: "Forbidden: Admins only" }, { status: 403 });
   }
 
@@ -64,8 +63,8 @@ export async function DELETE(request, context) {
   const { reviewId } = context.params;
 
   // Check if the user is authenticated and is an admin
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-  if (!token || token.role !== "admin") {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id || session.user.role !== "admin") {
     return NextResponse.json({ error: "Forbidden: Admins only" }, { status: 403 });
   }
 

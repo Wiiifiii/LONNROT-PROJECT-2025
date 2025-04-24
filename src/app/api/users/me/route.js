@@ -3,22 +3,20 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";  // Use NextAuth's getToken for session management
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 // GET current user session
-export async function GET(request) {
-  // Fetch the token from NextAuth to verify the user's authentication status
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-
-  // If the user is not authenticated, return null
-  if (!token?.user?.id) {
-    return NextResponse.json({ user: null });
+export async function GET() {
+  // Fetch the session to verify the user's authentication status
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const userId = parseInt(token.user.id, 10);
+  const userId = parseInt(session.user.id, 10);
 
   // Fetch user details from the database
   const user = await prisma.user.findUnique({
@@ -30,16 +28,13 @@ export async function GET(request) {
 }
 
 // DELETE current user account
-export async function DELETE(request) {
-  // Fetch the token from NextAuth to verify the user's authentication status
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-
-  // If the user is not authenticated, return an error
-  if (!token?.user?.id) {
-    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+export async function DELETE() {
+  // Fetch the session to verify the user's authentication status
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const userId = parseInt(token.user.id, 10);
+  const userId = parseInt(session.user.id, 10);
 
   try {
     // Delete the user from the database

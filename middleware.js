@@ -1,6 +1,7 @@
 // middleware.js
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 
 export async function middleware(request) {
   const { nextUrl: url, method, headers } = request;
@@ -11,30 +12,31 @@ export async function middleware(request) {
     return NextResponse.next();
   }
 
-  // 2) Admin routes: require an admin JWT
+  // 2) Admin routes: require an admin session
   if (pathname.startsWith("/admin")) {
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-    if (!token || token.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized access to admin route" }, { status: 401 });
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id || session.user.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const userId = session.user.id;
     const reqHeaders = new Headers(headers);
-    reqHeaders.set("X-User-Id",   token.id);
-    reqHeaders.set("X-User-Role", token.role);
+    reqHeaders.set("X-User-Id", userId);
+    reqHeaders.set("X-User-Role", session.user.role);
     return NextResponse.next({ request: { headers: reqHeaders } });
   }
 
   // 3) API & non-GET writes: require any authenticated user
   if (method !== "GET") {
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-    if (!token) {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
       return NextResponse.redirect(new URL("/auth/login", url));
     }
     const reqHeaders = new Headers(headers);
-    reqHeaders.set("X-User-Id",   token.id);
-    reqHeaders.set("X-User-Role", token.role);
+    reqHeaders.set("X-User-Id", session.user.id);
+    reqHeaders.set("X-User-Role", session.user.role);
 
     // lock down destructive verbs
-    if ((method === "PUT" || method === "DELETE") && token.role !== "admin") {
+    if ((method === "PUT" || method === "DELETE") && session.user.role !== "admin") {
       return NextResponse.json({ error: "Forbidden: Admins only" }, { status: 403 });
     }
     return NextResponse.next({ request: { headers: reqHeaders } });

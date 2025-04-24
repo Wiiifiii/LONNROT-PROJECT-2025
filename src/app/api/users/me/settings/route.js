@@ -3,21 +3,19 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";  // Import NextAuth's getToken for session management
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(request) {
-  // Fetch the token to verify the user's authentication status
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-
-  // If the user is not authenticated, return an error
-  if (!token?.user?.id) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+export async function GET() {
+  // Fetch the session to verify the user's authentication status
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const userId = parseInt(token.user.id, 10);
+  const userId = parseInt(session.user.id, 10);
 
   // Fetch the user's settings
   let record;
@@ -39,15 +37,12 @@ export async function GET(request) {
 }
 
 export async function PUT(request) {
-  // Fetch the token to verify the user's authentication status
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-
-  // If the user is not authenticated, return an error
-  if (!token?.user?.id) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  // Fetch the session to verify the user's authentication status
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const userId = parseInt(token.user.id, 10);
+  const userId = parseInt(session.user.id, 10);
 
   // Parse the new settings from the request body
   let newSettings;

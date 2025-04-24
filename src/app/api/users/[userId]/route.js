@@ -1,21 +1,19 @@
 // src/app/api/users/[userId]/route.js
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";  // Import NextAuth's getToken for session handling
+import { getServerSession } from "next-auth/next"; // Import NextAuth's getServerSession for session handling
+import { authOptions } from "@/lib/authOptions"; // Import authOptions for NextAuth configuration
 
 const prisma = new PrismaClient();
 
 export async function GET(request, context) {
   try {
-    const params = await context.params;
-    const userId = params.userId;
+    const { userId } = context.params;
     const id = parseInt(userId, 10);
 
-    // Fetch the token to verify the user's authentication status
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-
-    // If the user is not authenticated or doesn't have the correct permissions, return an error
-    if (!token || (token.user.id !== id && token.role !== "admin")) {
+    // Fetch the session to verify the user's authentication status
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id || (session.user.id !== id && session.user.role !== "admin")) {
       return NextResponse.json({ error: "Forbidden: Admins or the user themselves can view" }, { status: 403 });
     }
 
@@ -37,15 +35,12 @@ export async function GET(request, context) {
 
 export async function PUT(request, context) {
   try {
-    const params = await context.params;
-    const userId = params.userId;
+    const { userId } = context.params;
     const id = parseInt(userId, 10);
 
-    // Fetch the token to verify the user's authentication status
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-
-    // If the user is not authenticated or doesn't have admin role, return an error
-    if (!token || (token.user.id !== id && token.role !== "admin")) {
+    // Fetch the session to verify the user's authentication status
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id || (session.user.id !== id && session.user.role !== "admin")) {
       return NextResponse.json({ error: "Forbidden: Admins only" }, { status: 403 });
     }
 
@@ -75,15 +70,12 @@ export async function PUT(request, context) {
 
 export async function DELETE(request, context) {
   try {
-    const params = await context.params;
-    const userId = params.userId;
+    const { userId } = context.params;
     const id = parseInt(userId, 10);
 
-    // Fetch the token to verify the user's authentication status
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-
-    // If the user is not authenticated or doesn't have admin role, return an error
-    if (!token || token.role !== "admin") {
+    // Fetch the session to verify the user's authentication status
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id || session.user.role !== "admin") {
       return NextResponse.json({ error: "Forbidden: Admins only" }, { status: 403 });
     }
 

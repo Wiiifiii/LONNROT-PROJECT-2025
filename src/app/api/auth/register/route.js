@@ -1,12 +1,20 @@
 // Summary: Handles user registration by validating input, checking existing users, hashing passwords, and creating a new user with a default "user" role. Blocks GET requests.
 
 import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
+import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 export async function POST(req) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await req.json();
     const { username, email, password, confirmPassword } = body;
     if (!username || !email || !password || !confirmPassword) {
