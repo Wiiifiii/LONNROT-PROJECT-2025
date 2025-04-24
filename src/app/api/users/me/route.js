@@ -1,47 +1,52 @@
 // src/app/api/users/me/route.js
-export const dynamic = 'force-dynamic'
-export const runtime = 'nodejs'
-
-import { NextResponse } from "next/server";
+import { NextResponse }     from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/authOptions";
-import { PrismaClient } from "@prisma/client";
+import { authOptions }      from "@/lib/authOptions";
+import { PrismaClient }     from "@prisma/client";
+import { hash, compare }    from "bcryptjs";         // ← import compare
 
 const prisma = new PrismaClient();
 
-// GET current user session
-export async function GET() {
-  // Fetch the session to verify the user's authentication status
+export async function PUT(request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const userId = parseInt(session.user.id, 10);
+  const body   = await request.json();
 
-  // Fetch user details from the database
-  const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { id: true, username: true, email: true, avatar_url: true, role: true },
-     });
-
-  return NextResponse.json({ user });
-}
-
-// DELETE current user account
-export async function DELETE() {
-  // Fetch the session to verify the user's authentication status
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // Basic validation
+  if (body.email && !/^\S+@\S+\.\S+$/.test(body.email)) {
+    return NextResponse.json({ error: "Invalid email" }, { status: 400 });
   }
-  const userId = parseInt(session.user.id, 10);
 
-  try {
-    // Delete the user from the database
-    await prisma.user.delete({ where: { id: userId } });
-    return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error('Error deleting user:', err);
-    return NextResponse.json({ error: 'Failed to delete account' }, { status: 500 });
+  const data = {};
+  if (body.displayName != null) data.displayName = body.displayName;
+  if (body.avatarUrl   != null) data.avatar_url   = body.avatarUrl;
+  if (body.email       != null) data.email        = body.email;
+  
+  // Handle password update
+  if (body.currentPassword && body.newPassword) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const valid = await compare(body.currentPassword, user.password_hash);
+    if (!valid) {
+      return NextResponse.json({ error: "Current password is wrong" }, { status: 403 });
+    }
+    data.password_hash = await hash(body.newPassword, 10);
   }
+
+  const updated = await prisma.user.update({
+    where: { id: userId },
+    data,
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      displayName: true,
+      avatar_url: true,
+      role: true,
+    },
+  });
+
+  return NextResponse.json({ success: true, data: updated }, { status: 200 });
 }
