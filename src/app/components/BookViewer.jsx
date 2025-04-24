@@ -1,49 +1,48 @@
-"use client";
+'use client';
 
-import React, { useState, useCallback } from "react";
-import { Worker, Viewer } from "@react-pdf-viewer/core";
-import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
-import { FaDownload, FaListUl, FaInfoCircle, FaBook } from "react-icons/fa";
-import ReadingListSelector from "./ReadingListSelector";
-import Notification from "./Notification";
-import { useRouter } from "next/navigation";
+import React, { useState, useCallback } from 'react';
+import { Worker, Viewer } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import { FaDownload, FaListUl, FaInfoCircle, FaBook } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import Button from './Button';
+import ReadingListSelector from './ReadingListSelector';
+import Notification from './Notification';
+import BackgroundWrapper from './BackgroundWrapper';
 
-import "@react-pdf-viewer/core/lib/styles/index.css";
-import "@react-pdf-viewer/default-layout/lib/styles/index.css";
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
-export default function BookViewer({ bookId, pdfUrl, book }) {
+export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
   const [showListSelector, setShowListSelector] = useState(false);
   const [notification, setNotification] = useState(null);
   const router = useRouter();
   const layoutPluginInstance = defaultLayoutPlugin();
 
-  // Use the URLs directly provided by Prisma
-  const fileUrl = pdfUrl;
-  const txtUrl = book?.txt_url;
-
+  // Handle file download (PDF / TXT)
   const handleDownload = useCallback(
     (format) => {
-      const url = format === "pdf" ? fileUrl : txtUrl;
-      if (!url) return;
-      window.open(url, "_blank", "noopener noreferrer");
+      const url = format === 'pdf' ? pdfUrl : txtUrl;
+      if (!url) {
+        setNotification({
+          type: 'error',
+          message: `${format.toUpperCase()} not available`,
+        });
+        return;
+      }
+      window.open(url, '_blank', 'noopener');
+      // Trigger stats bump (if needed)
       fetch(`/api/books/${bookId}/stats`).catch(() => {});
       setNotification({
-        type: "success",
-        message: `${book?.title} (${format.toUpperCase()}) download started!`,
+        type: 'success',
+        message: `${book.title} ${format.toUpperCase()} download started!`,
       });
     },
-    [bookId, book, fileUrl, txtUrl]
+    [bookId, book, pdfUrl, txtUrl]
   );
 
-  const handleAddSuccess = () => {
-    setNotification({
-      type: "success",
-      message: `${book?.title} added to your reading list!`,
-    });
-  };
-
   return (
-    <div className="flex flex-col items-center space-y-3 px-2 sm:px-4">
+    <div className="flex flex-col h-full">
       {notification && (
         <Notification
           type={notification.type}
@@ -54,70 +53,40 @@ export default function BookViewer({ bookId, pdfUrl, book }) {
       )}
 
       {/* Toolbar */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between w-full bg-[#111827] p-3 rounded space-y-3 md:space-y-0">
-        <div className="text-white max-w-xs">
-          <h1 className="text-xl sm:text-2xl font-bold truncate">
-            {book?.title}
-          </h1>
-          <p className="text-sm text-gray-300 truncate">
-            by {book?.author}
-          </p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
-          <button
-            onClick={() => handleDownload("pdf")}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm text-white"
-          >
-            <FaDownload /> PDF
-          </button>
-          <button
-            onClick={() => handleDownload("txt")}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm text-white"
-          >
-            <FaDownload /> TXT
-          </button>
-          <button
-            onClick={() => setShowListSelector(true)}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm text-white"
-          >
-            <FaListUl /> Add to List
-          </button>
-          <button
-            onClick={() => router.push(`/books/${bookId}/bookdetail`)}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm text-white"
-          >
-            <FaInfoCircle /> Details
-          </button>
-          <button
-            onClick={() => router.push("/books")}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm text-white"
-          >
-            <FaBook /> Books
-          </button>
+      <div className="px-2 sm:px-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between w-full bg-[#111827] p-3 rounded space-y-3 md:space-y-0">
+          <div className="text-white">
+            <h1 className="text-xl sm:text-2xl font-bold truncate">{book.title}</h1>
+            <p className="text-sm text-gray-300 truncate">by {book.author}</p>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+            <Button icon={FaDownload} text="PDF" tooltip="Download PDF" onClick={() => handleDownload('pdf')} />
+            <Button icon={FaDownload} text="TXT" tooltip="Download TXT" onClick={() => handleDownload('txt')} />
+            <Button icon={FaListUl} text="Add to List" tooltip="Add to Reading List" onClick={() => setShowListSelector(true)} />
+            <Button icon={FaInfoCircle} text="Details" tooltip="View Book Details" onClick={() => router.push(`/books/${bookId}/bookdetail`)} />
+            <Button icon={FaBook} text="Books" tooltip="Back to Books" onClick={() => router.push('/books')} />
+          </div>
         </div>
       </div>
 
-      {/* Reading List Selector */}
+      {/* PDF Viewer filling remaining space */}
+      {pdfUrl && (
+        <div className="flex-1 overflow-auto bg-gray-700">
+          <Worker workerUrl="/pdf.worker.min.js">
+            <Viewer fileUrl={pdfUrl} plugins={[layoutPluginInstance]} defaultScale={1} />
+          </Worker>
+        </div>
+      )}
+
+      {/* Reading-list selector */}
       {showListSelector && (
         <ReadingListSelector
           bookId={bookId}
           onClose={() => setShowListSelector(false)}
-          onAddSuccess={handleAddSuccess}
+          onAddSuccess={() =>
+            setNotification({ type: 'success', message: 'Added to list!' })
+          }
         />
-      )}
-
-      {/* PDF Viewer */}
-      {fileUrl && (
-        <div className="w-full max-w-screen-lg flex-1 bg-gray-700 rounded overflow-hidden">
-          <Worker workerUrl="/pdf.worker.min.js">
-            <Viewer
-              fileUrl={fileUrl}
-              plugins={[layoutPluginInstance]}
-              defaultScale={1}
-            />
-          </Worker>
-        </div>
       )}
     </div>
   );
