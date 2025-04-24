@@ -5,6 +5,7 @@ export const InteractionType = {
     DOWNLOAD: 'DOWNLOAD',
     READ_START: 'READ_START',
     READ_FINISH: 'READ_FINISH',
-    EXTRACT: 'EXTRACT',  // New Interaction Type
+    EXTRACT: 'EXTRACT',
+    REVIEW: "REVIEW",  
   };
   

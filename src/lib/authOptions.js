@@ -87,6 +87,19 @@ export const authOptions = {
     error: "/auth/login",   // still mapping all errors to the login page
   },
 
+  // ← Add this block:
+  cookies: {
+    sessionToken: {
+      name: "next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",  // secure only in prod
+      },
+    },
+  },
+
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV !== "production",
 };

@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const total = await prisma.book.count();
-  console.log(`📚  There are ${total} books in the database.`);
+  console.log(`There are ${total} books in the database.`);
   await prisma.$disconnect();
 }
 
