@@ -1,50 +1,46 @@
-// "use client";
-// import { useState } from "react";
-
-// import { signOut } from "next-auth/react"; // Correct import for useSession
-// import Button from "@/app/components/Button";
-
-// export default function DangerTab() {
-//   const [confirm, setConfirm] = useState("");
-//   const deleteAccount = () => {
-//     fetch("/api/users/me", { method: "DELETE" })
-//       .then(() => {
-//         // NextAuth sign out to clear session
-//         signOut({ callbackUrl: "/" });
-//       })
-//       .catch(console.error);
-//   };
-
-//   return (
-//     <div className="space-y-4">
-//       <h3 className="text-xl font-semibold text-red-500">⚠️ Danger Zone</h3>
-//       <p className="text-gray-300">
-//         Permanently delete your account and all data. This action cannot be undone.
-//       </p>
-//       <input
-//         type="text"
-//         placeholder="Type DELETE to confirm"
-//         value={confirm}
-//         onChange={(e) => setConfirm(e.target.value)}
-//         className="w-full p-2 rounded bg-gray-700 text-white focus:outline-none"
-//       />
-//       <Button
-//         text="Delete My Account"
-//         onClick={deleteAccount}
-//         className="w-full bg-red-600 disabled:opacity-50"
-//         disabled={confirm !== "DELETE"}
-//       />
-//     </div>
-//   );
-// }
-
-
-
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-import ComingSoon from "@/app/components/ComingSoon";
+export default function DangerTab() {
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const router = useRouter();
 
-export default function FooBarPage() {
-  return <ComingSoon featureName="Foo / Bar" />;
+  const handleDelete = async () => {
+    const confirmation = confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
+    if (!confirmation) return;
+
+    try {
+      const res = await fetch("/api/users/me", {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to delete account");
+      }
+      setMessage("Account deleted successfully.");
+      // Optionally, log the user out or redirect to a goodbye page.
+      router.push("/goodbye");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  return (
+    <div className="space-y-4 text-white">
+      <h3 className="text-xl font-semibold">Danger Zone</h3>
+      <button
+        onClick={handleDelete}
+        className="px-4 py-2 bg-red-700 hover:bg-red-600 rounded"
+      >
+        Delete Account
+      </button>
+      {message && <p className="text-green-500">{message}</p>}
+      {error && <p className="text-red-500">{error}</p>}
+    </div>
+  );
 }

@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/app/components/Navbar";
 import StatsCard from "@/app/components/StatsCard";
 
-// import each tab
+// tabs...
 import OverviewTab from "./tabs/OverviewTab";
 import ActivityTab from "./tabs/ActivityTab";
+import AccountTab from "./tabs/AccountTab";
 import SecurityTab from "./tabs/SecurityTab";
 import NotificationsTab from "./tabs/NotificationsTab";
 import AppearanceTab from "./tabs/AppearanceTab";
@@ -16,6 +17,7 @@ import DangerTab from "./tabs/DangerTab";
 const TABS = [
   "Overview",
   "Activity",
+  "Account",
   "Security",
   "Notifications",
   "Appearance",
@@ -35,12 +37,29 @@ export default function ProfilePage() {
     return null;
   }
 
+  const { user } = session;
+  const avatarUrl = user.profileImage; // from authOptions callback
+
   return (
     <div
-        className="min-h-screen bg-cover bg-center flex flex-col pt-16" 
-        style={{ backgroundImage: "url('/images/LogInPage.png')" }}
-      >
+      className="min-h-screen bg-cover bg-center flex flex-col pt-16"
+      style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+    >
       <Navbar />
+
+      {/* ─── HEADER WITH AVATAR ───────────────── */}
+      <div className="container mx-auto flex items-center space-x-4 px-4 py-6">
+        <img
+          src={user.profileImage}
+          alt={user.name || user.email}
+          className="h-16 w-16 rounded-full"
+        />
+        <div className="text-white">
+          <h1 className="text-2xl font-semibold">{user.name || user.email}</h1>
+          <p className="text-gray-300 text-sm">{user.email}</p>
+        </div>
+      </div>
+
       <div className="flex flex-grow items-start justify-center mt-4">
         <div className="max-w-5xl w-full flex">
           {/* Tabs */}
@@ -65,6 +84,7 @@ export default function ProfilePage() {
           <div className="w-3/4 bg-gray-800 rounded-r-lg p-6">
             {active === "Overview" && <OverviewTab />}
             {active === "Activity" && <ActivityTab />}
+            {active === "Account"       && <AccountTab />}
             {active === "Security" && <SecurityTab />}
             {active === "Notifications" && <NotificationsTab />}
             {active === "Appearance" && <AppearanceTab />}
