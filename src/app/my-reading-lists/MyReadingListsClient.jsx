@@ -6,8 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FaPlus, FaTrash, FaEye, FaInfoCircle, FaSignInAlt } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
 import Button from "@/app/components/Button";
-import TooltipProvider from "@/app/components/TooltipProvider";
-import NotificationContainer from "@/app/components/NotificationContainer";
+import Tooltip from "@/app/components/Tooltip";
+import Notification from "@/app/components/Notification";
 
 export default function MyReadingListsClient() {
   const { data: session, status } = useSession();
@@ -109,8 +109,8 @@ export default function MyReadingListsClient() {
   }
 
   return (
-    <TooltipProvider>
-      <NotificationContainer>
+    <Tooltip>
+     
         <div>
           {returnTo && (
             <Button
@@ -182,7 +182,6 @@ export default function MyReadingListsClient() {
             ))}
           </div>
         </div>
-      </NotificationContainer>
-    </TooltipProvider>
+    </Tooltip>
   );
 }
