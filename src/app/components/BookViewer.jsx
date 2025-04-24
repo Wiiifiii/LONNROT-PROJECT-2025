@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import Button from './Button';
 import ReadingListSelector from './ReadingListSelector';
 import Notification from './Notification';
-import BackgroundWrapper from './BackgroundWrapper';
 
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
@@ -71,10 +70,12 @@ export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
 
       {/* PDF Viewer filling remaining space */}
       {pdfUrl && (
-        <div className="flex-1 overflow-auto bg-gray-700">
+        <div className="flex-1 overflow-hidden bg-gray-700">
+          <div className="h-[calc(100vh-160px)] overflow-auto">
           <Worker workerUrl="/pdf.worker.min.js">
             <Viewer fileUrl={pdfUrl} plugins={[layoutPluginInstance]} defaultScale={1} />
           </Worker>
+          </div>
         </div>
       )}
 
