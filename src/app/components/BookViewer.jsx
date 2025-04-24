@@ -1,4 +1,6 @@
-'use client';
+
+// src/app/components/BookViewer.jsx
+"use client";
 
 import React, { useState, useCallback } from 'react';
 import { Worker, Viewer } from '@react-pdf-viewer/core';

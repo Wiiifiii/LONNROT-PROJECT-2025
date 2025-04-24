@@ -1,4 +1,5 @@
 // src/app/books/[bookId]/read/page.jsx
+"use client";
 import React from "react";
 import Navbar from "@/app/components/Navbar";
 import BookViewer from "@/app/components/BookViewer";
