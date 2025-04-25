@@ -13,6 +13,7 @@ import { SiMagic } from "react-icons/si";
 import MenuOverlay from "./MenuOverlay";
 import Tooltip from "./Tooltip";
 import { useSession, signOut } from "next-auth/react";
+import { HiOutlineMail } from "react-icons/hi";
 
 // If you want to tweak how Next/Image loads from Supabase:
 const supabaseLoader = ({ src, width, quality }) =>
@@ -20,10 +21,11 @@ const supabaseLoader = ({ src, width, quality }) =>
 
 const DESKTOP_LINKS = [
   { href: "/dashboard",        title: "Realm’s Echo",     Icon: AiOutlineDashboard },
-  { href: "/",                 title: "Kalevala’s Gate",          Icon: AiFillHome },
-  { href: "/books",            title: "Saga Haven",     Icon: GiMagicGate },
-  { href: "/my-reading-lists", title: "My Saga Lists", Icon: SiMagic },
-  { href: "/about",            title: "Kantele’s Guide",Icon: GiMagickTrick },
+  { href: "/",                 title: "Kalevala’s Gate",   Icon: AiFillHome },
+  { href: "/books",            title: "Saga Haven",       Icon: GiMagicGate },
+  { href: "/my-reading-lists", title: "My Saga Lists",    Icon: SiMagic },
+  { href: "/about",            title: "Kantele’s Guide",  Icon: GiMagickTrick },
+  { href: "/contact",          title: "Contact",          Icon: HiOutlineMail },
 ];
 
 export default function Navbar() {
@@ -158,5 +160,5 @@ export default function Navbar() {
         {isOpen && <MenuOverlay links={mobileLinks} />}
       </nav>
     </div>
-)}
-// );
+  );
+}
