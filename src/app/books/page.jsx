@@ -75,12 +75,12 @@ export default function BooksPage() {
 
       <div
         className="backdrop-brightness-50 min-h-screen px-6 py-8 space-y-8 pt-20"
-        style={{
-          backgroundImage: "url('/images/your-bg-image.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "repeat"
-        }}
+        // style={{
+        //  // backgroundImage: "url('/images/your-bg-image.jpg')",
+        //   backgroundSize: "cover",
+        //   backgroundPosition: "center",
+        //   backgroundRepeat: "repeat"
+        // }}
       >
         <Filters
           onApply={handleApply}
