@@ -19,7 +19,7 @@ export default function Card({ book }) {
       onClick={() => router.push(`/books/${book.id}`)}
       className="cursor-pointer rounded-lg p-4 flex flex-col items-center hover:shadow-lg transition-shadow"
       style={{
-        backgroundImage: "url('/images/LogInPage.png')",
+        backgroundImage: "url('/images/card.png')",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         backgroundSize: "cover",

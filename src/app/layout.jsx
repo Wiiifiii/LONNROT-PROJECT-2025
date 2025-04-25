@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
         {/* Meta tag to make it responsive on mobile/ipad */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body className="min-h-screen flex flex-col bg-[url('/images/LogInPage.png')] bg-cover bg-center">
+      <body className="min-h-screen flex flex-col bg-[url('/images/baseImage.png')] bg-cover bg-center">
         <Providers>
           {children} {/* Ensures that the Providers component wraps all children */}
         </Providers>

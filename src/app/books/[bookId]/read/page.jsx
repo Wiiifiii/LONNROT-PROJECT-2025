@@ -1,38 +1,29 @@
 // src/app/books/[bookId]/read/page.jsx
-"use client";
 import React from "react";
 import Navbar from "@/app/components/Navbar";
 import BookViewer from "@/app/components/BookViewer";
+import prisma from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
 
 export default async function ReaderPage({ params }) {
+  // params is a Promise<{ bookId: string }>
   const { bookId } = await params;
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const res = await fetch(`${base}/api/books/${bookId}`, { cache: "no-store" });
-  const json = await res.json();
 
-  if (!res.ok || !json.success) {
+  const book = await prisma.book.findUnique({ where: { id: +bookId } });
+  if (!book) {
     return (
       <div className="min-h-screen flex items-center justify-center text-red-500">
-        Error loading book: {json.error}
+        Error loading book.
       </div>
     );
   }
-
-  const { book } = json.data;
-  // pass in the direct Supabase URLs
-  const pdfUrl = book.pdf_url;
-  const txtUrl = book.txt_url;
 
   return (
     <div className="flex flex-col h-screen bg-gray-900">
       <Navbar />
       <div className="flex-1 pt-16">
-        <BookViewer
-          bookId={bookId}
-          pdfUrl={pdfUrl}
-          txtUrl={txtUrl}
-          book={book}
-        />
+        <BookViewer bookId={bookId} pdfUrl={book.pdf_url} book={book} />
       </div>
     </div>
   );

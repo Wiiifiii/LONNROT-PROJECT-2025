@@ -31,7 +31,7 @@ export default async function BookDetailsPage({ params }) {
   return (
     <main
       className="min-h-screen text-white bg-cover bg-no-repeat bg-center"
-      style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+      style={{ backgroundImage: "url('/images/baseImage.png')" }}
     >
       <Navbar />
       <BookDetailClient

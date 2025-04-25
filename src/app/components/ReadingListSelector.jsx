@@ -54,7 +54,7 @@ export default function ReadingListSelector({ bookId, onClose, onAddSuccess }) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div
         className="bg-gray-800 p-6 rounded-2xl w-[450px] space-y-4 bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+        style={{ backgroundImage: "url('/images/baseImage.png')" }}
       >
         <div className="flex justify-between items-center">
           <h2 className="text-white text-xl font-semibold">

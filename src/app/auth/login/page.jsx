@@ -38,7 +38,7 @@ export default function LoginPage() {
   return (
     <div
       className="flex min-h-screen bg-gray-900 bg-cover bg-center"
-      style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+      style={{ backgroundImage: "url('/images/baseImage.png')" }}
     >
       {/* Centered Form */}
       <div className="flex flex-1 items-center justify-center p-8 bg-black bg-opacity-50">

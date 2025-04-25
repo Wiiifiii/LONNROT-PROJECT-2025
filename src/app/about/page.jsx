@@ -23,7 +23,7 @@ export default function AboutPage() {
   return (
       <div
           className="min-h-screen bg-cover bg-center flex flex-col pt-16" 
-     style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+     style={{ backgroundImage: "url('/images/baseImage.png')" }}
   >
       <Navbar />
       <div className="flex flex-grow items-start justify-center mt-4">

@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'login-pattern': "url('/images/LogInPage.png')",
+        'login-pattern': "url('/images/baseImage.png')",
       },
     },
   },

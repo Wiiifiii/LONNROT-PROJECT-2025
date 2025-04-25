@@ -7,7 +7,7 @@ const Home = () => {
     return (
         <div
           className="min-h-screen bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+          style={{ backgroundImage: "url('/images/baseImage.png')" }}
         >
             <section className="py-5 bg-gray-900 bg-opacity-75">
                 <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 items-center">

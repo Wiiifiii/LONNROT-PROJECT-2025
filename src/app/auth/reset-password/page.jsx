@@ -47,7 +47,7 @@
 //   return (
 //     <div
 //       className="flex min-h-screen bg-gray-900 bg-cover bg-center"
-//       style={{ backgroundImage: "url('/images/LogInPage.png')" }}
+//       style={{ backgroundImage: "url('/images/baseImage.png')" }}
 //     >
 //       <div className="flex flex-1 items-center justify-center p-8 bg-black bg-opacity-50">
 //         <div className="w-full max-w-md bg-gray-800 rounded-2xl shadow-lg p-8 space-y-6">
