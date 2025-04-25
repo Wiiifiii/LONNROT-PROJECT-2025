@@ -1,129 +1,127 @@
-## Heroku Environment Setup
+# ✨ Lönnrot Library
 
-To retrieve your database URL from Heroku, run the following command:
+**A free, open-source digital library to preserve Finnish literary heritage.**
 
+---
+
+## 🏛þ Project Mission
+
+Lönnrot Library is an ongoing project dedicated to collecting, digitizing, and making public-domain Finnish (and Swedish-language) literary works freely available. Our mission is to save our shared history for future generations.
+
+Whether you're a reader, researcher, or cultural enthusiast, this platform invites you to explore lost works, upload better covers, fix titles, and help expand the legacy.
+
+> This platform is under active development — feedback is warmly welcome!
+
+---
+
+## 🎓 Technologies Used
+
+- **Next.js** (App Router)
+- **React** + Tailwind CSS
+- **Prisma** (ORM)
+- **PostgreSQL (Supabase)**
+- **NextAuth** for authentication
+- **Supabase Storage** for book covers and files
+- **Formspree** for contact form (for now)
+- **Email Notifications** via Gmail SMTP
+
+---
+
+## ⚙️ Features
+
+### 📚 Book Features
+- View public-domain Finnish/Swedish books
+- Read books online (PDF Viewer)
+- Download in TXT or PDF format
+- Track views, downloads, and interactions
+- Add books to personal reading lists
+
+### 🔧 Admin Dashboard
+- Manage books, users, reviews
+- Book statistics & highlights
+- Upload cover images
+
+### 🌐 Public Pages
+- About
+- Privacy Policy
+- Terms of Service
+- Contact & Feedback (with working email form)
+
+---
+
+## 🚧 Under Development
+- Upload your own books
+- Community ratings & comments
+- Multi-language UI
+- API Documentation UI panel
+
+---
+
+## 🚀 Getting Started
+
+### ᵀᵃᵇˡᵒᵃʳᵉᵃᵖ
+```bash
+# Clone the repository
+git clone https://github.com/Wiiifiii/LONNROT-PROJECT-2025.git
+cd LONNROT-PROJECT-2025
+
+# Install dependencies
+npm install
+
+# Setup environment
+cp .env.example .env
+# fill in your credentials (see below)
+
+# Run locally
+npm run dev
 ```
-heroku config:get DATABASE_URL --app lonnrot-project
+
+---
+
+## 🔐 Environment Variables
+
+### `.env`
+```env
+DATABASE_URL=postgresql://...        # Supabase/PostgreSQL connection
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+SMTP_FROM="Project Lönnrot <no-reply@lonnrotproject.live>"
+NEXTAUTH_SECRET=...
+NEXTAUTH_URL=http://localhost:3000
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+SUPABASE_URL=https://...supabase.co
+SUPABASE_SERVICE_ROLE_KEY=...
+NEXT_PUBLIC_SUPABASE_URL=https://...supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 ```
 
-Make sure you have the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) installed and that you're logged in using:
+> Tip: Use [App Passwords](https://myaccount.google.com/apppasswords) if using Gmail
 
-```
-heroku login
-```
+---
 
-This command is essential for configuring your app's connection to the production database on Heroku.
+## 📩 Contact & Feedback
 
-## Deployment to Heroku
+The site is still growing and community-driven. If you find a bug, want to suggest a book, or have a better cover image — we'd love to hear from you.
 
-Make sure you've set up your Heroku remote by running:
+### Email:
+**wiiifiii@lonnrotproject.live**
 
-```
-heroku git:remote --app lonnrot-project
-```
+### Contact Page:
+[https://lonnrotproject.live/contact](https://lonnrotproject.live/contact)
 
-Then, to push your latest changes on the main branch to Heroku, simply run:
+---
 
-```
-git push heroku main
-```
+## 🚫 License
 
-This will deploy your application to Heroku.
+This project is open-source under the **MIT License**. Content and uploaded books must be in the public domain.
 
-## Docker Commands
+---
 
-To build the Docker image for your app, run:
+## 🚡 Credits
+- Built by **Wiiifii** 👤
+- Named after **Elias Lönnrot**, compiler of the Kalevala
 
-```
-docker build -t lonnrot-project .
-```
+> Together, we preserve history. ✨
 
-To run the Docker container locally:
-
-```
-docker run -d -p 3000:3000 lonnrot-project
-```
-
-Additional useful commands:
-
-- **Stop a running container:**
-
-  ```
-  docker stop <container_id>
-  ```
-
-- **Remove dangling images:**
-
-  ```
-  docker image prune -f
-  ```
-
-## Available Scripts
-
-You can run the following scripts using Node.js. Make sure you have Node installed on your machine.
-
-- **Import Books**  
-  Imports books data into the database.  
-  **Command:**  
-  ```
-  node src/scripts/importBooks.js
-  ```
-
-- **Delete Books**  
-  Deletes specified books from the database.  
-  **Command:**  
-  ```
-  node src/scripts/deleteBooks.js
-  ```
-
-- **Parse Book**  
-  Parses individual book files to extract and transform data.  
-  **Command:**  
-  ```
-  node src/scripts/parseBook.js
-  ```
-
-- **Scheduler**  
-  Manages periodic tasks such as scheduled imports or data cleanup.  
-  **Command:**  
-  ```
- 
-  ```
-
-## Prisma Commands
-
-- **Run Prisma Migrations:**  
-  Applies any pending database migrations.  
-  **Command:**  
-  ```
-  npx prisma migrate dev
-  ```
-
-- **Open Prisma Studio:**  
-  Opens the Prisma Studio to inspect and manage your database visually.  
-  **Command:**  
-  ```
-  npx prisma studio
-  ```
-
-## Production Deployment
-
-The app is deployed on Heroku with a domain registered via Name.com.  
-Visit the live website at: [https://lonnrotproject.live](https://lonnrotproject.live)
-
-
-# #.env.local
-
-# DATABASE_URL="postgresql://postgres:pass@localhost:5432/lonnrot?schema=public"
-# NEXTAUTH_URL="http://localhost:3000"
-# NEXTAUTH_SECRET="your-dev-secret"
-# JWT_SECRET="your-dev-jwt-secret"
-
-
-# SMTP_HOST=smtp.gmail.com
-# SMTP_PORT=587
-# SMTP_SECURE=false       
-# SMTP_USER=ufo.hamed@gmail.com
-# SMTP_PASS=kmceomllucuqlmfm  
-# SMTP_FROM="Project Lönnrot <no-reply@lonnrotproject.live>"
-# NEXT_PUBLIC_BASE_URL=http://localhost:3000
