@@ -5,7 +5,7 @@ import React from 'react'
 import { FaListAlt } from 'react-icons/fa'
 import BooksCardCompact from './Card'
 import Button from './Button'
-
+import { GiRuneStone } from "react-icons/gi";
 export default function SearchResults({
   loading,
   books,
@@ -28,7 +28,7 @@ export default function SearchResults({
   return (
     <section className="space-y-6">
       <h2 className="flex items-center justify-center gap-2 text-2xl font-bold text-white my-8">
-        <FaListAlt /> Search Results ({total})
+        <GiRuneStone /> Runes Unveiled: ({total})
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

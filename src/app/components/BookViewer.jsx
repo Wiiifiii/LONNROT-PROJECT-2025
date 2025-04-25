@@ -81,7 +81,7 @@ export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
 
             {/* Icons - Shown on desktop with tooltips, hidden on mobile */}
             <div className="hidden md:flex items-center space-x-2">
-              <Tooltip content="Add to list">
+              <Tooltip content="Add to Saga lists">
                 <Button
                   icon={FaListUl}
                   onClick={() => setShowListSelector(true)}
@@ -95,7 +95,7 @@ export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
                   className="p-2 md:p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151] group"
                 />
               </Tooltip>
-              <Tooltip content="Back to books">
+              <Tooltip content="Back to Saga Haven">
                 <Button
                   icon={FaBook}
                   onClick={() => router.push("/books")}
@@ -133,7 +133,7 @@ export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
                   }}
                   className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
                 >
-                  <span className="text-sm">Add to list</span>
+                  <span className="text-sm">Add to Saga lists</span>
                 </Button>
                 <Button
                   icon={FaInfoCircle}

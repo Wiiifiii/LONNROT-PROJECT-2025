@@ -74,14 +74,7 @@ export default function BooksPage() {
       <Navbar />
 
       <div
-        className="backdrop-brightness-50 min-h-screen px-6 py-8 space-y-8 pt-20"
-        // style={{
-        //  // backgroundImage: "url('/images/your-bg-image.jpg')",
-        //   backgroundSize: "cover",
-        //   backgroundPosition: "center",
-        //   backgroundRepeat: "repeat"
-        // }}
-      >
+        className="backdrop-brightness-50 min-h-screen px-6 py-8 space-y-8 pt-20">
         <Filters
           onApply={handleApply}
           onClear={handleClear}
@@ -115,7 +108,7 @@ export function BookViewer({ book, bumpDownload }) {
         rel="noopener"
         className={`inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm ${book.pdf_url ? "" : ""}`}
       >
-        <FaDownload /> PDF
+        <FaDownload /> Keep the Rune PDF
       </a>
 
       <a
@@ -126,7 +119,7 @@ export function BookViewer({ book, bumpDownload }) {
         rel="noopener"
         className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm"
       >
-        <FaDownload /> TXT
+        <FaDownload /> Keep the Rune TXT
       </a>
     </div>
   )

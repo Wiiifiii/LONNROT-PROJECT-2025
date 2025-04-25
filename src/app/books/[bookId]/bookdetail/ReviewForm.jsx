@@ -74,7 +74,7 @@ export default function ReviewForm({ bookId, onNewReview }) {
           type="submit"
           disabled={submitting}
           icon={FaPaperPlane}
-          text={submitting ? "Submitting…" : "Submit Review"}
+          text={submitting ? "Submitting…" : "Seal the Rune"}
           className="self-start"
         />
       </form>

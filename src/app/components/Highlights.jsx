@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react'
 import Button from './Button'
 import { FiArrowRight } from 'react-icons/fi'
-import { GiMagickTrick } from 'react-icons/gi'
 
 export default function Highlights({ onFilter = () => {} }) {
   const [data, setData] = useState(null)
@@ -17,11 +16,18 @@ export default function Highlights({ onFilter = () => {} }) {
   if (!data) return null
 
   const cards = [
-    { title: 'Most Downloaded',    listKey: 'mostDownloaded', link: 'downloads_desc' },
-    { title: 'Recently Added',     listKey: 'recentlyAdded',   link: 'upload_date_desc' },
-    { title: 'Trending This Week', listKey: 'trending',        link: 'trending' },
-    { title: 'Elias Lönnrot’s',    listKey: 'lonnrot',         link: 'lonnrot' },
+    { title: 'Sampo’s Chosen', listKey: 'mostDownloaded', link: 'downloads_desc' },
+    { title: 'Fresh Tales', listKey: 'recentlyAdded', link: 'upload_date_desc' },
+    { title: 'Kantele’s Echo', listKey: 'trending', link: 'trending' },
+    { title: 'Elias Lönnrot’s Runes', listKey: 'lonnrot', link: 'lonnrot' },
   ]
+
+  const fallbackImages = {
+    mostDownloaded: "/images/Most Downloaded.png",
+    recentlyAdded: "/images/Recently Added.png",
+    trending: "/images/Trending This Week.png",
+    lonnrot: "/images/Elias Lönnrot’s Works.png",
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -30,10 +36,19 @@ export default function Highlights({ onFilter = () => {} }) {
         return (
           <div key={listKey} className="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
             <div className="h-40 bg-gray-700 flex items-center justify-center">
-              {sample.cover_url
-                ? <img src={sample.cover_url} alt={sample.title} className="w-full h-full object-cover" />
-                : <GiMagickTrick className="text-white text-5xl" />
-              }
+              {sample.cover_url ? (
+                <img
+                  src={sample.cover_url}
+                  alt={sample.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <img
+                  src={fallbackImages[listKey] || "/images/baseImage.png"}
+                  alt="Fallback"
+                  className="w-full h-full object-cover"
+                />
+              )}
             </div>
             <div className="p-4 space-y-2">
               <h3 className="text-lg font-semibold text-white">{title}</h3>

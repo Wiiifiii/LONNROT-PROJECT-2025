@@ -122,7 +122,7 @@ export default function ManageBooksPage() {
   }
 
   async function handleDeleteBook(bookId) {
-    if (!confirm("Are you sure you want to delete this book?")) return;
+    if (!confirm("Are you sure you want to Unsing the Rune?")) return;
     try {
       const res = await fetch(`/api/books/${bookId}`, { method: "DELETE" });
       const data = await res.json();
@@ -188,7 +188,7 @@ export default function ManageBooksPage() {
                     className="flex items-center bg-[#374151] hover:bg-[#111827] text-white py-1 px-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                   >
                     <FiTrash2 className="mr-1" size={16} />
-                    Delete
+                    Unsing the Rune
                   </button>
                 </div>
               </li>
@@ -298,7 +298,7 @@ export default function ManageBooksPage() {
                   onClick={closeModal}
                   className="bg-[#374151] hover:bg-[#111827] text-white py-2 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 >
-                  Cancel
+                  Fade the Song
                 </button>
                 <button
                   type="submit"

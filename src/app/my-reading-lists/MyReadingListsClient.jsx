@@ -137,7 +137,7 @@ export default function MyReadingListsClient() {
       if (!json.success) throw new Error(json.error);
 
       setLists(l => l.filter(x => x.id !== listId));
-      setMsg("List deleted!");
+      setMsg("List Unsing the Rune!");
       // adjust active tab
       if (activeId === listId) {
         const rem = lists.filter(x => x.id !== listId);
@@ -226,7 +226,7 @@ export default function MyReadingListsClient() {
         title="Delete list?"
         message={`Delete “${confirmDelete.listName}”? This cannot be undone.`}
         confirmText="Delete"
-        cancelText="Cancel"
+        cancelText="Fade the Song"
         onConfirm={confirmDeleteList}
         onCancel={cancelDelete}
       />

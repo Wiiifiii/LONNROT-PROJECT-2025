@@ -46,13 +46,13 @@ export default function ReaderControls({ bookId, pdfUrl, txtUrl }) {
       <div className="flex justify-center space-x-4 my-4">
         <Button 
           onClick={() => window.location.href = '/books'}
-          text="Back to Books" 
+          text="Back to Saga Haven" 
           icon={AiOutlineArrowLeft} 
           tooltip="Return to the books list"
         />
         <Button 
           onClick={() => window.location.href = `/books/${bookId}`}
-          text="Book Details" 
+          text="Seek the Lore" 
           icon={AiOutlineInfoCircle} 
           tooltip="View book details"
         />
@@ -67,7 +67,7 @@ export default function ReaderControls({ bookId, pdfUrl, txtUrl }) {
         />
         <Button 
           onClick={handleAddToList}
-          text="Add to List" 
+          text="Add to Saga lists" 
           icon={FaPlus} 
           tooltip="Add this book to your reading list"
         />

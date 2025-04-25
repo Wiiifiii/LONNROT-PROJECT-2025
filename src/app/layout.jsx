@@ -1,5 +1,6 @@
 // src/app/layout.jsx
 import { Providers } from "./providers";  // Import Providers from providers.jsx
+import Footer from "./components/Footer";
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import './styles/globals.css';
@@ -22,9 +23,13 @@ export default function RootLayout({ children }) {
       </head>
       <body className="min-h-screen flex flex-col bg-[url('/images/baseImage.png')] bg-cover bg-center">
         <Providers>
-          {children} {/* Ensures that the Providers component wraps all children */}
+          <div className="flex-grow">
+            {children}
+          </div>
+          <Footer />
         </Providers>
       </body>
     </html>
   );
 }
+

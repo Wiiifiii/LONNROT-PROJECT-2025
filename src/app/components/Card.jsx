@@ -1,25 +1,37 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Button from './Button'
 import { FaEye, FaInfoCircle, FaDownload } from 'react-icons/fa'
 import { GiMagicAxe } from 'react-icons/gi'
 
-// Dummy bumpDownload function; update with your own logic if needed.
-const bumpDownload = (e) => {
-  console.log('Download action triggered')
-}
-
 export default function Card({ book }) {
   const router = useRouter()
+  const [notification, setNotification] = useState(null)
+
+  const handleDownload = useCallback(
+    (format) => {
+      const url = `/api/books/${book.id}/download?format=${format}`;
+
+      window.open(url, "_blank", "noopener");
+
+      fetch(`/api/books/${book.id}/stats`).catch(() => {});
+
+      setNotification({
+        type: "success",
+        message: `${book.title} ${format.toUpperCase()} download started!`,
+      });
+    },
+    [book]
+  );
 
   return (
     <div
       onClick={() => router.push(`/books/${book.id}`)}
       className="cursor-pointer rounded-lg p-4 flex flex-col items-center hover:shadow-lg transition-shadow"
       style={{
-        backgroundImage: "url('/images/card.png')",
+        backgroundImage: "url('/images/baseImage.png')",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         backgroundSize: "cover",
@@ -49,9 +61,11 @@ export default function Card({ book }) {
           <Button
             icon={FaEye}
             text="Open the Saga"
-            onClick={(e) => {
-              e.stopPropagation()
-              router.push(`/books/${book.id}/read`)
+            onClick={async (e) => {
+              e.stopPropagation();
+              await fetch(`/api/books/${book.id}/read-start`, { method: 'POST' });
+              fetch(`/api/books/${book.id}/stats`).catch(() => {});
+              router.push(`/books/${book.id}/read`);
             }}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base"
           />
@@ -59,37 +73,31 @@ export default function Card({ book }) {
             icon={FaInfoCircle}
             text="Seek the Lore"
             onClick={(e) => {
-              e.stopPropagation()
-              router.push(`/books/${book.id}/bookdetail`)
+              e.stopPropagation();
+              router.push(`/books/${book.id}/bookdetail`);
             }}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base"
           />
         </div>
         <div className="flex flex-col space-y-2 mt-2">
-          <a
-             href={book.txt_url}
+          <button
             onClick={(e) => {
-              e.stopPropagation()
-              bumpDownload(e)
+              e.stopPropagation();
+              handleDownload("txt");
             }}
-            target="_blank"
-            rel="noopener"
             className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base w-full"
           >
-            <FaDownload /> Take the Sampo TXT
-          </a>
-          <a
-            href={book.pdf_url}
+            <FaDownload /> Keep the Sampo TXT
+          </button>
+          <button
             onClick={(e) => {
-              e.stopPropagation()
-              bumpDownload(e)
+              e.stopPropagation();
+              handleDownload("pdf");
             }}
-            target="_blank"
-            rel="noopener"
             className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm w-full"
           >
-            <FaDownload /> PDF
-          </a>
+            <FaDownload /> Keep the Sampo PDF
+          </button>
         </div>
       </div>
     </div>

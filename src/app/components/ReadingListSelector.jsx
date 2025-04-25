@@ -58,7 +58,7 @@ export default function ReadingListSelector({ bookId, onClose, onAddSuccess }) {
       >
         <div className="flex justify-between items-center">
           <h2 className="text-white text-xl font-semibold">
-            Add to Saga List
+            Add to Saga lists
           </h2>
           <button
             onClick={onClose}
@@ -93,7 +93,7 @@ export default function ReadingListSelector({ bookId, onClose, onAddSuccess }) {
             onClick={onClose}
             className="inline-flex items-center gap-2 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300"
           >
-            <FaTimes /> Cancel
+            <FaTimes /> Fade the Song
           </button>
           <button
             onClick={handleAdd}

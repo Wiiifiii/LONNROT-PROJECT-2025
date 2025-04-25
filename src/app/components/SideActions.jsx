@@ -9,7 +9,7 @@ import Tooltip from "./Tooltip";
 export default function SideActions({ onAdd, onDetails, onBack, onDownload, onClose, showReader }) {
   return (
     <div className="absolute left-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-2 z-50">
-      <Tooltip content="Add to list">
+      <Tooltip content="Add to Saga lists">
         <Button
           icon={FaListUl}
           onClick={onAdd}
@@ -23,7 +23,7 @@ export default function SideActions({ onAdd, onDetails, onBack, onDownload, onCl
           className="p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151]"
         />
       </Tooltip>
-      <Tooltip content="Back to books">
+      <Tooltip content="Back to aga Haven">
         <Button
           icon={FaBook}
           onClick={onBack}

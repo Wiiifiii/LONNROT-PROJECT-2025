@@ -19,9 +19,9 @@ const supabaseLoader = ({ src, width, quality }) =>
   `${src}?width=${width}&quality=${quality || 75}`;
 
 const DESKTOP_LINKS = [
-  { href: "/dashboard",        title: "Dashboard",     Icon: AiOutlineDashboard },
-  { href: "/",                 title: "Home",          Icon: AiFillHome },
-  { href: "/books",            title: "Bookshelf",     Icon: GiMagicGate },
+  { href: "/dashboard",        title: "Realm’s Echo",     Icon: AiOutlineDashboard },
+  { href: "/",                 title: "Kalevala’s Gate",          Icon: AiFillHome },
+  { href: "/books",            title: "Saga Haven",     Icon: GiMagicGate },
   { href: "/my-reading-lists", title: "My Saga Lists", Icon: SiMagic },
   { href: "/about",            title: "Kantele’s Guide",Icon: GiMagickTrick },
 ];

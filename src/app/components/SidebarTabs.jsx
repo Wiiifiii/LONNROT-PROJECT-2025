@@ -49,7 +49,7 @@ export default function SidebarTabs({
                 </Tooltip>
 
                 {/* delete icon */}
-                <Tooltip content="Delete list">
+                <Tooltip content="Unsing the Rune list">
                   <button
                     onClick={() => onDeleteRequested(list.id, list.name)}
                     className="p-1 text-red-500 hover:text-red-700"

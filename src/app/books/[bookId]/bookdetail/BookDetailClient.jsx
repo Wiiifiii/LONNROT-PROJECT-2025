@@ -40,7 +40,7 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
         <div className="md:w-1/2">
           <h2 className="text-2xl font-semibold mb-2">Stars & Sagas</h2>
           <Button
-            text={showForm ? "Cancel" : "Leave a Review"}
+            text={showForm ? "Fade" : "Carve Your Rune"}
             onClick={() => setShowForm(f => !f)}
             className="mb-4 px-4 py-2"
           />
@@ -106,42 +106,48 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
               icon={FaEye}
               text="Open the Saga"
               tooltip="Open reader"
-              onClick={() => router.push(`/books/${book.id}/read`)}
+              onClick={async () => {
+                await fetch(`/api/books/${book.id}/read-start`, { method: 'POST' });
+                await fetch(`/api/books/${book.id}/stats`)
+                  .then((r) => r.json())
+                  .then(setStats)
+                  .catch(() => {});
+                router.push(`/books/${book.id}/read`);
+              }}
               className="flex-1 justify-center"
             />
+
             <Button
               icon={FaDownload}
-              text="Take the Sampo TXT"
+              text="Keep the Sampo TXT"
               tooltip="Download original TXT"
-              onClick={() =>
-                window.open(
-                  `/api/books/${book.id}/download?format=txt`,
-                  "_blank",
-                  "noopener"
-                )
-              }
+              onClick={async () => {
+                window.open(`/api/books/${book.id}/download?format=txt`, "_blank", "noopener");
+                await fetch(`/api/books/${book.id}/stats`)
+                  .then((r) => r.json())
+                  .then(setStats)
+                  .catch(() => {});
+              }}
               className="flex-1 justify-center"
             />
+
             <Button
               icon={FaDownload}
               text="Keep the Rune PDF"
-              tooltip={
-                book.pdf_url
-                  ? "Download generated PDF"
-                  : "PDF not available yet"
-              }
-              onClick={() =>
-                window.open(
-                  `/api/books/${book.id}/download?format=pdf`,
-                  "_blank",
-                  "noopener"
-                )
-              }
+              tooltip={book.pdf_url ? "Download generated PDF" : "PDF not available yet"}
+              onClick={async () => {
+                window.open(`/api/books/${book.id}/download?format=pdf`, "_blank", "noopener");
+                await fetch(`/api/books/${book.id}/stats`)
+                  .then((r) => r.json())
+                  .then(setStats)
+                  .catch(() => {});
+              }}
               className="flex-1 justify-center"
             />
+
             <Button
               icon={SiMagic}
-              text="Add to Saga Lists"
+              text="Add to Saga lists"
               tooltip="Add to your reading list"
               onClick={() => setShowReadingListSelector(true)}
               className="flex-1 justify-center"
