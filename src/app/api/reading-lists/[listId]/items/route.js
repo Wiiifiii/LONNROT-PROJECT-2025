@@ -1,55 +1,53 @@
-// Summary: Handles POST requests to add a book to a reading list by validating the input, ensuring the reading list exists and the book isn't already added, and then creating a new reading list item using Prisma.
-
-import { PrismaClient } from "@prisma/client";
+// src/app/api/reading-lists/[listId]/items/route.js
 import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 export const dynamicParams = true;
 
-const prisma = new PrismaClient();
-
-export async function POST(request, context) {
+export async function POST(request, { params: paramsPromise }) {
   try {
-    const params = await Promise.resolve(context).then(ctx => ctx.params);
-    const listId = params.listId;
-    const id = parseInt(listId, 10);
-    const body = await request.json();
+    const { listId: listIdRaw } = await paramsPromise;
+    const listId = parseInt(listIdRaw, 10);
 
-    if (!body.bookId) {
-      return NextResponse.json({ success: false, error: "bookId is required" }, { status: 400 });
+    const { bookId: rawBookId } = await request.json();
+    const bookId = parseInt(rawBookId, 10);
+    if (isNaN(bookId)) {
+      return NextResponse.json(
+        { success: false, error: "bookId is required" },
+        { status: 400 }
+      );
     }
-    const bookId = parseInt(body.bookId, 10);
 
-    const list = await prisma.readingList.findUnique({ where: { id } });
+    // ensure list exists
+    const list = await prisma.readingList.findUnique({ where: { id: listId } });
     if (!list) {
-      return NextResponse.json({ success: false, error: "Reading list not found" }, { status: 404 });
+      return NextResponse.json(
+        { success: false, error: "Reading list not found" },
+        { status: 404 }
+      );
     }
 
-    const existingItem = await prisma.readingListItem.findUnique({
-      where: {
-        readingListId_bookId: {
-          readingListId: id,
-          bookId: bookId,
-        },
-      },
+    // prevent duplicates
+    const existing = await prisma.readingListItem.findUnique({
+      where: { readingListId_bookId: { readingListId: listId, bookId } }
     });
-
-    if (existingItem) {
-      return NextResponse.json({ success: false, error: "Book already added to reading list" }, { status: 400 });
+    if (existing) {
+      return NextResponse.json(
+        { success: false, error: "Book already in list" },
+        { status: 400 }
+      );
     }
 
     const newItem = await prisma.readingListItem.create({
-      data: {
-        readingListId: id,
-        bookId: bookId,
-      },
+      data: { readingListId: listId, bookId }
     });
 
     return NextResponse.json({ success: true, data: newItem }, { status: 201 });
-  } catch (error) {
-    console.error("Error adding book to reading list:", error);
+  } catch (err) {
+    console.error("POST /api/reading-lists/[listId]/items error:", err);
     return NextResponse.json(
-      { success: false, error: "Failed to add book to reading list", details: error.message },
+      { success: false, error: "Failed to add book to list", details: err.message },
       { status: 500 }
     );
   }
