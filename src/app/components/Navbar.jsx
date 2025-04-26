@@ -49,7 +49,7 @@ export default function Navbar() {
     <div className="fixed top-0 left-0 right-0 z-10 group">
       <div className="h-2" />
       <nav className="bg-[#111827] transform -translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-        <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center justify-between px-3 py-2">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <GiLion className="text-blue-400" size={24} />

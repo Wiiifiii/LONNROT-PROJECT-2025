@@ -1,4 +1,3 @@
-// src/app/components/SidebarTabs.jsx
 "use client";
 
 import React from "react";
@@ -10,30 +9,31 @@ export default function SidebarTabs({
   activeId,
   onChange,
   onRename,
-  onDeleteRequested 
+  onDeleteRequested,
 }) {
   return (
-    <aside className="w-full md:w-1/4 bg-gray-800 bg-opacity-50 backdrop-blur-sm p-4">
-      <h2 className="mb-4 text-white font-semibold">Your Lists</h2>
-      <nav className="flex md:flex-col space-x-2 md:space-x-0 md:space-y-2 overflow-auto">
+    <aside className="w-full md:w-1/4 bg-gray-800 bg-opacity-50 backdrop-blur-sm p-4 rounded-lg">
+      <h2 className="mb-4 text-white font-semibold text-lg">Your Lists</h2>
+      <nav className="flex flex-col space-y-2 overflow-auto">
         {lists.length === 0 ? (
           <p className="text-gray-400 italic">No lists yet.</p>
         ) : (
-          lists.map(list => (
-            <div key={list.id} className="flex items-center justify-between">
+          lists.map((list) => (
+            <div
+              key={list.id}
+              className="flex items-center justify-between bg-gray-900 hover:bg-gray-700 rounded"
+            >
               <button
                 onClick={() => onChange(list.id)}
-                className={`
-                  flex-1 text-left px-3 py-2 rounded
+                className={`flex-1 text-left px-4 py-2 rounded-l
                   ${activeId === list.id
                     ? "bg-gray-700 text-white"
-                    : "bg-gray-900 text-gray-400 hover:bg-gray-700 hover:text-white"}
-                `}
+                    : "text-gray-400"}`
+                }
               >
                 {list.name}
               </button>
-              <div className="flex space-x-1 ml-2">
-                {/* rename icon */}
+              <div className="flex items-center space-x-1 px-2">
                 <Tooltip content="Rename list">
                   <button
                     onClick={() => {
@@ -47,9 +47,7 @@ export default function SidebarTabs({
                     <FaEdit />
                   </button>
                 </Tooltip>
-
-                {/* delete icon */}
-                <Tooltip content="Unsing the Rune list">
+                <Tooltip content="Delete list">
                   <button
                     onClick={() => onDeleteRequested(list.id, list.name)}
                     className="p-1 text-red-500 hover:text-red-700"
