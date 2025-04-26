@@ -5,11 +5,19 @@ import { FaSearch } from 'react-icons/fa'
 import Button from './Button'
 import Dropdown from './Dropdown'
 
-export default function Filters({ onApply, onClear }) {
+export default function Filters({ initial = {}, onApply, onClear }) {
   const [q, setQ]                   = useState('')
   const [selectedBook, setSelectedBook]     = useState('')
   const [selectedAuthor, setSelectedAuthor] = useState('')
   const [selectedId, setSelectedId]         = useState('')
+
+  // whenever `initial` changes (modal re-opens), reset our fields
+  useEffect(() => {
+    setQ(initial.search || '')
+    setSelectedBook(initial.bookId || '')
+    setSelectedAuthor(initial.author || '')
+    setSelectedId(initial.originalId || '')
+  }, [initial])
 
   // now populated from API
   const [bookOptions,   setBookOptions]   = useState([])

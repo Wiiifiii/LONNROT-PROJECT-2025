@@ -91,6 +91,7 @@ export default function BooksPage() {
         >
           {activeTab === 'filters' ? (
             <Filters
+              initial={applied}
               onApply={handleApplyAndClose}
               onClear={() => { handleApplyAndClose({ search:'', bookId:'', author:'', originalId:'', sortBy:'' }) }}
             />
