@@ -1,53 +1,59 @@
 // src/app/components/BookViewer.jsx
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FaListUl, FaInfoCircle, FaBook, FaDownload, FaTimes, FaEllipsisV } from "react-icons/fa";
+import {
+  FaListUl,
+  FaInfoCircle,
+  FaBook,
+  FaDownload,
+  FaArrowLeft,
+  FaArrowRight,
+} from "react-icons/fa";
 import Button from "./Button";
 import ReadingListSelector from "./ReadingListSelector";
 import Notification from "./Notification";
 import Tooltip from "./Tooltip";
 
 export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
+  const router = useRouter();
+  const [page, setPage] = useState(1);
   const [showListSelector, setShowListSelector] = useState(false);
   const [notification, setNotification] = useState(null);
-  const [showReader, setShowReader] = useState(true); // Changed to true to show reader immediately
-  const [showMenu, setShowMenu] = useState(false);
-  const router = useRouter();
 
-  const handleDownload = useCallback(
-    (format) => {
-      const url = format === "pdf" ? pdfUrl : txtUrl;
-      if (!url) {
-        setNotification({
-          type: "error",
-          message: `${format.toUpperCase()} not available`,
-        });
-        return;
-      }
-      window.open(url, "_blank", "noopener");
-      fetch(`/api/books/${bookId}/stats`).catch(() => {});
-      setNotification({
-        type: "success",
-        message: `${book.title} ${format.toUpperCase()} download started!`,
-      });
-    },
-    [bookId, book, pdfUrl, txtUrl]
-  );
+  // restore last page
+  useEffect(() => {
+    const saved = localStorage.getItem(`page:book:${bookId}`);
+    if (saved) setPage(Number(saved));
+  }, [bookId]);
 
-  const handleReadClick = () => {
-    setShowReader(true);
+  // save on change
+  useEffect(() => {
+    localStorage.setItem(`page:book:${bookId}`, page);
+  }, [bookId, page]);
+
+  const goPrev = () => setPage((p) => Math.max(1, p - 1));
+  const goNext = () => setPage((p) => p + 1);
+
+  const handleDownload = (format) => {
+    const url = format === "pdf" ? pdfUrl : txtUrl;
+    if (!url) {
+      setNotification({ type: "error", message: `${format.toUpperCase()} not available` });
+      return;
+    }
+    window.open(url, "_blank", "noopener");
+    fetch(`/api/books/${bookId}/stats`).catch(() => {});
+    setNotification({ type: "success", message: `Download started!` });
   };
 
-  const handleCloseReader = () => {
-    setShowReader(false);
-    setShowMenu(false);
-  };
+  // simple iOS detector
+  const isIOS =
+    typeof navigator !== "undefined" &&
+    /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-  const toggleMenu = () => {
-    setShowMenu((prev) => !prev);
-  };
+  // embed URL with fragment
+  const urlWithPage = `${pdfUrl}#page=${page}`;
 
   return (
     <div className="flex flex-col h-full relative">
@@ -60,134 +66,67 @@ export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
         />
       )}
 
-      {/* Main content */}
-      {pdfUrl && !showReader ? (
-        <div className="flex-1 flex items-center justify-center bg-gray-700">
+      {/* Toolbar */}
+      <div className="flex items-center bg-gray-900 text-white p-3 space-x-2 shadow">
+        <Button icon={FaArrowLeft} onClick={goPrev} tooltip="Previous Page" />
+        <span>Page {page}</span>
+        <Button icon={FaArrowRight} onClick={goNext} tooltip="Next Page" />
+
+        <div className="flex-1" />
+
+        <Tooltip content="Add to Saga lists">
+          <Button icon={FaListUl} onClick={() => setShowListSelector(true)} />
+        </Tooltip>
+        <Tooltip content="View details">
           <Button
-            onClick={handleReadClick}
-            className="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 text-lg font-semibold"
-          >
-            Read
-          </Button>
-        </div>
-      ) : pdfUrl && showReader ? (
-        <div className="flex-1 flex flex-col bg-gray-800 relative">
-          {/* Custom PDF Viewer Toolbar */}
-          <div className="flex items-center p-2 md:p-4 bg-gray-900 text-white shadow-md">
-            {/* Book Title and Author - Truncated on mobile */}
-            <h2 className="text-lg md:text-xl font-semibold truncate flex-1">
-              {book.title} {book.author ? `by ${book.author}` : ""}
-            </h2>
+            icon={FaInfoCircle}
+            onClick={() => router.push(`/books/${bookId}/bookdetail`)}
+          />
+        </Tooltip>
+        <Tooltip content="Back to Saga Haven">
+          <Button icon={FaBook} onClick={() => router.push("/books")} />
+        </Tooltip>
+        <Tooltip content="Download PDF">
+          <Button icon={FaDownload} onClick={() => handleDownload("pdf")} />
+        </Tooltip>
+      </div>
 
-            {/* Icons - Shown on desktop with tooltips, hidden on mobile */}
-            <div className="hidden md:flex items-center space-x-2">
-              <Tooltip content="Add to Saga lists">
-                <Button
-                  icon={FaListUl}
-                  onClick={() => setShowListSelector(true)}
-                  className="p-2 md:p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151] group"
-                />
-              </Tooltip>
-              <Tooltip content="View details">
-                <Button
-                  icon={FaInfoCircle}
-                  onClick={() => router.push(`/books/${bookId}/bookdetail`)}
-                  className="p-2 md:p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151] group"
-                />
-              </Tooltip>
-              <Tooltip content="Back to Saga Haven">
-                <Button
-                  icon={FaBook}
-                  onClick={() => router.push("/books")}
-                  className="p-2 md:p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151] group"
-                />
-              </Tooltip>
-              <Tooltip content="Download PDF">
-                <Button
-                  icon={FaDownload}
-                  onClick={() => handleDownload("pdf")}
-                  className="p-2 md:p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151] group"
-                />
-              </Tooltip>
-            </div>
-
-            {/* Mobile Menu Button - Shown on mobile, hidden on desktop */}
-            <div className="md:hidden flex items-center">
-              <Button
-                icon={FaEllipsisV}
-                onClick={toggleMenu}
-                className="p-2 rounded-full bg-[#374151]/80 hover:bg-[#374151]"
-              />
-            </div>
-          </div>
-
-          {/* Mobile Menu - Dropdown on mobile */}
-          {showMenu && (
-            <div className="md:hidden absolute top-12 right-2 bg-gray-900 text-white shadow-md rounded-lg z-50">
-              <div className="flex flex-col p-2 space-y-1">
-                <Button
-                  icon={FaListUl}
-                  onClick={() => {
-                    setShowListSelector(true);
-                    setShowMenu(false);
-                  }}
-                  className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
+      {/* PDF display */}
+      <div className="flex-1 bg-gray-800">
+        {pdfUrl ? (
+          isIOS ? (
+            <object
+              data={urlWithPage}
+              type="application/pdf"
+              className="w-full h-full"
+            >
+              <p className="p-4 text-center text-gray-400">
+                Cannot display inline.{" "}
+                <a
+                  href={pdfUrl}
+                  target="_blank"
+                  rel="noopener"
+                  className="underline"
                 >
-                  <span className="text-sm">Add to Saga lists</span>
-                </Button>
-                <Button
-                  icon={FaInfoCircle}
-                  onClick={() => {
-                    router.push(`/books/${bookId}/bookdetail`);
-                    setShowMenu(false);
-                  }}
-                  className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
-                >
-                  <span className="text-sm">View details</span>
-                </Button>
-                <Button
-                  icon={FaBook}
-                  onClick={() => {
-                    router.push("/books");
-                    setShowMenu(false);
-                  }}
-                  className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
-                >
-                  <span className="text-sm">Back to Saga Haven</span>
-                </Button>
-                <Button
-                  icon={FaDownload}
-                  onClick={() => {
-                    handleDownload("pdf");
-                    setShowMenu(false);
-                  }}
-                  className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
-                >
-                  <span className="text-sm">Download PDF</span>
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* PDF Viewer */}
-          <div
-            className="flex-1 overflow-auto"
-            style={{ WebkitOverflowScrolling: "touch" }}
-          >
+                  Download PDF
+                </a>
+              </p>
+            </object>
+          ) : (
             <iframe
-              src={pdfUrl}
+              src={urlWithPage}
               className="w-full h-full border-none"
-              title={`${book.title} PDF`}
+              title={`${book.title} – page ${page}`}
             />
+          )
+        ) : (
+          <div className="flex items-center justify-center h-full text-red-500">
+            No PDF available.
           </div>
-        </div>
-      ) : (
-        <div className="flex-1 flex items-center justify-center text-red-500">
-          No PDF available.
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Reading List Selector */}
+      {/* Reading‐List Selector */}
       {showListSelector && (
         <ReadingListSelector
           bookId={bookId}
