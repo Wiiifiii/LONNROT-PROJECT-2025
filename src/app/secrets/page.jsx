@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Navbar from "@/app/components/Navbar";
 
 // import your new tabs
+import Secrets from "./tabs/Secrets";
 import RunesofAction from "./tabs/RunesofAction";
 import PathsofLore      from "./tabs/PathsofLore";
 import EchoesofFame from "./tabs/EchoesofFame";
@@ -12,6 +13,7 @@ import LoresKeeper           from "./tabs/LoresKeeper";
 
 export default function AboutPage() {
   const TABS = [
+    "Secrets of the Lönnrot Library",
     "Runes of Action",
     "Paths of Lore",
     "Echoes of Fame",
@@ -47,6 +49,7 @@ export default function AboutPage() {
           </ul>
           {/* tab panel */}
           <div className="w-3/4 bg-gray-800 rounded-r-lg p-6 space-y-6 text-white">
+          {active === "Secrets of the Lönnrot Library"     && <Secrets />}
             {active === "Runes of Action"     && <RunesofAction />}
             {active === "Paths of Lore" && <PathsofLore />}
             {active === "Echoes of Fame"   && <EchoesofFame />}

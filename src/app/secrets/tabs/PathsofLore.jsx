@@ -12,7 +12,7 @@ export default function PathsofLore() {
         <img
           src="/images/Paths of Lore.png"
           alt="Paths of Lore"
-          className="mx-auto"
+         className="max-w-xs object-cover rounded-md"
         />
       </div>
     </>

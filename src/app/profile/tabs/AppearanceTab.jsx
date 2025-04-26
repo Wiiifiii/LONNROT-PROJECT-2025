@@ -23,7 +23,8 @@ export default function AppearanceTab() {
       <h3 className="text-xl font-semibold text-white">Appearance</h3>
       <button
         onClick={toggle}
-        className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded text-white"
+        className="flex items-center bg-[#374151] hover:bg-[#111827] text-white py-1 px-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+
       >
         Switch to {mode === "dark" ? "Light" : "Dark"} Mode
       </button>

@@ -54,14 +54,14 @@ export default function ReviewForm({ bookId, onNewReview }) {
       )}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <label className="block mb-1">Your Rating</label>
+          <label className="block mb-1">Rune of Stars</label>
           <StarRating
             rating={rating}
             onChange={setRating}
           />
         </div>
         <div>
-          <label className="block mb-1">Your Comment</label>
+          <label className="block mb-1">Whisper Your Saga</label>
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}

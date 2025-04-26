@@ -12,7 +12,7 @@ export default function NewListForm({ value, onChange, onSubmit, loading }) {
         type="text"
         value={value}
         onChange={e => onChange(e.target.value)}
-        placeholder="New list name"
+        placeholder="Forge a New Scroll"
         disabled={loading}
         className="flex-1 px-4 py-2 bg-gray-800 text-white rounded-l-md focus:outline-none"
       />

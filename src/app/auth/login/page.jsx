@@ -85,7 +85,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => router.push('/auth/forgot-password')}
                 icon={FiLock}
-                text="Forgot password"
+                text="Forgotten Rune"
                 className="w-full justify-center bg-gray-700 hover:bg-gray-600"
               />
             </div>

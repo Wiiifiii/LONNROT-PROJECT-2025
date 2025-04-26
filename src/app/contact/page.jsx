@@ -60,7 +60,7 @@ export default function ContactPage() {
             disabled={status === 'sending'}
             icon={FaPaperPlane}
             text={status === 'sending' ? 'Sending...' : 'Send Message'}
-            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 transition"
+            className="w-full px-4 py-2 transition"
           />
 
           {status === 'sent' && <p className="text-green-400 text-center">✅ Message sent successfully! Thank you!</p>}

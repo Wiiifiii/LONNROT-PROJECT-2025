@@ -57,7 +57,8 @@ export default function SecurityTab() {
         </div>
         <button
           type="submit"
-          className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded"
+          className="flex items-center bg-[#374151] hover:bg-[#111827] text-white py-1 px-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+
         >
           Change Password
         </button>

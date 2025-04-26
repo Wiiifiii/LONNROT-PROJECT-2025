@@ -12,7 +12,7 @@ export default function LoresKeeper() {
         <img
           src="/images/Lore’s Keeper.png"
           alt="Lore’s Keeper"
-          className="mx-auto"
+         className="max-w-xs object-cover rounded-md"
         />
       </div>
     </>

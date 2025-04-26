@@ -153,7 +153,7 @@ export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
                   }}
                   className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
                 >
-                  <span className="text-sm">Back to books</span>
+                  <span className="text-sm">Back to Saga Haven</span>
                 </Button>
                 <Button
                   icon={FaDownload}

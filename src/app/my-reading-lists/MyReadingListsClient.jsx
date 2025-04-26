@@ -141,7 +141,7 @@ export default function MyReadingListsClient() {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar of list tabs */}
         <aside className="md:w-1/4 bg-gray-800 bg-opacity-50 backdrop-blur-sm p-4 rounded-lg">
-          <h2 className="mb-4 text-white font-semibold">Your Lists</h2>
+          <h2 className="mb-4 text-white font-semibold">Your Saga Lists</h2>
           <nav className="space-y-2 overflow-auto">
             {lists.length === 0 && (
               <p className="text-gray-400 italic">No lists yet.</p>
@@ -176,7 +176,7 @@ export default function MyReadingListsClient() {
           <div className="mb-6">
             {returnTo && (
               <Button
-                text="← Back to book"
+                text="← Back to Saga Haven"
                 onClick={() => router.push(returnTo)}
                 className="mb-2"
               />
@@ -192,7 +192,7 @@ export default function MyReadingListsClient() {
           <form onSubmit={createList} className="flex gap-2 mb-6">
             <input
               type="text"
-              placeholder="New list name"
+              placeholder="Forge a New Scroll"
               value={newName}
               onChange={e => setNewName(e.target.value)}
               className="flex-1 px-4 py-2 rounded-lg bg-gray-700 text-white"

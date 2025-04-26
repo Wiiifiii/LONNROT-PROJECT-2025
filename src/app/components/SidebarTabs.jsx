@@ -13,7 +13,7 @@ export default function SidebarTabs({
 }) {
   return (
     <aside className="w-full md:w-1/4 bg-gray-800 bg-opacity-50 backdrop-blur-sm p-4 rounded-lg">
-      <h2 className="mb-4 text-white font-semibold text-lg">Your Lists</h2>
+      <h2 className="mb-4 text-white font-semibold text-lg">Your Saga Lists</h2>
       <nav className="flex flex-col space-y-2 overflow-auto">
         {lists.length === 0 ? (
           <p className="text-gray-400 italic">No lists yet.</p>

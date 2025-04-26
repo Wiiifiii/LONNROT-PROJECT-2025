@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
       <BackgroundWrapper>
       <div className="flex h-full items-center justify-center">
           <div className="w-full max-w-md bg-gray-800 p-8 rounded-lg shadow-lg space-y-6">
-            <h2 className="text-2xl text-white text-center">Forgot Password</h2>
+            <h2 className="text-2xl text-white text-center">Forgotten Rune</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <FloatingInput
                 id="email"

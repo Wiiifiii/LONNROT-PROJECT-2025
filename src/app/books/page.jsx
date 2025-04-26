@@ -91,7 +91,7 @@ export default function BooksPage() {
                 : 'text-gray-400'
               }`}
           >
-            Filters
+            Rune Weaving
           </button>
           <button
             onClick={() => setActiveTab('highlights')}
@@ -100,7 +100,7 @@ export default function BooksPage() {
                 : 'text-gray-400'
               }`}
           >
-            Highlights
+           Gleaming Tomes
           </button>
         </div>
         {activeTab === 'filters' ? (
@@ -120,9 +120,9 @@ export default function BooksPage() {
         <div className="flex flex-col items-center mb-8 space-y-2">
           <h2 className="text-2xl text-white font-semibold">Refine Your Library</h2>
           <div className="flex gap-4">
-            <Button text="Filters" onClick={() => { setActiveTab('filters'); setShowModal(true) }} />
-            <Button text="Highlights" onClick={() => { setActiveTab('highlights'); setShowModal(true) }} />
-            <Button text="Show All" onClick={handleShowAll} />
+            <Button text="Rune Weaving" onClick={() => { setActiveTab('filters'); setShowModal(true) }} />
+            <Button text="Gleaming Tomes" onClick={() => { setActiveTab('highlights'); setShowModal(true) }} />
+            <Button text="Unveil All Runes" onClick={handleShowAll} />
           </div>
         </div>
 

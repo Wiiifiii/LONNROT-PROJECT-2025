@@ -12,7 +12,7 @@ export default function EchoesofFame() {
         <img
           src="/images/Echoes of Fame.png"
           alt="Echoes of Fame"
-          className="mx-auto"
+          className="max-w-xs object-cover rounded-md"
         />
       </div>
     </>
