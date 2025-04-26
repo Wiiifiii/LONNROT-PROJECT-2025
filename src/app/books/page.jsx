@@ -1,9 +1,11 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import Navbar from '@/app/components/Navbar'
+import Modal from '@/app/components/Modal'
 import Filters from '@/app/components/Filters'
 import Highlights from '@/app/components/Highlights'
 import SearchResults from '@/app/components/SearchResults'
+import Button from '@/app/components/Button'
 
 export default function BooksPage() {
   // ① Filters the user has applied
@@ -15,18 +17,18 @@ export default function BooksPage() {
   const [results, setResults] = useState([])
   const [total,   setTotal]   = useState(0)
   const [page,    setPage]    = useState(1)
-
-  // now state so we can bump to 81 for highlights
   const [limit,  setLimit]  = useState(20)
-
   const [loading, setLoading] = useState(false)
 
-  // ③ Re‐fetch whenever filters, page or limit change
+  // ③ Modal + tab state
+  const [showModal, setShowModal] = useState(false)
+  const [activeTab, setActiveTab] = useState('filters') // 'filters' or 'highlights'
+
+  // fetch whenever filters / page / limit change
   useEffect(() => {
     async function fetchResults() {
       setLoading(true)
       const { search, bookId, author, originalId, sortBy } = applied
-
       const params = new URLSearchParams()
       if (search)     params.set('searchQuery', search)
       if (bookId)     params.set('book',        bookId)
@@ -44,44 +46,60 @@ export default function BooksPage() {
       }
       setLoading(false)
     }
-
     fetchResults()
-  }, [applied, page, limit])  // ← include limit here now
+  }, [applied, page, limit])
 
-  // ④ Called by Filters → normal paged search
-  const handleApply = filters => {
+  // ④ Handlers that also close the modal
+  const handleApplyAndClose = filters => {
     setApplied(filters)
-    setApplied({ ...filters, sortBy: '' })
-    setPage(1)
-    setLimit(20)      // go back to 20 items/page
-  }
-
-  const handleClear = () => {
-    setApplied({ search:'', bookId:'', author:'', originalId:'', sortBy:'' })
     setPage(1)
     setLimit(20)
+    setShowModal(false)
+    // reset sortBy if you want default sort on new search
+    setApplied(f => ({ ...filters, sortBy: '' }))
   }
 
-  // ⑤ Called by Highlights → “See all” 81‑item list
-  const handleHighlightFilter = sortKey => {
+  const handleHighlightAndClose = sortKey => {
     setApplied(a => ({ ...a, sortBy: sortKey }))
     setPage(1)
-    setLimit(81)      // fetch 81 items for this highlight
+    setLimit(81)
+    setShowModal(false)
   }
 
   return (
     <>
       <Navbar />
 
-      <div
-        className="backdrop-brightness-50 min-h-screen px-6 py-8 space-y-8 pt-20">
-        <Filters
-          onApply={handleApply}
-          onClear={handleClear}
-        />
+      <div className="backdrop-brightness-50 min-h-screen px-6 py-8 space-y-8 pt-20">
+        {/* Toolbar buttons */}
+        <div className="flex justify-end gap-2 mb-4">
+          <Button
+            text="Filters"
+            onClick={() => { setActiveTab('filters'); setShowModal(true) }}
+          />
+          <Button
+            text="Highlights"
+            onClick={() => { setActiveTab('highlights'); setShowModal(true) }}
+          />
+        </div>
 
-        <Highlights onFilter={handleHighlightFilter} />
+        {/* Our shared Modal */}
+        <Modal
+          isOpen={showModal}
+          title={activeTab === 'filters' ? 'Filters' : 'Highlights'}
+          onClose={() => setShowModal(false)}
+        >
+          {activeTab === 'filters' ? (
+            <Filters
+              onApply={handleApplyAndClose}
+              onClear={() => { handleApplyAndClose({ search:'', bookId:'', author:'', originalId:'', sortBy:'' }) }}
+            />
+          ) : (
+            <Highlights onFilter={handleHighlightAndClose} />
+          )}
+        </Modal>
 
+        {/* Results */}
         <SearchResults
           loading={loading}
           books={results}
@@ -93,34 +111,5 @@ export default function BooksPage() {
         />
       </div>
     </>
-  )
-}
-
-import { FaDownload } from 'react-icons/fa'
-
-export function BookViewer({ book, bumpDownload }) {
-  return (
-    <div>
-      <a
-        href={book.pdf_url} 
-        onClick={bumpDownload}
-        target="_blank"
-        rel="noopener"
-        className={`inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm ${book.pdf_url ? "" : ""}`}
-      >
-        <FaDownload /> Keep the Rune PDF
-      </a>
-
-      <a
-         href={book.txt_url}
-        onClick={bumpDownload}
-        download
-        target="_blank"
-        rel="noopener"
-        className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm"
-      >
-        <FaDownload /> Keep the Rune TXT
-      </a>
-    </div>
   )
 }
