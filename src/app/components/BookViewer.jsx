@@ -1,192 +1,197 @@
+
 // src/app/components/BookViewer.jsx
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Document, Page, pdfjs } from "react-pdf";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-
-import {
-  FaListUl,
-  FaInfoCircle,
-  FaBook,
-  FaDownload,
-  FaArrowLeft,
-  FaArrowRight,
-} from "react-icons/fa";
+import { FaListUl, FaInfoCircle, FaBook, FaDownload, FaTimes, FaEllipsisV } from "react-icons/fa";
 import Button from "./Button";
 import ReadingListSelector from "./ReadingListSelector";
 import Notification from "./Notification";
 import Tooltip from "./Tooltip";
 
-// tell pdfjs where its worker lives
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.js",
-  import.meta.url
-).toString();
-
 export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
-  const router = useRouter();
-
-  // page state + persist
-  const [page, setPage] = useState(1);
-  const [numPages, setNumPages] = useState(null);
-  useEffect(() => {
-    const saved = localStorage.getItem(`page:book:${bookId}`);
-    if (saved) setPage(Number(saved));
-  }, [bookId]);
-  useEffect(() => {
-    localStorage.setItem(`page:book:${bookId}`, page);
-  }, [bookId, page]);
-
-  // fetch PDF blob to hand to React-PDF
-  const [pdfData, setPdfData] = useState(null);
-  const [pdfError, setPdfError] = useState(false);
-  useEffect(() => {
-    if (!pdfUrl) return;
-    fetch(pdfUrl)
-      .then((res) => {
-        if (!res.ok) throw new Error("fetch failed");
-        return res.blob();
-      })
-      .then((blob) => {
-        if (blob.type !== "application/pdf") throw new Error("not pdf");
-        setPdfData(blob);
-        setPdfError(false);
-      })
-      .catch(() => {
-        setPdfData(null);
-        setPdfError(true);
-      });
-  }, [pdfUrl]);
-
-  // toolbar buttons
-  const goPrev = () => setPage((p) => Math.max(1, p - 1));
-  const goNext = () => setPage((p) =>
-    numPages ? Math.min(numPages, p + 1) : p + 1
-  );
-  const bumpStat = useCallback((format) => {
-    const url = format === "pdf" ? pdfUrl : txtUrl;
-    if (!url) {
-      notify("error", `${format.toUpperCase()} not available`);
-      return;
-    }
-    window.open(url, "_blank");
-    fetch(`/api/books/${bookId}/stats`).catch(() => {});
-    notify("success", `Download started ✔`);
-  }, [bookId, pdfUrl, txtUrl]);
-  const notify = (type, message) => setNotification({ type, message });
-
-  // reading-list modal
   const [showListSelector, setShowListSelector] = useState(false);
   const [notification, setNotification] = useState(null);
+  const [showReader, setShowReader] = useState(true); // Changed to true to show reader immediately
+  const [showMenu, setShowMenu] = useState(false);
+  const router = useRouter();
 
-  // fallback detection
-  const isIOS =
-    typeof navigator !== "undefined" &&
-    /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const handleDownload = useCallback(
+    (format) => {
+      const url = format === "pdf" ? pdfUrl : txtUrl;
+      if (!url) {
+        setNotification({
+          type: "error",
+          message: `${format.toUpperCase()} not available`,
+        });
+        return;
+      }
+      window.open(url, "_blank", "noopener");
+      fetch(`/api/books/${bookId}/stats`).catch(() => {});
+      setNotification({
+        type: "success",
+        message: `${book.title} ${format.toUpperCase()} download started!`,
+      });
+    },
+    [bookId, book, pdfUrl, txtUrl]
+  );
 
-  // PDF fragment to jump to page
-  const urlWithFragment = `${pdfUrl}#page=${page}`;
+  const handleReadClick = () => {
+    setShowReader(true);
+  };
+
+  const handleCloseReader = () => {
+    setShowReader(false);
+    setShowMenu(false);
+  };
+
+  const toggleMenu = () => {
+    setShowMenu((prev) => !prev);
+  };
 
   return (
-    <div className="flex flex-col h-full bg-gray-800">
+    <div className="flex flex-col h-full relative">
       {notification && (
         <Notification
           type={notification.type}
           message={notification.message}
           onClose={() => setNotification(null)}
-          duration={2500}
+          duration={3000}
         />
       )}
 
-      {/* ————— Toolbar (always visible) ————— */}
-      <div className="sticky top-0 z-20 flex items-center bg-gray-900 text-white p-3 space-x-2 shadow">
-        <Button icon={FaArrowLeft} onClick={goPrev} tooltip="Prev page" />
-        <span className="font-medium">
-          {page}{numPages ? ` / ${numPages}` : ""}
-        </span>
-        <Button icon={FaArrowRight} onClick={goNext} tooltip="Next page" />
-
-        <div className="flex-1 pl-4">
-          <h2 className="text-lg md:text-xl font-semibold truncate">
-            {book.title} {book.author && `by ${book.author}`}
-          </h2>
-        </div>
-
-        <Tooltip content="Add to Saga lists">
-          <Button icon={FaListUl} onClick={() => setShowListSelector(true)} />
-        </Tooltip>
-        <Tooltip content="View details">
+      {/* Main content */}
+      {pdfUrl && !showReader ? (
+        <div className="flex-1 flex items-center justify-center bg-gray-700">
           <Button
-            icon={FaInfoCircle}
-            onClick={() => router.push(`/books/${bookId}/bookdetail`)}
-          />
-        </Tooltip>
-        <Tooltip content="Back to Saga Haven">
-          <Button icon={FaBook} onClick={() => router.push("/books")} />
-        </Tooltip>
-        <Tooltip content="Download PDF">
-          <Button icon={FaDownload} onClick={() => bumpStat("pdf")} />
-        </Tooltip>
-      </div>
-
-      {/* ————— PDF / fallback embed ————— */}
-      <div className="flex-1 overflow-auto">
-        {pdfData && !pdfError ? (
-          <Document
-            file={pdfData}
-            onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-            onLoadError={() => setPdfError(true)}
-            loading={
-              <div className="text-center text-gray-400 mt-4">
-                Rendering PDF…
-              </div>
-            }
-            className="p-4 flex flex-col items-center"
+            onClick={handleReadClick}
+            className="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 text-lg font-semibold"
           >
-            {Array.from({ length: numPages }).map((_, idx) => (
-              <Page
-                key={idx}
-                pageNumber={idx + 1}
-                width={Math.min(800, window.innerWidth - 32)}
-                className="shadow-lg mb-6"
+            Read
+          </Button>
+        </div>
+      ) : pdfUrl && showReader ? (
+        <div className="flex-1 flex flex-col bg-gray-800 relative">
+          {/* Custom PDF Viewer Toolbar */}
+          <div className="flex items-center p-2 md:p-4 bg-gray-900 text-white shadow-md">
+            {/* Book Title and Author - Truncated on mobile */}
+            <h2 className="text-lg md:text-xl font-semibold truncate flex-1">
+              {book.title} {book.author ? `by ${book.author}` : ""}
+            </h2>
+
+            {/* Icons - Shown on desktop with tooltips, hidden on mobile */}
+            <div className="hidden md:flex items-center space-x-2">
+              <Tooltip content="Add to Saga lists">
+                <Button
+                  icon={FaListUl}
+                  onClick={() => setShowListSelector(true)}
+                  className="p-2 md:p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151] group"
+                />
+              </Tooltip>
+              <Tooltip content="View details">
+                <Button
+                  icon={FaInfoCircle}
+                  onClick={() => router.push(`/books/${bookId}/bookdetail`)}
+                  className="p-2 md:p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151] group"
+                />
+              </Tooltip>
+              <Tooltip content="Back to Saga Haven">
+                <Button
+                  icon={FaBook}
+                  onClick={() => router.push("/books")}
+                  className="p-2 md:p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151] group"
+                />
+              </Tooltip>
+              <Tooltip content="Download PDF">
+                <Button
+                  icon={FaDownload}
+                  onClick={() => handleDownload("pdf")}
+                  className="p-2 md:p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151] group"
+                />
+              </Tooltip>
+            </div>
+
+            {/* Mobile Menu Button - Shown on mobile, hidden on desktop */}
+            <div className="md:hidden flex items-center">
+              <Button
+                icon={FaEllipsisV}
+                onClick={toggleMenu}
+                className="p-2 rounded-full bg-[#374151]/80 hover:bg-[#374151]"
               />
-            ))}
-          </Document>
-        ) : pdfError && pdfUrl && !isIOS ? (
-          <iframe
-            src={urlWithFragment}
-            className="w-full h-full border-none"
-            title="PDF fallback"
-          />
-        ) : isIOS && pdfUrl ? (
-          <object
-            data={urlWithFragment}
-            type="application/pdf"
-            className="w-full h-full"
-          >
-            <p className="p-4 text-center text-gray-400">
-              iOS won’t inline-render.{" "}
-              <a href={pdfUrl} className="underline">
-                Download PDF
-              </a>
-            </p>
-          </object>
-        ) : (
-          <div className="flex items-center justify-center h-full text-gray-500">
-            No PDF available
+            </div>
           </div>
-        )}
-      </div>
 
-      {/* ————— Reading-List Selector ————— */}
+          {/* Mobile Menu - Dropdown on mobile */}
+          {showMenu && (
+            <div className="md:hidden absolute top-12 right-2 bg-gray-900 text-white shadow-md rounded-lg z-50">
+              <div className="flex flex-col p-2 space-y-1">
+                <Button
+                  icon={FaListUl}
+                  onClick={() => {
+                    setShowListSelector(true);
+                    setShowMenu(false);
+                  }}
+                  className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
+                >
+                  <span className="text-sm">Add to Saga lists</span>
+                </Button>
+                <Button
+                  icon={FaInfoCircle}
+                  onClick={() => {
+                    router.push(`/books/${bookId}/bookdetail`);
+                    setShowMenu(false);
+                  }}
+                  className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
+                >
+                  <span className="text-sm">View details</span>
+                </Button>
+                <Button
+                  icon={FaBook}
+                  onClick={() => {
+                    router.push("/books");
+                    setShowMenu(false);
+                  }}
+                  className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
+                >
+                  <span className="text-sm">Back to books</span>
+                </Button>
+                <Button
+                  icon={FaDownload}
+                  onClick={() => {
+                    handleDownload("pdf");
+                    setShowMenu(false);
+                  }}
+                  className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
+                >
+                  <span className="text-sm">Download PDF</span>
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* PDF Viewer */}
+          <div className="flex-1 overflow-hidden">
+            <iframe
+              src={pdfUrl}
+              className="w-full h-full border-none"
+              title={`${book.title} PDF`}
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1 flex items-center justify-center text-red-500">
+          No PDF available.
+        </div>
+      )}
+
+      {/* Reading List Selector */}
       {showListSelector && (
         <ReadingListSelector
           bookId={bookId}
           onClose={() => setShowListSelector(false)}
           onAddSuccess={() =>
-            setNotification({ type: "success", message: "Added to list ✔" })
+            setNotification({ type: "success", message: "Added to list!" })
           }
         />
       )}
