@@ -11,6 +11,7 @@ import { SiMagic } from "react-icons/si";
 import { FaEye, FaDownload, FaBookOpen } from "react-icons/fa";
 import { GiMagicGate, GiMagicAxe } from "react-icons/gi";
 import ReadingListSelector from "../../../components/ReadingListSelector";
+import BookCover from "../../../components/BookCover";
 
 export default function BookDetailClient({ book, otherBooks, reviews: initialReviews }) {
   const router = useRouter();
@@ -80,17 +81,18 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
         </div>
 
         <div className="md:w-1/2">
-          {book.cover_url ? (
-            <img
-              src={book.cover_url}
-              alt="Book cover"
-              className="w-50 max-h-40 object-cover rounded"
-            />
-          ) : (
-            <div className="w-50 h-40 flex items-center justify-center bg-gray-700 rounded">
-              <GiMagicAxe className="text-white text-5xl" />
-            </div>
-          )}
+        {book.cover_url ? (
+  <div className="h-40 w-36 rounded-md overflow-hidden bg-gray-800">
+    <img
+      src={book.cover_url}
+      alt="Book cover"
+      className="h-full w-full object-cover"
+    />
+  </div>
+) : (
+  <BookCover title={book.title} author={book.author} />
+)}
+
 
           <div className="flex items-center gap-4 text-sm text-gray-300 mt-2">
             <span className="flex items-center gap-1"><FaDownload /> {stats.DOWNLOAD}</span>

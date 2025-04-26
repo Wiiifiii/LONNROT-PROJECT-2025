@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import Button from './Button'
 import { FaEye, FaInfoCircle, FaDownload } from 'react-icons/fa'
 import { GiMagicAxe } from 'react-icons/gi'
+import BookCover from './BookCover';
+
 
 export default function Card({ book }) {
   const router = useRouter()
@@ -15,7 +17,7 @@ export default function Card({ book }) {
       const url = `/api/books/${book.id}/download?format=${format}`
 
       window.open(url, '_blank', 'noopener')
-      fetch(`/api/books/${book.id}/stats`).catch(() => {})
+      fetch(`/api/books/${book.id}/stats`).catch(() => { })
 
       setNotification({
         type: 'success',
@@ -37,16 +39,17 @@ export default function Card({ book }) {
       }}
     >
       {book.cover_url ? (
+        <div className="h-40 w-32 rounded-md overflow-hidden bg-gray-800">
         <img
           src={book.cover_url}
           alt={book.title}
-          className="h-32 w-24 object-cover rounded-md"
+          className="h-full w-full object-cover"
         />
+      </div>
       ) : (
-        <div className="h-32 w-24 bg-gray-700 rounded-md flex items-center justify-center">
-          <GiMagicAxe className="text-white text-4xl" />
-        </div>
+        <BookCover title={book.title} author={book.author} />
       )}
+
 
       <h3 className="mt-2 text-sm font-semibold text-center line-clamp-2">
         {book.title}
@@ -68,7 +71,7 @@ export default function Card({ book }) {
               await fetch(`/api/books/${book.id}/read-start`, {
                 method: 'POST',
               })
-              fetch(`/api/books/${book.id}/stats`).catch(() => {})
+              fetch(`/api/books/${book.id}/stats`).catch(() => { })
               router.push(`/books/${book.id}/read`)
             }}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base"
