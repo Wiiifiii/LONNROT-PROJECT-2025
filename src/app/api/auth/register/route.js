@@ -1,59 +1,115 @@
-// Summary: Handles user registration by validating input, checking existing users, hashing passwords, and creating a new user with a default "user" role. Blocks GET requests.
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
-import { PrismaClient } from "@prisma/client";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/authOptions";
-import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
+import { NextResponse }    from 'next/server';
+import { createClient }    from '@supabase/supabase-js';
+import { fileSlug }        from '@/lib/slugify.js';
+import prisma              from '@/lib/prisma.js';
+import bcrypt              from 'bcrypt';
 
-const prisma = new PrismaClient();
+// Initialize Supabase client with service-role key
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
-export async function POST(req) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const body = await req.json();
-    const { username, email, password, confirmPassword } = body;
-    if (!username || !email || !password || !confirmPassword) {
-      return new Response(JSON.stringify({ error: "All fields are required" }), { status: 400 });
-    }
-    if (password !== confirmPassword) {
-      return new Response(JSON.stringify({ error: "Passwords do not match" }), { status: 400 });
-    }
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
-      return new Response(JSON.stringify({ error: "Email is already registered" }), { status: 400 });
-    }
-    const hash = await bcrypt.hash(password, 10);
-    const created = await prisma.user.create({
-      data: {
-        username: body.username,
-        email: body.email,
-        password_hash: hash,
-        dateOfBirth: new Date(body.dateOfBirth),
-        gender: body.gender,       // <-- added gender
-        displayName: body.displayName,
-        bio: body.bio,
-        socialMediaLinks: body.socialMediaLinks,
-        // … add any additional fields as needed
-      },
-    });
-    return new Response(
-      JSON.stringify({
-        message: "User registered successfully",
-        user: { id: created.id, email: created.email },
-      }),
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error("Error registering user:", error);
-    return new Response(JSON.stringify({ error: "Failed to register user" }), { status: 500 });
-  }
+// Parse Data URI → { buffer, mime, ext }
+function parseDataUri(dataUri) {
+  const [meta, b64] = dataUri.split(',');
+  const mimeMatch  = meta.match(/data:(.*?);/);
+  if (!mimeMatch) throw new Error('Invalid data URI');
+  const mime   = mimeMatch[1];
+  const ext    = mime.split('/')[1];
+  const buffer = Buffer.from(b64, 'base64');
+  return { buffer, mime, ext };
 }
 
-export async function GET() {
-  return new Response(JSON.stringify({ message: "Method Not Allowed" }), { status: 405 });
+export async function POST(request) {
+  try {
+    const formData = await request.json();
+
+    // 1) Required fields
+    const { 
+      username, email, password, confirmPassword,
+      dateOfBirth, gender, displayName, bio, profileImage 
+    } = formData;
+
+    if (!username || !email || !password || !confirmPassword) {
+      return NextResponse.json(
+        { error: 'Username, email, password and confirmation are required' },
+        { status: 400 }
+      );
+    }
+    if (password !== confirmPassword) {
+      return NextResponse.json(
+        { error: 'Passwords do not match' },
+        { status: 400 }
+      );
+    }
+
+    // 2) Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // 3) Create user record
+    const newUser = await prisma.user.create({
+      data: {
+        username,
+        email,
+        password_hash: hashedPassword,
+        dateOfBirth:    dateOfBirth ? new Date(dateOfBirth) : null,
+        gender:         gender || null,
+        displayName:    displayName || null,
+        bio:            bio || null,
+        socialMediaLinks: {}            // you can populate later
+      },
+    });
+
+    // 4) If front-end sent a base64 avatar, upload it
+    let avatarUrl = null;
+    if (profileImage) {
+      const { buffer, mime, ext } = parseDataUri(profileImage);
+      const fileName = fileSlug(newUser.id, 'avatar', ext);
+      const { error: uploadErr } = await supabase
+        .storage
+        .from('avatars')
+        .upload(fileName, buffer, { contentType: mime, upsert: true });
+      if (uploadErr) throw uploadErr;
+
+      const { data: { publicUrl } } = supabase
+        .storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+      avatarUrl = publicUrl;
+
+      await prisma.user.update({
+        where: { id: newUser.id },
+        data:  { avatar_url: avatarUrl },
+      });
+    }
+
+    // 5) Return safe user
+    const safeUser = {
+      id:               newUser.id,
+      username:         newUser.username,
+      email:            newUser.email,
+      displayName:      newUser.displayName,
+      dateOfBirth:      newUser.dateOfBirth,
+      gender:           newUser.gender,
+      bio:              newUser.bio,
+      socialMediaLinks: newUser.socialMediaLinks,
+      avatar_url:       avatarUrl,
+      profileImage:     avatarUrl,
+    };
+
+    return NextResponse.json(
+      { message: 'User created successfully', user: safeUser },
+      { status: 201 }
+    );
+  } catch (err) {
+    console.error('Registration error:', err);
+    return NextResponse.json(
+      { error: err.message || 'Internal server error' },
+      { status: 500 }
+    );
+  }
 }
