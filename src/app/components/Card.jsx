@@ -29,8 +29,8 @@ export default function Card({ book }) {
 
   return (
     <div
-      onClick={() => router.push(`/books/${book.id}`)}
-      className="cursor-pointer rounded-lg p-4 flex flex-col items-center hover:shadow-lg transition-shadow"
+    onClick={() => router.push(`/books/${book.id}/bookdetail`)}
+    className="cursor-pointer rounded-lg p-4 flex flex-col items-center hover:shadow-lg transition-shadow"
       style={{
         backgroundImage: "url('/images/baseImage.png')",
         backgroundRepeat: 'no-repeat',
