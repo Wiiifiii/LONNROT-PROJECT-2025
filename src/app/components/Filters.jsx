@@ -33,8 +33,13 @@ export default function Filters({ onApply, onClear }) {
         setAuthorOptions(
           json.authors.map(a => ({ value: a, label: a }))
         )
+
+        // sort originalIds descending (numeric) before setting
+        const sortedIds = Array.isArray(json.originalIds)
+          ? [...json.originalIds].sort((a, b) => b - a)
+          : []
         setIdOptions(
-          json.originalIds.map(id => ({ value: String(id), label: String(id) }))
+          sortedIds.map(id => ({ value: String(id), label: String(id) }))
         )
       })
       .catch(console.error)
@@ -105,10 +110,10 @@ export default function Filters({ onApply, onClear }) {
         />
       </div>
 
-      {/* Orig. ID select */}
+      {/* Orig. ID select (now sorted desc) */}
       <div className="w-full md:flex-1">
         <label htmlFor="origId" className="block text-sm text-gray-200 mb-1">
-          Orig. ID
+          Orig. ID
         </label>
         <Dropdown
           id="origId"

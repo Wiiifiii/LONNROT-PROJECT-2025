@@ -31,16 +31,7 @@ export default function BooksPage() {
       if (search)     params.set('searchQuery', search)
       if (bookId)     params.set('book',        bookId)
       if (author)     params.set('author',      author)
-      if (originalId) {
-        // Assuming originalId is a comma‐separated string of numbers,
-        // sort them from highest to lowest for the dropdown display.
-        const sortedIds = originalId
-          .split(',')
-          .map(id => Number(id))
-          .sort((a, b) => b - a)
-          .join(',');
-        params.set('origId', sortedIds);
-      }
+      if (originalId) params.set('origId',      originalId)
       if (sortBy)     params.set('sort',        sortBy)
       params.set('page',  String(page))
       params.set('limit', String(limit))
