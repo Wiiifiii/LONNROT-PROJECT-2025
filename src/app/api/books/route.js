@@ -99,7 +99,8 @@ export async function GET(request) {
     }
     if (bookId)  where.id     = Number(bookId);
     if (author)  where.author = author;
-    if (origId)  where.origId = origId;
+   // if (origId)  where.origId = origId;
+   if (origId)  where.id     = Number(origId);
 
     const skip = (page - 1) * limit;
     const take = limit;

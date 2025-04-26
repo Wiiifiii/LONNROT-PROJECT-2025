@@ -12,19 +12,18 @@ export default function Card({ book }) {
 
   const handleDownload = useCallback(
     (format) => {
-      const url = `/api/books/${book.id}/download?format=${format}`;
+      const url = `/api/books/${book.id}/download?format=${format}`
 
-      window.open(url, "_blank", "noopener");
-
-      fetch(`/api/books/${book.id}/stats`).catch(() => {});
+      window.open(url, '_blank', 'noopener')
+      fetch(`/api/books/${book.id}/stats`).catch(() => {})
 
       setNotification({
-        type: "success",
+        type: 'success',
         message: `${book.title} ${format.toUpperCase()} download started!`,
-      });
+      })
     },
     [book]
-  );
+  )
 
   return (
     <div
@@ -32,9 +31,9 @@ export default function Card({ book }) {
       className="cursor-pointer rounded-lg p-4 flex flex-col items-center hover:shadow-lg transition-shadow"
       style={{
         backgroundImage: "url('/images/baseImage.png')",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        backgroundSize: "cover",
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
       }}
     >
       {book.cover_url ? (
@@ -53,6 +52,9 @@ export default function Card({ book }) {
         {book.title}
       </h3>
       <p className="text-xs text-white text-center">{book.author}</p>
+      <p className="text-[10px] text-gray-400 text-center mt-1">
+        Original ID: {book.id}
+      </p>
 
       {/* Action Buttons */}
       <div className="mt-2 w-full">
@@ -62,10 +64,12 @@ export default function Card({ book }) {
             icon={FaEye}
             text="Open the Saga"
             onClick={async (e) => {
-              e.stopPropagation();
-              await fetch(`/api/books/${book.id}/read-start`, { method: 'POST' });
-              fetch(`/api/books/${book.id}/stats`).catch(() => {});
-              router.push(`/books/${book.id}/read`);
+              e.stopPropagation()
+              await fetch(`/api/books/${book.id}/read-start`, {
+                method: 'POST',
+              })
+              fetch(`/api/books/${book.id}/stats`).catch(() => {})
+              router.push(`/books/${book.id}/read`)
             }}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base"
           />
@@ -73,8 +77,8 @@ export default function Card({ book }) {
             icon={FaInfoCircle}
             text="Seek the Lore"
             onClick={(e) => {
-              e.stopPropagation();
-              router.push(`/books/${book.id}/bookdetail`);
+              e.stopPropagation()
+              router.push(`/books/${book.id}/bookdetail`)
             }}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base"
           />
@@ -82,8 +86,8 @@ export default function Card({ book }) {
         <div className="flex flex-col space-y-2 mt-2">
           <button
             onClick={(e) => {
-              e.stopPropagation();
-              handleDownload("txt");
+              e.stopPropagation()
+              handleDownload('txt')
             }}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base w-full"
           >
@@ -91,8 +95,8 @@ export default function Card({ book }) {
           </button>
           <button
             onClick={(e) => {
-              e.stopPropagation();
-              handleDownload("pdf");
+              e.stopPropagation()
+              handleDownload('pdf')
             }}
             className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm w-full"
           >

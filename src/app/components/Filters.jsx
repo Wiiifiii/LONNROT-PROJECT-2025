@@ -6,54 +6,59 @@ import Button from './Button'
 import Dropdown from './Dropdown'
 
 export default function Filters({ initial = {}, onApply, onClear }) {
+  // ─── Form state ───
   const [q, setQ]                   = useState('')
   const [selectedBook, setSelectedBook]     = useState('')
   const [selectedAuthor, setSelectedAuthor] = useState('')
   const [selectedId, setSelectedId]         = useState('')
 
-  // whenever `initial` changes (modal re-opens), reset our fields
-  useEffect(() => {
-    setQ(initial.search || '')
-    setSelectedBook(initial.bookId || '')
-    setSelectedAuthor(initial.author || '')
-    setSelectedId(initial.originalId || '')
-  }, [initial])
-
-  // now populated from API
+  // ─── Options from API ───
   const [bookOptions,   setBookOptions]   = useState([])
   const [authorOptions, setAuthorOptions] = useState([])
   const [idOptions,     setIdOptions]     = useState([])
 
-  const onChangeQ      = e => setQ(e.target.value)
-  const onChangeBook   = e => setSelectedBook(e.target.value)
-  const onChangeAuthor = e => setSelectedAuthor(e.target.value)
-  const onChangeId     = e => setSelectedId(e.target.value)
-
-  // Fetch your actual /api/books/filters shape
+  // Fetch filter-dropdown data once
   useEffect(() => {
     fetch('/api/books/filters')
       .then(r => r.json())
       .then(json => {
-        // your route returns { books, authors, originalIds }
+        // books → { value, label }
         setBookOptions(
           json.books.map(b => ({ value: String(b.id), label: b.title }))
         )
+        // authors → { value, label }
         setAuthorOptions(
           json.authors.map(a => ({ value: a, label: a }))
         )
-
-        // sort originalIds descending (numeric) before setting
-        const sortedIds = Array.isArray(json.originalIds)
+        // originalIds sorted descending
+        const sorted = Array.isArray(json.originalIds)
           ? [...json.originalIds].sort((a, b) => b - a)
           : []
         setIdOptions(
-          sortedIds.map(id => ({ value: String(id), label: String(id) }))
+          sorted.map(id => ({ value: String(id), label: String(id) }))
         )
       })
       .catch(console.error)
   }, [])
 
-  const applyFilters = () => {
+  // When the modal opens or `initial` changes, seed the inputs
+  useEffect(() => {
+    setQ(initial.search     || '')
+    setSelectedBook(initial.bookId     || '')
+    setSelectedAuthor(initial.author   || '')
+    setSelectedId(initial.originalId   || '')
+  }, [initial])
+
+  // Clear only the form fields
+  const clearFilters = () => {
+    setQ('')
+    setSelectedBook('')
+    setSelectedAuthor('')
+    setSelectedId('')
+  }
+
+  // Apply & close happens in the parent
+  const apply = () => {
     onApply({
       search:     q,
       bookId:     selectedBook,
@@ -62,18 +67,10 @@ export default function Filters({ initial = {}, onApply, onClear }) {
     })
   }
 
-  const clearFilters = () => {
-    setQ('')
-    setSelectedBook('')
-    setSelectedAuthor('')
-    setSelectedId('')
-    onClear()
-  }
-
   return (
-    <div className="flex flex-wrap items-end gap-4 mb-6">
-      {/* Search box */}
-      <div className="w-full md:flex-1">
+    <div className="space-y-4 mb-6">
+      {/* Search */}
+      <div>
         <label htmlFor="q" className="block text-sm text-gray-200 mb-1">
           Search
         </label>
@@ -82,7 +79,7 @@ export default function Filters({ initial = {}, onApply, onClear }) {
             id="q"
             type="text"
             value={q}
-            onChange={onChangeQ}
+            onChange={e => setQ(e.target.value)}
             placeholder="Keyword, author…"
             className="w-full px-4 py-2 bg-gray-700 rounded-md text-white"
           />
@@ -90,8 +87,8 @@ export default function Filters({ initial = {}, onApply, onClear }) {
         </div>
       </div>
 
-      {/* Book select */}
-      <div className="w-full md:flex-1">
+      {/* Book */}
+      <div>
         <label htmlFor="book" className="block text-sm text-gray-200 mb-1">
           Book
         </label>
@@ -99,13 +96,13 @@ export default function Filters({ initial = {}, onApply, onClear }) {
           id="book"
           options={bookOptions}
           value={selectedBook}
-          onChange={onChangeBook}
+          onChange={e => setSelectedBook(e.target.value)}
           className="w-full"
         />
       </div>
 
-      {/* Author select */}
-      <div className="w-full md:flex-1">
+      {/* Author */}
+      <div>
         <label htmlFor="author" className="block text-sm text-gray-200 mb-1">
           Author
         </label>
@@ -113,13 +110,13 @@ export default function Filters({ initial = {}, onApply, onClear }) {
           id="author"
           options={authorOptions}
           value={selectedAuthor}
-          onChange={onChangeAuthor}
+          onChange={e => setSelectedAuthor(e.target.value)}
           className="w-full"
         />
       </div>
 
-      {/* Orig. ID select (now sorted desc) */}
-      <div className="w-full md:flex-1">
+      {/* Orig. ID */}
+      <div>
         <label htmlFor="origId" className="block text-sm text-gray-200 mb-1">
           Orig. ID
         </label>
@@ -127,14 +124,14 @@ export default function Filters({ initial = {}, onApply, onClear }) {
           id="origId"
           options={idOptions}
           value={selectedId}
-          onChange={onChangeId}
+          onChange={e => setSelectedId(e.target.value)}
           className="w-full"
         />
       </div>
 
       {/* Buttons */}
-      <div className="w-full md:w-auto flex gap-2">
-        <Button onClick={applyFilters} text="Apply" />
+      <div className="flex gap-2">
+        <Button onClick={apply}        text="Apply" />
         <Button onClick={clearFilters} text="Clear" />
       </div>
     </div>
