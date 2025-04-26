@@ -170,7 +170,10 @@ export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
           )}
 
           {/* PDF Viewer */}
-          <div className="flex-1 overflow-hidden">
+          <div
+            className="flex-1 overflow-auto"
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
             <iframe
               src={pdfUrl}
               className="w-full h-full border-none"
