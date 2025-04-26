@@ -1,24 +1,37 @@
-// src/app/components/Footer.jsx
-'use client';
+// // src/app/components/Footer.jsx
+'use client'
 
-import Link from 'next/link';
-import { FaGithub } from 'react-icons/fa';
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { FaGithub } from 'react-icons/fa'
 
 export default function Footer() {
+  const pathname = usePathname()
+
+  // Don’t show footer on PDF‐reader pages
+  if (pathname.includes('/read')) {
+    return null
+  }
+
   return (
-    <footer className="text-gray-300 text-sm mt-16 py-6 px-4">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-        <p className="text-center md:text-left">
-          © {new Date().getFullYear()} Lönnrot Library — by <a href="https://github.com/Wiiifiii" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">Wiiifii</a>
-        </p>
-        <div className="flex space-x-4">
-          <Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link>
-          <Link href="/terms-of-service" className="hover:text-white">Terms of Service</Link>
-          <a href="https://github.com/Wiiifiii" target="_blank" rel="noopener noreferrer" className="flex items-center hover:text-white">
-            <FaGithub className="mr-1" /> GitHub
-          </a>
-        </div>
+    <footer className="text-center text-gray-500 text-sm py-4 space-y-2">
+      <div>© {new Date().getFullYear()} Lönnrot Library by Wiiifiii</div>
+      <div className="flex justify-center space-x-4">
+        <Link href="/privacy-policy" className="hover:text-white">
+          Privacy Policy
+        </Link>
+        <Link href="/terms-of-service" className="hover:text-white">
+          Terms of Service
+        </Link>
+        <a
+          href="https://github.com/Wiiifiii"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center hover:text-white"
+        >
+          <FaGithub className="mr-1" /> GitHub
+        </a>
       </div>
     </footer>
-  );
+  )
 }
