@@ -3,13 +3,17 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 export async function GET() {
-  try {
-    const lists = await prisma.readingList.findMany();
-    return NextResponse.json({ success: true, data: lists }, { status: 200 });
-  } catch (err) {
-    console.error("GET /api/reading-lists error:", err);
-    return NextResponse.json({ success: false, error: "Failed to fetch reading lists" }, { status: 500 });
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
   }
+
+  const lists = await prisma.readingList.findMany({
+    where: { userId: session.user.id },
+    select: { id: true, name: true }
+  });
+
+  return NextResponse.json({ success: true, data: lists });
 }
 
 export async function POST(request) {
