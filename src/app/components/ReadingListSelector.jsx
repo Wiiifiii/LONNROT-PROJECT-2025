@@ -41,9 +41,7 @@ export default function ReadingListSelector({ bookId, onClose, onAddSuccess }) {
       if (!res.ok || !json.success) {
         throw new Error(json.error || "Failed to add book");
       }
-      // notify parent
       onAddSuccess();
-      // then close
       onClose();
     } catch (e) {
       setError(e.message);
@@ -53,12 +51,12 @@ export default function ReadingListSelector({ bookId, onClose, onAddSuccess }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div
-        className="bg-gray-800 p-6 rounded-2xl w-[450px] space-y-4 bg-cover bg-center"
+        className="bg-[#111827]  p-6 rounded-2xl w-[450px] space-y-4 bg-cover bg-center"
         style={{ backgroundImage: "url('/images/baseImage.png')" }}
       >
         <div className="flex justify-between items-center">
           <h2 className="text-white text-xl font-semibold">
-            Add to Saga lists
+            Add to Saga Lists
           </h2>
           <button
             onClick={onClose}
@@ -93,7 +91,7 @@ export default function ReadingListSelector({ bookId, onClose, onAddSuccess }) {
             onClick={onClose}
             className="inline-flex items-center gap-2 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300"
           >
-            <FaTimes /> Fade the Song
+            <FaTimes /> Cancel
           </button>
           <button
             onClick={handleAdd}

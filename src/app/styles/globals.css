@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* —————————————————————————————————————————————
+   Your base layer customizations
+   ————————————————————————————————————————————— */
 @layer base {
   html,
   body,
@@ -11,7 +14,7 @@
   }
 
   body {
-    /* keep your login‑pattern bg */
+    /* keep your login-pattern bg */
     @apply bg-login-pattern bg-cover bg-center bg-repeat;
     color: var(--foreground);
     font-family: Arial, Helvetica, sans-serif;
@@ -37,7 +40,6 @@
   }
 }
 
-
 /* ensure inner PDF page always fits its container */
 .rpv-core__inner-page {
   max-width: 100% !important;
@@ -49,7 +51,6 @@
   display: flex    !important;
   justify-content: center !important;
 }
-
 
 @keyframes floatUp {
   0% {
@@ -71,5 +72,16 @@
   }
   50% {
     opacity: 0.7;
+  }
+}
+
+/* —————————————————————————————————————————————
+   Your custom utilities
+   ————————————————————————————————————————————— */
+@layer utilities {
+  /* define the bg-login-pattern you’re applying above */
+  .bg-login-pattern {
+    /* adjust path as needed */
+    background-image: url('/images/baseImage.png');
   }
 }

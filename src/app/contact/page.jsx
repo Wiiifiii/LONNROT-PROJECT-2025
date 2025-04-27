@@ -44,15 +44,15 @@ export default function ContactPage() {
         <form onSubmit={handleSubmit} className="bg-gray-900 p-6 rounded-lg space-y-4 text-lg">
           <label className="block">
             <span>Your Name</span>
-            <input name="name" required className="mt-1 w-full p-2 bg-gray-800 rounded text-white" />
+            <input name="name" required className="mt-1 w-full p-2 bg-[#111827]  rounded text-white" />
           </label>
           <label className="block">
             <span>Your Email</span>
-            <input type="email" name="email" required className="mt-1 w-full p-2 bg-gray-800 rounded text-white" />
+            <input type="email" name="email" required className="mt-1 w-full p-2 bg-[#111827]  rounded text-white" />
           </label>
           <label className="block">
             <span>Your Message</span>
-            <textarea name="message" required rows="5" className="mt-1 w-full p-2 bg-gray-800 rounded text-white"></textarea>
+            <textarea name="message" required rows="5" className="mt-1 w-full p-2 bg-[#111827]  rounded text-white"></textarea>
           </label>
 
           <Button

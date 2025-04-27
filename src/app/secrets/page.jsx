@@ -31,7 +31,7 @@ export default function AboutPage() {
       <div className="flex flex-grow items-start justify-center mt-4">
         <div className="max-w-5xl w-full flex">
           {/* tab list */}
-          <ul className="w-1/4 bg-gray-800 rounded-l-lg overflow-hidden">
+          <ul className="w-1/4 bg-[#111827]  rounded-l-lg overflow-hidden">
             {TABS.map(tab => (
               <li key={tab}>
                 <button
@@ -48,7 +48,7 @@ export default function AboutPage() {
             ))}
           </ul>
           {/* tab panel */}
-          <div className="w-3/4 bg-gray-800 rounded-r-lg p-6 space-y-6 text-white">
+          <div className="w-3/4 bg-[#111827]  rounded-r-lg p-6 space-y-6 text-white">
           {active === "Secrets of the Lönnrot Library"     && <Secrets />}
             {active === "Runes of Action"     && <RunesofAction />}
             {active === "Paths of Lore" && <PathsofLore />}

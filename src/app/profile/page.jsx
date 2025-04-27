@@ -63,7 +63,7 @@ export default function ProfilePage() {
       <div className="flex flex-grow items-start justify-center mt-4">
         <div className="max-w-5xl w-full flex">
           {/* Tabs */}
-          <ul className="w-1/4 bg-gray-800 rounded-l-lg overflow-hidden">
+          <ul className="w-1/4 bg-[#111827]  rounded-l-lg overflow-hidden">
             {TABS.map((tab) => (
               <li key={tab}>
                 <button
@@ -81,7 +81,7 @@ export default function ProfilePage() {
           </ul>
 
           {/* Tab content */}
-          <div className="w-3/4 bg-gray-800 rounded-r-lg p-6">
+          <div className="w-3/4 bg-[#111827]  rounded-r-lg p-6">
             {active === "Overview" && <OverviewTab />}
             {active === "Activity" && <ActivityTab />}
             {active === "Account"       && <AccountTab />}

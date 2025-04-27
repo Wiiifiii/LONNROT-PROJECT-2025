@@ -8,7 +8,7 @@ import Tooltip from "./Tooltip";
 
 export default function ReadingListItemCard({ book, onRead, onDetails, onRemove }) {
   return (
-    <div className="bg-gray-800 rounded-lg shadow-md p-4 flex flex-col justify-between">
+    <div className="bg-[#111827]  rounded-lg shadow-md p-4 flex flex-col justify-between">
       <div>
         <h3 className="text-lg font-bold text-white">{book.title}</h3>
         <p className="text-sm text-gray-400">by {book.author}</p>

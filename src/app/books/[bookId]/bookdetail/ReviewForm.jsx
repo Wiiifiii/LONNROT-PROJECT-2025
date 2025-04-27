@@ -44,7 +44,7 @@ export default function ReviewForm({ bookId, onNewReview }) {
   };
 
   return (
-    <div className="mb-6 p-4 bg-gray-800 rounded">
+    <div className="mb-6 p-4 bg-[#111827]  rounded">
       {notif && (
         <Notification
           type={notif.type}

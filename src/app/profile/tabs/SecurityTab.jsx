@@ -41,7 +41,7 @@ export default function SecurityTab() {
             type="password"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
-            className="w-full p-2 rounded bg-gray-800 text-white"
+            className="w-full p-2 rounded bg-[#111827]  text-white"
             required
           />
         </div>
@@ -51,7 +51,7 @@ export default function SecurityTab() {
             type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full p-2 rounded bg-gray-800 text-white"
+            className="w-full p-2 rounded bg-[#111827]  text-white"
             required
           />
         </div>

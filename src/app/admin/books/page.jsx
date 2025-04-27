@@ -160,7 +160,7 @@ export default function ManageBooksPage() {
           Add New Book
         </button>
       </div>
-      <div className="mt-8 bg-gray-800 p-6 rounded-lg shadow-md">
+      <div className="mt-8 bg-[#111827]  p-6 rounded-lg shadow-md">
         <h2 className="text-3xl font-semibold text-white mb-4">Existing Books</h2>
         {books.length === 0 ? (
           <p className="text-gray-300">No books found.</p>
@@ -202,7 +202,7 @@ export default function ManageBooksPage() {
             className="absolute inset-0 bg-black opacity-50"
             onClick={closeModal}
           ></div>
-          <div className="relative bg-gray-800 p-8 rounded-lg shadow-lg z-10 w-full max-w-2xl">
+          <div className="relative bg-[#111827]  p-8 rounded-lg shadow-lg z-10 w-full max-w-2xl">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-2xl font-bold">
                 {editingBook ? "Edit Book" : "Add New Book"}

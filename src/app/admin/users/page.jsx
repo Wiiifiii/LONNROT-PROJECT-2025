@@ -22,7 +22,7 @@ export default function AdminUsers() {
         </p>
         <Link
           href="/admin"
-          className="mt-4 flex items-center bg-[#1f2937] hover:bg-[#111827] text-white py-2 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          className="mt-4 flex items-center bg-[#111827] hover:bg-[#111827] text-white py-2 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         >
           <FaFastBackward className="mr-2" size={18} />
           Back to Admin Dashboard

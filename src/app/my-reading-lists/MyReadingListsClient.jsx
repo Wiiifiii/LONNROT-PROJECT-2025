@@ -140,7 +140,7 @@ export default function MyReadingListsClient() {
 
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar of list tabs */}
-        <aside className="md:w-1/4 bg-gray-800 bg-opacity-50 backdrop-blur-sm p-4 rounded-lg">
+        <aside className="md:w-1/4 bg-[#111827]  bg-opacity-50 backdrop-blur-sm p-4 rounded-lg">
           <h2 className="mb-4 text-white font-semibold">Your Saga Lists</h2>
           <nav className="space-y-2 overflow-auto">
             {lists.length === 0 && (

@@ -33,7 +33,7 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-            <section className="py-8 bg-gray-800 bg-opacity-75 text-white">
+            <section className="py-8 bg-[#111827]  bg-opacity-75 text-white">
                 <div className="container mx-auto p-4">
                     <h2 className="text-3xl font-semibold mb-4">Our Sacred Quest</h2>
                     <p>

@@ -72,7 +72,7 @@ export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
           </Button>
         </div>
       ) : pdfUrl && showReader ? (
-        <div className="flex-1 flex flex-col bg-gray-800 relative">
+        <div className="flex-1 flex flex-col bg-[#111827]  relative">
           {/* Custom PDF Viewer Toolbar */}
           <div className="flex items-center p-2 md:p-4 bg-gray-900 text-white shadow-md">
             {/* Book Title and Author - Truncated on mobile */}

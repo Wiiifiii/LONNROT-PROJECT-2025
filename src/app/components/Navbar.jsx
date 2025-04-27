@@ -104,7 +104,7 @@ export default function Navbar() {
                     </div>
                   )}
                 </Menu.Button>
-                <Menu.Items className="absolute right-0 mt-2 w-40 bg-gray-800 rounded shadow-lg overflow-hidden">
+                <Menu.Items className="absolute right-0 mt-2 w-40 bg-[#111827]  rounded shadow-lg overflow-hidden">
                   <Menu.Item>
                     {({ active }) => (
                       <Link

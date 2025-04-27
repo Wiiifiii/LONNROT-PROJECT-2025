@@ -39,7 +39,7 @@ export default function Card({ book }) {
       }}
     >
       {book.cover_url ? (
-        <div className="h-40 w-32 rounded-md overflow-hidden bg-gray-800">
+        <div className="h-40 w-32 rounded-md overflow-hidden bg-[#111827] ">
         <img
           src={book.cover_url}
           alt={book.title}

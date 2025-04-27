@@ -78,7 +78,7 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-gray-900 flex justify-center items-center py-12">
-      <div className="max-w-md w-full bg-gray-800 text-white p-8 rounded-lg shadow-lg">
+      <div className="max-w-md w-full bg-[#111827]  text-white p-8 rounded-lg shadow-lg">
         <h2 className="text-3xl font-semibold text-center mb-6">
           {isRegistering ? "Register" : "Login"}
         </h2>

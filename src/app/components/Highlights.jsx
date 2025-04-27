@@ -34,7 +34,7 @@ export default function Highlights({ onFilter = () => {} }) {
       {cards.map(({ title, listKey, link }) => {
         const sample = data[listKey][0] || {}
         return (
-          <div key={listKey} className="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+          <div key={listKey} className="bg-[#111827]  rounded-lg overflow-hidden shadow-lg">
             <div className="h-40 bg-gray-700 flex items-center justify-center">
               {sample.cover_url ? (
                 <img

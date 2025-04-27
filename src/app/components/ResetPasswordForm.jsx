@@ -66,7 +66,7 @@ export default function ResetPasswordForm({ token }) {
       )}
 
       <div className="flex min-h-screen items-center justify-center bg-gray-900 bg-cover bg-center">
-        <div className="w-full max-w-md bg-gray-800 p-8 rounded-lg shadow-lg space-y-6">
+        <div className="w-full max-w-md bg-[#111827]  p-8 rounded-lg shadow-lg space-y-6">
           <h2 className="text-2xl text-white text-center">Reset Password</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <FloatingInput

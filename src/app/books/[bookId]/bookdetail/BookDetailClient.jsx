@@ -64,7 +64,7 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
           {reviews?.length ? (
             <div className="space-y-4 max-h-96 overflow-y-auto">
               {reviews.map((r) => (
-                <div key={r.id} className="p-4 bg-gray-800 rounded">
+                <div key={r.id} className="p-4 bg-[#111827]  rounded">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-semibold">
                       {r.user?.username || r.user?.email || "Anonymous"}
@@ -82,7 +82,7 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
 
         <div className="md:w-1/2">
         {book.cover_url ? (
-  <div className="h-40 w-36 rounded-md overflow-hidden bg-gray-800">
+  <div className="h-40 w-36 rounded-md overflow-hidden bg-[#111827] ">
     <img
       src={book.cover_url}
       alt="Book cover"
