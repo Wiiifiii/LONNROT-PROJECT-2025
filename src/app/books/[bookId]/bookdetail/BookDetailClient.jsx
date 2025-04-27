@@ -8,7 +8,7 @@ import StarRating from "../../../components/StarRating";
 import Notification from "../../../components/Notification";
 import ReviewForm from "./ReviewForm";
 import { SiMagic } from "react-icons/si";
-import { FaEye, FaDownload, FaBookOpen } from "react-icons/fa";
+import { FaEye, FaDownload, FaBookOpen, FaUser } from "react-icons/fa";
 import { GiMagicGate, GiMagicAxe } from "react-icons/gi";
 import ReadingListSelector from "../../../components/ReadingListSelector";
 import BookCover from "../../../components/BookCover";
@@ -16,16 +16,21 @@ import BookCover from "../../../components/BookCover";
 export default function BookDetailClient({ book, otherBooks, reviews: initialReviews }) {
   const router = useRouter();
 
+  // slugify the author for our /authors/[slug] route
+  const authorSlug = book.author
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+
   const [reviews, setReviews] = useState(initialReviews || []);
   const [notif, setNotif] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [showReadingListSelector, setShowReadingListSelector] = useState(false);
-
   const [stats, setStats] = useState({ DOWNLOAD: 0, READ_START: 0, READ_FINISH: 0 });
 
   useEffect(() => {
     fetch(`/api/books/${book.id}/stats`)
-      .then((res) => res.ok ? res.json() : {})
+      .then((res) => (res.ok ? res.json() : {}))
       .then(setStats)
       .catch(() => {});
   }, [book.id]);
@@ -64,7 +69,7 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
           {reviews?.length ? (
             <div className="space-y-4 max-h-96 overflow-y-auto">
               {reviews.map((r) => (
-                <div key={r.id} className="p-4 bg-[#111827]  rounded">
+                <div key={r.id} className="p-4 bg-[#111827] rounded">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-semibold">
                       {r.user?.username || r.user?.email || "Anonymous"}
@@ -81,18 +86,17 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
         </div>
 
         <div className="md:w-1/2">
-        {book.cover_url ? (
-  <div className="h-40 w-36 rounded-md overflow-hidden bg-[#111827] ">
-    <img
-      src={book.cover_url}
-      alt="Book cover"
-      className="h-full w-full object-cover"
-    />
-  </div>
-) : (
-  <BookCover title={book.title} author={book.author} />
-)}
-
+          {book.cover_url ? (
+            <div className="h-40 w-36 rounded-md overflow-hidden bg-[#111827] ">
+              <img
+                src={book.cover_url}
+                alt="Book cover"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          ) : (
+            <BookCover title={book.title} author={book.author} />
+          )}
 
           <div className="flex items-center gap-4 text-sm text-gray-300 mt-2">
             <span className="flex items-center gap-1"><FaDownload /> {stats.DOWNLOAD}</span>
@@ -100,7 +104,14 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
           </div>
 
           <h1 className="text-3xl font-bold mt-4">{book.title}</h1>
-          <p className="text-xl mt-1">{book.author}</p>
+          <p className="text-xl mt-1">
+            <a
+              href={`/authors/${authorSlug}`}
+              className="text-blue-400 hover:underline"
+            >
+              {book.author}
+            </a>
+          </p>
           <p className="mt-4">{book.description}</p>
 
           <div className="mt-4 flex flex-wrap gap-2">
@@ -154,11 +165,20 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
               onClick={() => setShowReadingListSelector(true)}
               className="flex-1 justify-center"
             />
+
             <Button
               icon={GiMagicGate}
               text="To Saga Haven"
               tooltip="Back to all books"
               onClick={() => router.push("/books")}
+              className="flex-1 justify-center"
+            />
+
+            <Button
+              icon={FaUser}
+              text="More about the Author"
+              tooltip="Author page coming soon"
+              onClick={() => router.push(`/authors/${authorSlug}`)}
               className="flex-1 justify-center"
             />
           </div>
