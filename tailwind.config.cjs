@@ -1,4 +1,6 @@
-import typography from '@tailwindcss/typography';
+/* eslint-disable @typescript-eslint/no-require-imports */
+const typography = require('@tailwindcss/typography')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
@@ -9,26 +11,20 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Page background
-        page:       '#f5f5f5',
-        'page-dark':'#0e1217',
-        // Card / reader background
-        card:       '#ffffff',
-        'card-dark':'#111827',
-        // Toolbar background
+        page:        '#f5f5f5',
+        'page-dark': '#0e1217',
+        card:        '#ffffff',
+        'card-dark': '#111827',
         toolbar:       '#ffffff',
         'toolbar-dark':'#111827',
-        // Accent (links, highlights)
-        accent:      '#0284c7',
+        accent:       '#0284c7',
         'accent-dark':'#38bdf8',
-        // Primary text
         'text-primary':      '#111827',
         'text-primary-dark': '#e5e7eb',
-        // Secondary text
         'text-secondary':      '#4b5563',
-        'text-secondary-dark': '#9ca3af',
-      }
-    }
+        'text-secondary-dark':'#9ca3af',
+      },
+    },
   },
   plugins: [
     typography,

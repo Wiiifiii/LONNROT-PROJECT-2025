@@ -29,6 +29,8 @@ export async function GET(request, context) {
       txt_url:   true,
       file_name: true,
       title:     true,
+      author: true,
+      description: true,
     }
   });
   if (!book) {
