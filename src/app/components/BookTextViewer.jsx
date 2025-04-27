@@ -1,29 +1,23 @@
-// src/app/components/BookTextViewer.jsx
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useRouter }                         from 'next/navigation';
-import Tooltip                               from './Tooltip';
-import Notification                          from './Notification';
-import ReadingListSelector                   from './ReadingListSelector';
-import MarkdownRenderer                      from './MarkdownRenderer';
-import TableOfContents                       from './TableOfContents';
+import { useRouter } from 'next/navigation';
+import Tooltip from './Tooltip';
+import Notification from './Notification';
+import ReadingListSelector from './ReadingListSelector';
+import MarkdownRenderer from './MarkdownRenderer';
+import TableOfContents from './TableOfContents';
 import {
   FaArrowLeft,
   FaInfoCircle,
   FaBookmark,
   FaSun,
   FaMoon,
-  FaCoffee
+  FaCoffee,
+  FaDownload
 } from 'react-icons/fa';
 
-/**
- * Turn raw text into “rough” Markdown:
- * - ALL-CAPS lines → headings
- * - lines starting with –, •, * → list items
- * - leading > → blockquotes
- * - single-quoted phrases → *italics*
- */
+/** “Rough” plain-text → Markdown converter */
 function makeRoughMarkdown(txt) {
   return txt
     .split('\n')
@@ -38,7 +32,6 @@ function makeRoughMarkdown(txt) {
       if (t.startsWith('>')) {
         return `> ${t.slice(1).trim()}`;
       }
-      // wrap single-quoted words in *…* for italics
       return line.replace(/'([^']+)'/g, '*$1*');
     })
     .join('\n');
@@ -50,20 +43,20 @@ export default function BookTextViewer({
   bookTitle,
   bookAuthor
 }) {
-  const router       = useRouter();
+  const router = useRouter();
   const containerRef = useRef(null);
 
-  const [fontSize, setFontSize]             = useState(16);
-  const [progress, setProgress]             = useState(0);
-  const [currentPage, setCurrentPage]       = useState(1);
-  const [totalPages, setTotalPages]         = useState(1);
-  const [headings, setHeadings]             = useState([]);
-  const [theme, setTheme]                   = useState('dark');
-  const [showResume, setShowResume]         = useState(false);
-  const [notif, setNotif]                   = useState(null);
+  const [fontSize, setFontSize] = useState(30);
+  const [progress, setProgress] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [headings, setHeadings] = useState([]);
+  const [theme, setTheme] = useState('dark');
+  const [showResume, setShowResume] = useState(false);
+  const [notif, setNotif] = useState(null);
   const [showListSelector, setShowListSelector] = useState(false);
 
-  // theme persistence
+  // Persist theme
   useEffect(() => {
     const saved = localStorage.getItem('reading-theme');
     if (saved) setTheme(saved);
@@ -72,55 +65,68 @@ export default function BookTextViewer({
     localStorage.setItem('reading-theme', theme);
   }, [theme]);
   const cycleTheme = () => {
-    const modes = ['dark','light','sepia'];
+    const modes = ['dark', 'light', 'sepia'];
     setTheme(modes[(modes.indexOf(theme) + 1) % 3]);
   };
 
-  // restore scroll + show “resume?” banner
+  // Restore scroll + resume banner
   useEffect(() => {
     const el = containerRef.current;
     if (!el || !bookId) return;
-    const saved     = +localStorage.getItem(`read-offset:${bookId}`) || 0;
+    const saved = +localStorage.getItem(`read-offset:${bookId}`) || 0;
     const dismissed = localStorage.getItem(`resume-dismissed:${bookId}`) === 'true';
-    el.scrollTop    = saved;
-    const ratio     = saved / (el.scrollHeight - el.clientHeight);
+    el.scrollTop = saved;
+    const ratio = saved / (el.scrollHeight - el.clientHeight);
     if (ratio > 0.05 && !dismissed) setShowResume(true);
   }, [bookId]);
 
-  // compute how many “pages” tall the content is
+  // Compute total pages
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     setTotalPages(Math.ceil(el.scrollHeight / el.clientHeight) || 1);
   }, [initialText, fontSize]);
 
-  // on‐scroll handler
+  // On scroll
   const handleScroll = e => {
     const el = e.target;
     const st = el.scrollTop;
     localStorage.setItem(`read-offset:${bookId}`, st);
     const pct = (st / (el.scrollHeight - el.clientHeight)) * 100;
-    setProgress(Math.max(0, Math.min(100,pct)));
+    setProgress(Math.max(0, Math.min(100, pct)));
     setCurrentPage(Math.floor(st / el.clientHeight) + 1);
   };
 
-  const onAddSuccess = () => setNotif({ type:'success', message:'Added to reading list!' });
+  const onAddSuccess = () => setNotif({ type: 'success', message: 'Added to reading list!' });
 
-  // panel colors per theme
-  const panelBg     = theme === 'dark'  ? 'bg-card-dark'
-                   : theme === 'light' ? 'bg-card'
-                                        : 'bg-yellow-50';
-  const panelText   = theme === 'dark'  ? 'text-primary-dark' : 'text-black';
-  const panelBorder = theme === 'dark'  ? 'border-gray-700'    : 'border-gray-300';
-  const ICON        = 20;
+  // Panel styles
+  const panelBg = theme === 'dark' ? 'bg-card-dark'
+    : theme === 'light' ? 'bg-card'
+      : 'bg-yellow-50';
+  const panelBorder = theme === 'dark' ? 'border-gray-700' : 'border-gray-300';
+  const panelText = theme === 'dark' ? 'text-white' : 'text-black';
+  const ICON = 20;
 
-  // our converted Markdown
+  // Convert to Markdown
   const mdText = makeRoughMarkdown(initialText);
+
+  // Gather headings for TOC
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const nodes = el.querySelectorAll('h1,h2,h3');
+    setHeadings(Array.from(nodes).map(node => ({
+      id: node.id,
+      text: node.textContent,
+      level: Number(node.tagName.slice(1))
+    })));
+  }, [mdText, fontSize, theme]);
 
   return (
     <div className="lg:flex lg:space-x-6">
       <TableOfContents
         headings={headings}
+        rawText={initialText}
         containerRef={containerRef}
         panelBg={panelBg}
         panelText={panelText}
@@ -128,7 +134,6 @@ export default function BookTextViewer({
       />
 
       <div className="flex-1 space-y-4 relative">
-        {/* Resume banner */}
         {showResume && (
           <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-card-dark text-white px-4 py-2 rounded shadow-lg z-50 flex items-center gap-3">
             <span>You left off at {Math.floor(progress)}% —</span>
@@ -144,7 +149,7 @@ export default function BookTextViewer({
             </button>
             <button
               onClick={() => {
-                localStorage.setItem(`resume-dismissed:${bookId}`,'true');
+                localStorage.setItem(`resume-dismissed:${bookId}`, 'true');
                 setShowResume(false);
               }}
             >
@@ -153,12 +158,11 @@ export default function BookTextViewer({
           </div>
         )}
 
-        {/* Notification toast */}
         {notif && (
           <Notification
             type={notif.type}
             message={notif.message}
-            onClose={()=>setNotif(null)}
+            onClose={() => setNotif(null)}
           />
         )}
 
@@ -166,69 +170,123 @@ export default function BookTextViewer({
         <div className="absolute top-0 left-0 w-full h-1 bg-gray-700">
           <div
             className="h-full bg-accent transition-width duration-100"
-            style={{ width:`${progress}%` }}
+            style={{ width: `${progress}%` }}
           />
         </div>
 
         {/* Toolbar */}
-        <div className={`flex flex-wrap items-center gap-2 p-2 rounded border-b ${panelBg} ${panelBorder}`}>
+        <div className={`flex items-center flex-wrap gap-2 p-2 rounded border-b ${panelBg} ${panelBorder}`}>
+          {/* ← “You are reading…” moved here */}
+          <div className={`${panelText} flex items-center gap-1 mr-auto text-sm`}>
+            <span role="img" aria-label="book">📖</span>
+            <span>You are reading</span>
+            <span className="underline ml-1">{bookTitle}</span>
+            <span className="ml-1">— {bookAuthor}</span>
+          </div>
+
           <Tooltip content="Back to shelf">
-            <button onClick={()=>router.push('/books')} className={`${panelText} p-2 rounded`}>
-              <FaArrowLeft size={ICON}/>
+            <button
+              onClick={() => router.push('/books')}
+              className={`${panelText} p-2 rounded`}
+            >
+              <FaArrowLeft size={ICON} />
             </button>
           </Tooltip>
+
           <Tooltip content="Details">
-            <button onClick={()=>router.push(`/books/${bookId}/bookdetail`)} className={`${panelText} p-2 rounded`}>
-              <FaInfoCircle size={ICON}/>
+            <button
+              onClick={() => router.push(`/books/${bookId}/bookdetail`)}
+              className={`${panelText} p-2 rounded`}
+            >
+              <FaInfoCircle size={ICON} />
             </button>
           </Tooltip>
+
           <Tooltip content="Add to list">
-            <button onClick={()=>setShowListSelector(v=>!v)} className={`${panelText} p-2 rounded`}>
-              <FaBookmark size={ICON}/>
+            <button
+              onClick={() => setShowListSelector(v => !v)}
+              className={`${panelText} p-2 rounded`}
+            >
+              <FaBookmark size={ICON} />
             </button>
           </Tooltip>
+
           <Tooltip content="Theme">
-            <button onClick={cycleTheme} className={`${panelText} p-2 rounded`}>
-              {theme==='dark' ? <FaSun size={ICON}/> 
-               : theme==='light' ? <FaMoon size={ICON}/> 
-                                 : <FaCoffee size={ICON}/>}
+            <button
+              onClick={cycleTheme}
+              className={`${panelText} p-2 rounded`}
+            >
+              {theme === 'dark'
+                ? <FaSun size={ICON} />
+                : theme === 'light'
+                  ? <FaMoon size={ICON} />
+                  : <FaCoffee size={ICON} />}
             </button>
           </Tooltip>
-          <button onClick={()=>setFontSize(f=>f+2)} className={`px-3 py-1 rounded ${panelBg} ${panelText}`}>
+
+          {/* Download TXT */}
+          <Tooltip content="Download TXT">
+            <a
+              href={`/api/books/${bookId}/download?format=txt`}
+              target="_blank"
+              rel="noopener"
+              className={`${panelText} p-2 rounded`}
+            >
+              <FaDownload size={ICON} />
+            </a>
+          </Tooltip>
+
+          {/* Download PDF */}
+          <Tooltip content="Download PDF">
+            <a
+              href={`/api/books/${bookId}/download?format=pdf`}
+              target="_blank"
+              rel="noopener"
+              className={`${panelText} p-2 rounded`}
+            >
+              <FaDownload size={ICON} />
+            </a>
+          </Tooltip>
+
+          <button
+            onClick={() => setFontSize(f => f + 2)}
+            className={`px-3 py-1 rounded ${panelBg} ${panelText}`}
+          >
             A+
           </button>
-          <button onClick={()=>setFontSize(f=>Math.max(12,f-2))} className={`px-3 py-1 rounded ${panelBg} ${panelText}`}>
+          <button
+            onClick={() => setFontSize(f => Math.max(12, f - 2))}
+            className={`px-3 py-1 rounded ${panelBg} ${panelText}`}
+          >
             A–
           </button>
         </div>
 
-        {/* Reading-list modal */}
         {showListSelector && (
           <ReadingListSelector
             bookId={bookId}
-            onClose={()=>setShowListSelector(false)}
+            onClose={() => setShowListSelector(false)}
             onAddSuccess={onAddSuccess}
           />
         )}
 
-        {/* Page counter */}
         <div className={`${panelText} text-sm`}>
           Page {currentPage} of {totalPages}
         </div>
 
-        {/* The actual scrollable book text */}
+        {/* Scrollable text container (all white!) */}
         <div
           ref={containerRef}
           onScroll={handleScroll}
-          style={{ height: '75vh', fontSize: `${fontSize}px` }}
-          className={`overflow-y-auto rounded p-6 border ${panelBorder} ${panelBg} ${panelText}`}
+          style={{
+            height: '75vh',
+            fontSize: `${fontSize}px`,
+            resize: 'vertical',
+            overflow: 'auto',
+          }}
+          className={`rounded p-6 border ${panelBorder} ${panelBg} ${theme === 'dark' ? 'markdown-white' : 'text-black'}`}
         >
-          <MarkdownRenderer
-            text={mdText}
-            fontSize={fontSize}
-            theme={theme}
-            collectHeadings={setHeadings}
-          />
+          <MarkdownRenderer text={mdText} fontSize={fontSize} theme={theme} />
         </div>
       </div>
     </div>

@@ -85,3 +85,8 @@
     background-image: url('/images/baseImage.png');
   }
 }
+
+
+.markdown-white * {
+  color: white !important;
+}

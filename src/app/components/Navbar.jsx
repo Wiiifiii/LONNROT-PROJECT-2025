@@ -8,23 +8,23 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { AiFillHome, AiOutlineDashboard } from "react-icons/ai";
 import { PiBooksDuotone } from "react-icons/pi";
-import { GiLion, GiMagicGate, GiMagickTrick } from "react-icons/gi";
+import { GiLion } from "react-icons/gi";
 import { SiMagic } from "react-icons/si";
 import MenuOverlay from "./MenuOverlay";
 import Tooltip from "./Tooltip";
 import { useSession, signOut } from "next-auth/react";
 import { HiOutlineMail } from "react-icons/hi";
 
-// If you want to tweak how Next/Image loads from Supabase:
+// Adjust Next/Image loader for Supabase if needed
 const supabaseLoader = ({ src, width, quality }) =>
   `${src}?width=${width}&quality=${quality || 75}`;
 
 const DESKTOP_LINKS = [
   { href: "/dashboard", title: "Realm’s Echo", Icon: AiOutlineDashboard },
   { href: "/", title: "Kalevala’s Gate", Icon: AiFillHome },
-  { href: "/books", title: "Saga Haven", Icon: GiMagicGate },
+  { href: "/books", title: "Saga Haven", Icon: PiBooksDuotone },
   { href: "/my-reading-lists", title: "My Saga Lists", Icon: SiMagic },
-  { href: "/about", title: "Kantele’s Guide", Icon: GiMagickTrick },
+  { href: "/about", title: "Kantele’s Guide", Icon: GiLion },
   { href: "/contact", title: "Contact", Icon: HiOutlineMail },
 ];
 
@@ -35,81 +35,79 @@ export default function Navbar() {
 
   const mobileLinks = [
     ...DESKTOP_LINKS.map(({ href, title, Icon }) => ({ href, title, Icon })),
-    // include profile link when signed in
     ...(user
       ? [{ href: "/profile", title: user.name || "Profile", Icon: GiLion }]
       : []),
-    // login or logout
     !user
       ? { href: "/auth/login", title: "Login", Icon: FiLogIn }
       : { href: "#", title: "Logout", Icon: FiLogOut, action: () => signOut({ callbackUrl: "/" }) },
   ];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-10 group">
-      <div className="h-2" />
-      <nav className="bg-[#111827] transform -translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-        <div className="flex items-center justify-between px-2 py-1">
-          {/* Logo */}
+    <div className="fixed top-0 left-0 right-0 z-10">
+      <nav className="bg-[#111827]">
+        <div className="flex items-center justify-between px-4 py-2">
+          {/* Left: Logo */}
           <Link href="/" className="flex items-center gap-2">
             <GiLion className="text-blue-400" size={24} />
             <span className="text-xl font-semibold text-white hover:text-blue-400">
               PROJECT LÖNNROT
             </span>
-
           </Link>
 
-          {/* Desktop Links */}
-          <ul className="hidden md:flex items-center gap-4">
-            {DESKTOP_LINKS.map(({ href, title, Icon }, idx) => (
-              <li key={idx}>
+          {/* Right: Desktop Links, Profile Image and Mobile Hamburger */}
+          <div className="flex items-center gap-4">
+            {/* Desktop Links */}
+            <ul className="hidden md:flex items-center gap-4">
+              {DESKTOP_LINKS.map(({ href, title, Icon }, idx) => (
+                <li key={idx}>
+                  <Link
+                    href={href}
+                    className="flex items-center text-slate-200 hover:text-blue-400 gap-1"
+                  >
+                    <Icon />
+                    <span className="text-sm">{title}</span>
+                  </Link>
+                </li>
+              ))}
+              {!user && (
                 <Link
-                  href={href}
+                  href="/auth/login"
                   className="flex items-center text-slate-200 hover:text-blue-400 gap-1"
                 >
-                  <Icon />
-                  <span className="text-sm">{title}</span>
+                  <FiLogIn />
+                  <span>Login</span>
                 </Link>
-              </li>
-            ))}
-          </ul>
+              )}
+            </ul>
 
-          {/* User / Auth Controls (desktop) */}
-          <div className="hidden md:flex items-center gap-4">
-            {!user ? (
-              <Link
-                href="/auth/login"
-                className="flex items-center text-slate-200 hover:text-blue-400 gap-1"
-              >
-                <FiLogIn />
-                <span>Login</span>
-              </Link>
-            ) : (
-              <Menu as="div" className="relative">
-                <Menu.Button className="w-11 h-11 rounded-full overflow-hidden border-2 border-gray-600 hover:border-blue-400 hover:shadow-blue-400/50 hover:shadow-md transition-all duration-300 bg-gradient-to-br from-gray-700 to-gray-900">
-
+            {/* Profile Image on the Right with a little margin on top if logged in */}
+            {user && (
+              <Menu as="div" className="mt-1">
+                <Menu.Button className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-600 hover:border-blue-400 transition-all duration-300 bg-gradient-to-br from-gray-700 to-gray-900">
                   {user.profileImage ? (
                     <Image
                       loader={supabaseLoader}
                       src={user.profileImage}
                       alt={user.name || user.email}
-                      width={60}
-                      height={60}
+                      width={40}
+                      height={40}
                       className="object-cover"
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900 text-white font-bold text-lg">
-
                       {(user.name || user.email)[0].toUpperCase()}
                     </div>
                   )}
                 </Menu.Button>
-                <Menu.Items className="absolute right-0 mt-2 w-40 bg-[#111827]  rounded shadow-lg overflow-hidden">
+                <Menu.Items className="absolute right-0 mt-2 w-40 bg-[#111827] rounded shadow-lg overflow-hidden">
                   <Menu.Item>
                     {({ active }) => (
                       <Link
                         href="/profile"
-                        className={`block px-4 py-2 text-sm ${active ? "bg-gray-700" : "text-gray-200"}`}
+                        className={`block px-4 py-2 text-sm ${
+                          active ? "bg-gray-700" : "text-gray-200"
+                        }`}
                       >
                         Profile
                       </Link>
@@ -119,7 +117,9 @@ export default function Navbar() {
                     {({ active }) => (
                       <Link
                         href="/settings"
-                        className={`block px-4 py-2 text-sm ${active ? "bg-gray-700" : "text-gray-200"}`}
+                        className={`block px-4 py-2 text-sm ${
+                          active ? "bg-gray-700" : "text-gray-200"
+                        }`}
                       >
                         Settings
                       </Link>
@@ -129,7 +129,9 @@ export default function Navbar() {
                     {({ active }) => (
                       <button
                         onClick={() => signOut({ callbackUrl: "/" })}
-                        className={`w-full text-left px-4 py-2 text-sm ${active ? "bg-gray-700" : "text-gray-200"}`}
+                        className={`w-full text-left px-4 py-2 text-sm ${
+                          active ? "bg-gray-700" : "text-gray-200"
+                        }`}
                       >
                         Logout
                       </button>
@@ -138,24 +140,24 @@ export default function Navbar() {
                 </Menu.Items>
               </Menu>
             )}
-          </div>
 
-          {/* Mobile Hamburger */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsOpen(o => !o)}
-              className="text-slate-200 p-2 border rounded border-slate-200 hover:text-blue-400 hover:border-blue-400"
-            >
-              {isOpen ? (
-                <Tooltip text="Close Menu">
-                  <XMarkIcon className="h-5 w-5" />
-                </Tooltip>
-              ) : (
-                <Tooltip text="Open Menu">
-                  <Bars3Icon className="h-5 w-5" />
-                </Tooltip>
-              )}
-            </button>
+            {/* Mobile Hamburger */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsOpen(o => !o)}
+                className="text-slate-200 p-2 border rounded border-slate-200 hover:text-blue-400 hover:border-blue-400"
+              >
+                {isOpen ? (
+                  <Tooltip text="Close Menu">
+                    <XMarkIcon className="h-5 w-5" />
+                  </Tooltip>
+                ) : (
+                  <Tooltip text="Open Menu">
+                    <Bars3Icon className="h-5 w-5" />
+                  </Tooltip>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 

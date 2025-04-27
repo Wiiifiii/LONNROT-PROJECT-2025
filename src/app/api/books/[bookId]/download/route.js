@@ -1,3 +1,4 @@
+// app/api/books/[bookId]/download/route.js
 export const runtime = 'nodejs';
 
 import { NextResponse } from 'next/server';
@@ -9,11 +10,15 @@ import { fileSlug } from '@/lib/slugify.js';
 const prisma = new PrismaClient();
 
 export async function GET(request, context) {
-  // 1) pull our dynamic param
+  // 1) pull our dynamic param (must await here)
   const { bookId } = await context.params;
   const id = Number(bookId);
-  const format = request.nextUrl.searchParams.get('format'); // "pdf" or "txt"
+  if (Number.isNaN(id)) {
+    return NextResponse.json({ error: 'Invalid bookId' }, { status: 400 });
+  }
 
+  // 2) parse format
+  const format = request.nextUrl.searchParams.get('format'); // "pdf" or "txt"
   if (!['pdf', 'txt'].includes(format)) {
     return NextResponse.json(
       { error: 'Only "pdf" or "txt" formats are supported' },
@@ -21,7 +26,7 @@ export async function GET(request, context) {
     );
   }
 
-  // 2) fetch stored Supabase URLs + file_name + title
+  // 3) fetch just the URLs + file_name + title for disposition
   const book = await prisma.book.findUnique({
     where: { id },
     select: {
@@ -29,15 +34,14 @@ export async function GET(request, context) {
       txt_url:   true,
       file_name: true,
       title:     true,
-      author: true,
-      description: true,
+      author:   true
     }
   });
   if (!book) {
     return NextResponse.json({ error: 'Book not found' }, { status: 404 });
   }
 
-  // 3) fire-and-forget logging of the download interaction
+  // 4) fire-and-forget logging
   getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
     .then(token => {
       const sessionId = token
@@ -49,7 +53,7 @@ export async function GET(request, context) {
     })
     .catch(console.error);
 
-  // 4) choose the right URL
+  // 5) choose URL
   const realUrl = format === 'pdf' ? book.pdf_url : book.txt_url;
   if (!realUrl) {
     return NextResponse.json(
@@ -58,14 +62,16 @@ export async function GET(request, context) {
     );
   }
 
-  // 5) proxy-fetch it in Node and stream back
+  // 6) proxy-fetch & stream
   try {
     const upstream = await fetch(realUrl);
     if (!upstream.ok) {
-      const errorText = await upstream.text();
-      console.error(`Upstream fetch failed: ${upstream.status} ${upstream.statusText} - ${errorText}`);
+      const errText = await upstream.text();
+      console.error(
+        `Upstream fetch failed: ${upstream.status} ${upstream.statusText} – ${errText}`
+      );
       return NextResponse.json(
-        { error: `Upstream fetch failed: ${upstream.status} ${upstream.statusText}`, details: errorText },
+        { error: `Upstream fetch failed: ${upstream.status}`, details: errText },
         { status: upstream.status }
       );
     }
@@ -75,15 +81,15 @@ export async function GET(request, context) {
       return new NextResponse(text, {
         headers: {
           'Content-Type': 'text/plain; charset=utf-8',
-          'Content-Disposition': `attachment; filename="${fileSlug(id, book.title, 'txt')}"`,
+          'Content-Disposition': `attachment; filename="${fileSlug(id, book.title, 'txt')}"`
         }
       });
     } else {
-      const arrayBuffer = await upstream.arrayBuffer();
-      return new NextResponse(Buffer.from(arrayBuffer), {
+      const buffer = await upstream.arrayBuffer();
+      return new NextResponse(Buffer.from(buffer), {
         headers: {
           'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="${book.file_name || 'book'}.pdf"`,
+          'Content-Disposition': `attachment; filename="${book.file_name || 'book'}.pdf"`
         }
       });
     }

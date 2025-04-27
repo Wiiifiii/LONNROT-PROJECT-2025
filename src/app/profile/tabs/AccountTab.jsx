@@ -79,10 +79,10 @@ export default function AccountTab() {
           <img
             src={form.avatarUrl}
             alt="Avatar"
-            className="h-16 w-16 rounded-full object-cover border"
+            className="h-10 w-10 rounded-full object-cover border"
           />
         ) : (
-          <div className="h-16 w-16 rounded-full bg-gray-600 flex items-center justify-center text-white">
+          <div className="h-10 w-10 rounded-full bg-gray-600 flex items-center justify-center text-white">
             {(user.name || user.email)[0].toUpperCase()}
           </div>
         )}
