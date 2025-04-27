@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { FaTimes, FaPlus } from "react-icons/fa";
 
@@ -51,7 +52,7 @@ export default function ReadingListSelector({ bookId, onClose, onAddSuccess }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div
-        className="bg-[#111827]  p-6 rounded-2xl w-[450px] space-y-4 bg-cover bg-center"
+        className="bg-[#111827] p-6 rounded-2xl w-[450px] space-y-4 bg-cover bg-center"
         style={{ backgroundImage: "url('/images/baseImage.png')" }}
       >
         <div className="flex justify-between items-center">
@@ -71,6 +72,8 @@ export default function ReadingListSelector({ bookId, onClose, onAddSuccess }) {
           <p className="text-gray-300">Loading lists…</p>
         ) : error ? (
           <p className="text-red-400">{error}</p>
+        ) : lists.length === 0 ? (
+          <p className="text-gray-300">You don’t have any Saga Lists yet.</p>
         ) : (
           <select
             value={selectedList}
