@@ -79,14 +79,14 @@ export default function BookTextViewer({
   const onAddSuccess = () => setNotif({ type: 'success', message: 'Added to reading list!' });
 
   // ─ panel colors ────────────────────────────────────────────────
-  const panelBg   = theme === 'dark'
+  const panelBg = theme === 'dark'
     ? 'bg-card-dark'
     : theme === 'light'
       ? 'bg-card'
       : 'bg-yellow-50';
   const panelText = theme === 'dark'
     ? 'text-primary-dark'
-    : 'text-primary';
+    : 'text-black';
   const panelBorder = theme === 'dark' ? 'border-gray-700' : 'border-gray-300';
   const ICON = 20;
 
