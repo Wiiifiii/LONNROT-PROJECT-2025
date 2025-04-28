@@ -1,5 +1,5 @@
 // src/app/layout.jsx
-import { Providers } from "./providers";  // Import Providers from providers.jsx
+import { Providers } from "./providers";
 import Footer from "./components/Footer";
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';

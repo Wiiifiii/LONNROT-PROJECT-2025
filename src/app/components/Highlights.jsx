@@ -23,10 +23,10 @@ export default function Highlights({ onFilter = () => {} }) {
   ]
 
   const fallbackImages = {
-    mostDownloaded: "/images/Most Downloaded.png",
-    recentlyAdded: "/images/Recently Added.png",
-    trending: "/images/Trending This Week.png",
-    lonnrot: "/images/Elias Lönnrot’s Works.png",
+    mostDownloaded: "/images/MostDownloaded.png",
+    recentlyAdded: "/images/RecentlyAdded.png",
+    trending: "/images/TrendingThisWeek.png",
+    lonnrot: "/images/EliasLönnrotsWorks.png",
   }
 
   return (

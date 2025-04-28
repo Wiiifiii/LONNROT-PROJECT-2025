@@ -33,11 +33,14 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-            <section className="py-8 bg-[#111827]  bg-opacity-75 text-white">
+            <section className="py-8 bg-[#111827] bg-opacity-75 text-white">
                 <div className="container mx-auto p-4">
                     <h2 className="text-3xl font-semibold mb-4">Our Sacred Quest</h2>
-                    <p>
+                    <p className="mb-4">
                         We weave old tales into eternity, summoning their runes for all to hear. Seek deeper lore in the Kantele’s Guide, Lönnrot’s Tale, and the Sampo’s Codex.
+                    </p>
+                    <p className="text-sm text-gray-400">
+                        Note: All images on this site were generated using AI based on my custom descriptions.
                     </p>
                 </div>
             </section>

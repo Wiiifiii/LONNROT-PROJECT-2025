@@ -2,12 +2,10 @@
 "use client";
 
 import React from "react";
-import { SessionProvider } from "next-auth/react"; // Import SessionProvider from NextAuth
+import { SessionProvider } from "next-auth/react"; 
 
-// The Providers component wraps your children in the SessionProvider to manage authentication state
 export function Providers({ children }) {
   return (
-    // SessionProvider manages the session globally, keeping track of the logged-in state
     <SessionProvider>
       {children}
     </SessionProvider>

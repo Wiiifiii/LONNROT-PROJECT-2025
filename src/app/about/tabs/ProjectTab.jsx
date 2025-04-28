@@ -1,8 +1,10 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 
 export default function ProjectTab() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-semibold">Lönnrot’s Sacred Quest</h2>
@@ -21,14 +23,15 @@ export default function ProjectTab() {
           </p>
         </div>
         <div className="flex justify-center md:justify-end">
-          <Image
-            src="/images/ProjectOverview.png"
-            alt="Lönnrot Hero"
-            width={300}
-            height={300}
-            className="rounded shadow-lg cursor-pointer"
-            // user can hook up onClick → Lightbox if desired
-          />
+          <div className="cursor-pointer" onClick={() => setIsOpen(true)}>
+            <Image
+              src="/images/ProjectOverview.png"
+              alt="Lönnrot Hero"
+              width={300}
+              height={300}
+              className="rounded shadow-lg"
+            />
+          </div>
         </div>
       </div>
 
@@ -36,6 +39,33 @@ export default function ProjectTab() {
       <p>
         Soon, our library shall hold nearly 4,000 tales, their runes ready to sing through the ages.
       </p>
+
+      {/* Lightbox Modal */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/75 flex items-center justify-center z-50 p-4"
+          onClick={() => setIsOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-3xl h-[80vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute top-2 right-2 text-white text-2xl z-10"
+              onClick={() => setIsOpen(false)}
+            >
+              &times;
+            </button>
+            <Image
+              src="/images/ProjectOverview.png"
+              alt="Lönnrot Hero"
+              fill
+              style={{ objectFit: "contain" }}
+              sizes="80vw"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

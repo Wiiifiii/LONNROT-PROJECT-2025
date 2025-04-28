@@ -1,8 +1,10 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 
 export default function CollaborationsTab() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div className="space-y-8">
       <h3 className="text-2xl font-semibold">Cultural Collaborations & Digital Archives</h3>
@@ -17,15 +19,43 @@ export default function CollaborationsTab() {
           </p>
         </div>
         <div className="flex justify-center">
-          <Image
-            src="/images/Collaborations.png"
-            alt="Illustration representing collaborations: Elias Lönnrot, Lonnrot.net, Project Gutenberg, and DP Project"
-            width={400}
-            height={400}
-            className="rounded shadow-lg"
-          />
+          <div className="cursor-pointer" onClick={() => setIsOpen(true)}>
+            <Image
+              src="/images/Collaborations.png"
+              alt="Illustration representing collaborations: Elias Lönnrot, Lonnrot.net, Project Gutenberg, and DP Project"
+              width={400}
+              height={400}
+              className="rounded shadow-lg"
+            />
+          </div>
         </div>
       </div>
+
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/75 flex items-center justify-center z-50 p-4"
+          onClick={() => setIsOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-3xl h-[80vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute top-2 right-2 text-white text-2xl z-10"
+              onClick={() => setIsOpen(false)}
+            >
+              &times;
+            </button>
+            <Image
+              src="/images/Collaborations.png"
+              alt="Illustration representing collaborations: Elias Lönnrot, Lonnrot.net, Project Gutenberg, and DP Project"
+              fill
+              style={{ objectFit: "contain" }}
+              sizes="80vw"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

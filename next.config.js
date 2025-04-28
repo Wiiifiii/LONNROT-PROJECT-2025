@@ -9,7 +9,7 @@ const nextConfig = {
   images: {
     domains: [
       'ngevmoprmgngavyjujav.supabase.co',
-      // add any other external image domains you use
+    
     ],
   },
 
