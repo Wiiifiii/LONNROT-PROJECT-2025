@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Button from "../../../components/Button";
-import Card from "../../../components/Card";
-import StarRating from "../../../components/StarRating";
-import Notification from "../../../components/Notification";
+import Button from "@/app/components/UI/Button";
+import Card from "@/app/components/Books/Card";
+import StarRating from "@/app/components/Books/StarRating";
+import Notification from "@/app/components/UI/Notification";
 import ReviewForm from "./ReviewForm";
 import { FaEye, FaDownload, FaBookOpen, FaUser } from "react-icons/fa";
-import ReadingListSelector from "../../../components/ReadingListSelector";
-import BookCover from "../../../components/BookCover";
+import ReadingListSelector from "@/app/components/Books/ReadingListSelector";
+import BookCover from "@/app/components/Books/BookCover";
 import { GiMagicGate,GiMagicTrident } from "react-icons/gi";
 export default function BookDetailClient({ book, otherBooks, reviews: initialReviews }) {
   const router = useRouter();

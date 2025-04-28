@@ -3,7 +3,7 @@
 import React from "react";
 import { FaPlus } from "react-icons/fa";
 import Button from "./Button";
-import Tooltip from "./Tooltip";
+import Tooltip from "../Tooltip";
 
 export default function NewListForm({ value, onChange, onSubmit, loading }) {
   return (

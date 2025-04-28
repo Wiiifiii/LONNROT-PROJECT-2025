@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import Button from './Button'
-import Notification from './Notification'
+import Notification from '../UI/Notification'
 import { AiOutlineArrowLeft, AiOutlineInfoCircle } from 'react-icons/ai'
 import { FaFileAlt, FaPlus } from 'react-icons/fa'
 import ReadingListSelector from './ReadingListSelector'

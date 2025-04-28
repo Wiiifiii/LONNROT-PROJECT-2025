@@ -2,8 +2,8 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { FaSearch } from 'react-icons/fa'
-import Button from './Button'
-import Dropdown from './Dropdown'
+import Button from '@/app/components/UI/Button'
+import Dropdown from '@/app/components/UI/Dropdown'
 
 export default function Filters({ initial = {}, onApply, onClear }) {
   // ─── Form state ───

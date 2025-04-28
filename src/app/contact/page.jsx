@@ -1,7 +1,7 @@
 'use client';
-import Navbar from '@/app/components/Navbar';
+import Navbar from '@/app/components/Layout/Navbar';
 import { useState } from 'react';
-import Button from '@/app/components/Button';
+import Button from '@/app/components/UI/Button';
 import { FaPaperPlane } from 'react-icons/fa';
 
 export default function ContactPage() {

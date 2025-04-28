@@ -1,7 +1,7 @@
 // src/app/about/page.jsx
 "use client";
 import React, { useState } from "react";
-import Navbar from "@/app/components/Navbar";
+import Navbar from "@/app/components/Layout/Navbar";
 
 // import your new tabs
 import IntroductionTab from "./tabs/IntroductionTab";

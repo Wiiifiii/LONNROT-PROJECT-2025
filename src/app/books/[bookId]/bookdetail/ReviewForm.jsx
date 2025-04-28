@@ -2,9 +2,9 @@
 "use client";
 
 import React, { useState } from "react";
-import StarRating from "../../../components/StarRating";
-import Notification from "../../../components/Notification";
-import Button from "../../../components/Button";
+import StarRating from "@/app/components/Books/StarRating";
+import Notification from "@/app/components/UI/Notification";
+import Button from "@/app/components/UI/Button";
 import { FaPaperPlane } from "react-icons/fa";
 
 export default function ReviewForm({ bookId, onNewReview }) {

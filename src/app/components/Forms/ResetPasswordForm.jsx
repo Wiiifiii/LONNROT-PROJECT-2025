@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter }            from 'next/navigation'
-import Button                   from '@/app/components/Button'
-import FloatingInput            from '@/app/components/FloatingInput'
-import Notification             from '@/app/components/Notification'
+import Button                   from '@/app/components/UI/Button'
+import FloatingInput            from '@/app/components/UI/FloatingInput'
+import Notification             from '@/app/components/UI/Notification'
 
 const PASSWORD_POLICY = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{10,}$/
 

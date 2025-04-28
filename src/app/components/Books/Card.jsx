@@ -2,9 +2,8 @@
 
 import React, { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import Button from './Button'
+import Button from '@/app/components/UI/Button'
 import { FaEye, FaInfoCircle, FaDownload } from 'react-icons/fa'
-import { GiMagicAxe } from 'react-icons/gi'
 import BookCover from './BookCover';
 
 

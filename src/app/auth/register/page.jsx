@@ -3,8 +3,8 @@
 
 import React, { useState } from 'react'
 import { useRouter }    from 'next/navigation'
-import Button           from '@/app/components/Button'
-import Notification     from '@/app/components/Notification'
+import Button           from '@/app/components/UI/Button'
+import Notification     from '@/app/components/UI/Notification'
 import {
   FiEye,
   FiEyeOff,

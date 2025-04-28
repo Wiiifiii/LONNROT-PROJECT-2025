@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useSession } from "next-auth/react"; // Get user session from NextAuth
 import { useRouter } from "next/navigation"; // Router for navigation
-import Navbar from "@/app/components/Navbar"; // Navbar component
+import Navbar from "@/app/components/Layout/Navbar"; // Navbar component
 
 // Import tab components for different profile sections
 import OverviewTab from "./tabs/OverviewTab";

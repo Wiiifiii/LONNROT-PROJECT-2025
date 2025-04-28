@@ -4,7 +4,7 @@
 import React from "react";
 import { FaEye, FaInfoCircle, FaTrash } from "react-icons/fa";
 import Button from "./Button";
-import Tooltip from "./Tooltip";
+import Tooltip from "../UI/Tooltip";
 
 export default function ReadingListItemCard({ book, onRead, onDetails, onRemove }) {
   return (

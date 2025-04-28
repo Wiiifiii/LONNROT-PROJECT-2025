@@ -2,9 +2,8 @@
 'use client'
 
 import React from 'react'
-import { FaListAlt } from 'react-icons/fa'
-import BooksCardCompact from './Card'
-import Button from './Button'
+import BooksCardCompact from '@/app/components/Books/Card'
+import Button from '@/app/components/UI/Button'
 import { GiRuneStone } from "react-icons/gi";
 export default function SearchResults({
   loading,

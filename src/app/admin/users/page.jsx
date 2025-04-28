@@ -4,9 +4,8 @@ export const dynamic = "force-dynamic";
 
 import React from "react";
 import Link from "next/link";
-import Navbar from "@/app/components/Navbar";
+import Navbar from "@/app/components/Layout/Navbar";
 import { AiOutlineClockCircle } from "react-icons/ai";
-import { FiPlus } from "react-icons/fi";
 import { FaFastBackward } from "react-icons/fa";
 
 export default function AdminUsers() {

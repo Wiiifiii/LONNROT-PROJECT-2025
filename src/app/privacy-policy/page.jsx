@@ -1,5 +1,5 @@
 'use client';
-import Navbar from '@/app/components/Navbar';
+import Navbar from '@/app/components/Layout/Navbar';
 
 export default function PrivacyPolicyPage() {
   return (

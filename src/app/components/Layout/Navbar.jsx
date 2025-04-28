@@ -9,8 +9,10 @@ import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { AiFillHome, AiOutlineDashboard } from "react-icons/ai";
 import { GiLion, GiMagicGate, GiMagicPortal, GiMagicLamp, GiMagicTrident } from "react-icons/gi";
 import { SiMagic } from "react-icons/si";
-import MenuOverlay from "./MenuOverlay";
-import Tooltip from "./Tooltip";
+// New import for community icon
+import { FaComments } from "react-icons/fa";
+import MenuOverlay from "@/app/components/Layout/MenuOverlay";
+import Tooltip from "@/app/components/UI/Tooltip";
 import { useSession, signOut } from "next-auth/react";
 import { HiOutlineMail } from "react-icons/hi";
 
@@ -18,12 +20,14 @@ import { HiOutlineMail } from "react-icons/hi";
 const supabaseLoader = ({ src, width, quality }) =>
   `${src}?width=${width}&quality=${quality || 75}`;
 
+// Updated navigation links array: replaced documentation link with community link.
 const DESKTOP_LINKS = [
   { href: "/dashboard", title: "Realm’s Echo", Icon: AiOutlineDashboard },
   { href: "/", title: "Kalevala’s Gate", Icon: GiMagicPortal },
   { href: "/books", title: "Saga Haven", Icon: GiMagicGate },
   { href: "/my-reading-lists", title: "My Saga Lists", Icon: SiMagic },
   { href: "/about", title: "Kantele’s Guide", Icon: GiMagicLamp },
+  { href: "/community", title: "Community", Icon: FaComments },
   { href: "/contact", title: "Contact", Icon: HiOutlineMail },
 ];
 

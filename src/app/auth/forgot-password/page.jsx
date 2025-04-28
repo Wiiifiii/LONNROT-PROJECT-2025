@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Button from '@/app/components/Button'
-import FloatingInput from '@/app/components/FloatingInput'
-import Notification from '@/app/components/Notification'
-import BackgroundWrapper from '@/app/components/BackgroundWrapper'
+import Button from '@/app/components/UI/Button'
+import FloatingInput from '@/app/components/UI/FloatingInput'
+import Notification from '@/app/components/UI/Notification'
+import BackgroundWrapper from '@/app/components/Layout/BackgroundWrapper'
 
 export default function ForgotPasswordPage() {
   const router = useRouter()

@@ -1,11 +1,11 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import Navbar from '@/app/components/Navbar'
-import Modal from '@/app/components/Modal'
-import Filters from '@/app/components/Filters'
-import Highlights from '@/app/components/Highlights'
-import SearchResults from '@/app/components/SearchResults'
-import Button from '@/app/components/Button'
+import Navbar from '@/app/components/Layout/Navbar'
+import Modal from '@/app/components/UI/Modal'
+import Filters from '@/app/components/Search/Filters'
+import Highlights from '@/app/components/Search/Highlights'
+import SearchResults from '@/app/components/Search/SearchResults'
+import Button from '@/app/components/UI/Button'
 
 export default function BooksPage() {
   // ① Filters the user has applied

@@ -1,8 +1,8 @@
 import { getServerSession } from 'next-auth/next';
 import { authOptions }      from '@/lib/authOptions';
-import BackgroundWrapper    from '@/app/components/BackgroundWrapper';
-import Navbar               from '@/app/components/Navbar';
-import BookTextViewer       from '@/app/components/BookTextViewer';
+import BackgroundWrapper    from '@/app/components/Layout/BackgroundWrapper';
+import Navbar               from '@/app/components/Layout/Navbar';
+import BookTextViewer       from '@/app/components/Books/BookTextViewer';
 
 export default async function ReadPage({ params: paramsPromise }) {
     // await params before destructuring

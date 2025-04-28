@@ -3,8 +3,8 @@
 import React, { useState } from 'react'
 import { signIn }             from 'next-auth/react'
 import { useRouter }          from 'next/navigation'
-import Button                 from '@/app/components/Button'
-import FloatingInput          from '@/app/components/FloatingInput'
+import Button                 from '@/app/components/UI/Button'
+import FloatingInput          from '@/app/components/UI/FloatingInput'
 import {
   FiEye, FiEyeOff,
   FiLogIn, FiLock,
