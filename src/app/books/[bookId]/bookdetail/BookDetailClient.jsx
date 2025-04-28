@@ -17,9 +17,7 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
   // slugify the author for our /authors/[slug] route
   const authorSlug = book.author
     .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/[^a-zåäö0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
 
   const [reviews, setReviews] = useState(initialReviews || []);
