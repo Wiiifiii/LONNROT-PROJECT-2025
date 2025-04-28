@@ -9,6 +9,7 @@ import Button from "./Button";
 import ReadingListSelector from "./ReadingListSelector";
 import Notification from "./Notification";
 import Tooltip from "./Tooltip";
+import { GiMagicGate,GiMagicTrident } from "react-icons/gi";
 
 export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
   const [showListSelector, setShowListSelector] = useState(false);
@@ -84,7 +85,7 @@ export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
             <div className="hidden md:flex items-center space-x-2">
               <Tooltip content="Add to Saga lists">
                 <Button
-                  icon={FaListUl}
+                  icon={GiMagicTrident}
                   onClick={() => setShowListSelector(true)}
                   className="p-2 md:p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151] group"
                 />
@@ -127,7 +128,7 @@ export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
             <div className="md:hidden absolute top-12 right-2 bg-gray-900 text-white shadow-md rounded-lg z-50">
               <div className="flex flex-col p-2 space-y-1">
                 <Button
-                  icon={FaListUl}
+                  icon={GiMagicTrident}
                   onClick={() => {
                     setShowListSelector(true);
                     setShowMenu(false);

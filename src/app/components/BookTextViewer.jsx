@@ -7,17 +7,18 @@ import Notification from './Notification';
 import ReadingListSelector from './ReadingListSelector';
 import MarkdownRenderer from './MarkdownRenderer';
 import TableOfContents from './TableOfContents';
+import { useSession } from 'next-auth/react';
+
+import { GiMagicGate, GiMagicTrident } from "react-icons/gi";
 import {
   FaArrowLeft,
   FaInfoCircle,
   FaBookmark,
-  FaThemeisle ,
+  FaThemeisle,
   FaMoon,
   FaCoffee,
-  BsFiletypePdf 
 } from 'react-icons/fa';
-import { BsFiletypeTxt } from "react-icons/bs";
-import { FaEye, FaInfoCircle, FaDownload } from 'react-icons/fa'
+import { BsFiletypeTxt, BsFiletypePdf } from "react-icons/bs";
 
 /** “Rough” plain-text → Markdown converter */
 function makeRoughMarkdown(txt) {
@@ -45,8 +46,10 @@ export default function BookTextViewer({
   bookTitle,
   bookAuthor
 }) {
+  const { data: session } = useSession();
   const router = useRouter();
   const containerRef = useRef(null);
+  const finishFired = useRef(false); // Ensure READ_FINISH is fired only once
 
   const [fontSize, setFontSize] = useState(30);
   const [progress, setProgress] = useState(0);
@@ -82,6 +85,16 @@ export default function BookTextViewer({
     if (ratio > 0.05 && !dismissed) setShowResume(true);
   }, [bookId]);
 
+  // Log when user starts reading
+  useEffect(() => {
+    if (!session?.user?.id) return;
+    fetch(`/api/books/${bookId}/log`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'READ_START' }),
+    }).catch(console.error);
+  }, [bookId, session]);
+
   // Compute total pages
   useEffect(() => {
     const el = containerRef.current;
@@ -93,10 +106,36 @@ export default function BookTextViewer({
   const handleScroll = e => {
     const el = e.target;
     const st = el.scrollTop;
+    const page = Math.floor(st / el.clientHeight) + 1;
+
+    // update UI state
     localStorage.setItem(`read-offset:${bookId}`, st);
-    const pct = (st / (el.scrollHeight - el.clientHeight)) * 100;
-    setProgress(Math.max(0, Math.min(100, pct)));
-    setCurrentPage(Math.floor(st / el.clientHeight) + 1);
+    setProgress((st / (el.scrollHeight - el.clientHeight)) * 100);
+    setCurrentPage(page);
+
+    // only once: when scrolled to bottom, log READ_FINISH and bookmark current page
+    if (session?.user?.id && !finishFired.current && st + el.clientHeight >= el.scrollHeight) {
+      finishFired.current = true;
+
+      // LOG READ_FINISH
+      fetch(`/api/books/${bookId}/log`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'READ_FINISH' }),
+      }).catch(console.error);
+
+      // BOOKMARK POSITION
+      fetch('/api/users/me/bookmark', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookId, position: page }),
+      })
+        .then((r) => {
+          if (!r.ok) throw new Error('Bookmark failed');
+          console.log('📌 bookmarked at page', page);
+        })
+        .catch(console.error);
+    }
   };
 
   const onAddSuccess = () => setNotif({ type: 'success', message: 'Added to reading list!' });
@@ -209,7 +248,7 @@ export default function BookTextViewer({
               onClick={() => setShowListSelector(v => !v)}
               className={`${panelText} p-2 rounded`}
             >
-              <FaBookmark size={ICON} />
+              <GiMagicTrident size={ICON} />
             </button>
           </Tooltip>
 
@@ -219,7 +258,7 @@ export default function BookTextViewer({
               className={`${panelText} p-2 rounded`}
             >
               {theme === 'dark'
-                ? <FaThemeisle  size={ICON} />
+                ? <FaThemeisle size={ICON} />
                 : theme === 'light'
                   ? <FaMoon size={ICON} />
                   : <FaCoffee size={ICON} />}
@@ -246,7 +285,7 @@ export default function BookTextViewer({
               rel="noopener"
               className={`${panelText} p-2 rounded`}
             >
-              <BsFiletypePdf  size={ICON} />
+              <BsFiletypePdf size={ICON} />
             </a>
           </Tooltip>
 
