@@ -29,7 +29,7 @@ export default function MyReadingListsClient() {
   const [editingId, setEditingId] = useState(null);
   const [editingName, setEditingName] = useState("");
 
-  // Fetch your lists
+  // Fetch lists
   useEffect(() => {
     if (status !== "authenticated") return;
     fetch("/api/reading-lists")
