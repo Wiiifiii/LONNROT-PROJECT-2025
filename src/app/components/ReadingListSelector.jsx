@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { FaTimes, FaPlus } from "react-icons/fa";
+import { GiMagicGate,GiMagicTrident } from "react-icons/gi";
 
 export default function ReadingListSelector({ bookId, onClose, onAddSuccess }) {
   const [lists, setLists] = useState([]);

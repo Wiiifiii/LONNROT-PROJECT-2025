@@ -7,12 +7,10 @@ import Card from "../../../components/Card";
 import StarRating from "../../../components/StarRating";
 import Notification from "../../../components/Notification";
 import ReviewForm from "./ReviewForm";
-import { SiMagic } from "react-icons/si";
 import { FaEye, FaDownload, FaBookOpen, FaUser } from "react-icons/fa";
-import { GiMagicGate, GiMagicAxe } from "react-icons/gi";
 import ReadingListSelector from "../../../components/ReadingListSelector";
 import BookCover from "../../../components/BookCover";
-
+import { GiMagicGate,GiMagicTrident } from "react-icons/gi";
 export default function BookDetailClient({ book, otherBooks, reviews: initialReviews }) {
   const router = useRouter();
 
@@ -159,7 +157,7 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
             />
 
             <Button
-              icon={SiMagic}
+              icon={GiMagicTrident}
               text="Add to Saga lists"
               tooltip="Add to your reading list"
               onClick={() => setShowReadingListSelector(true)}

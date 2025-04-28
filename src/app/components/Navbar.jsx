@@ -7,8 +7,7 @@ import { Menu } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { AiFillHome, AiOutlineDashboard } from "react-icons/ai";
-import { PiBooksDuotone } from "react-icons/pi";
-import { GiLion } from "react-icons/gi";
+import { GiLion, GiMagicGate, GiMagicPortal, GiMagicLamp, GiMagicTrident } from "react-icons/gi";
 import { SiMagic } from "react-icons/si";
 import MenuOverlay from "./MenuOverlay";
 import Tooltip from "./Tooltip";
@@ -21,10 +20,10 @@ const supabaseLoader = ({ src, width, quality }) =>
 
 const DESKTOP_LINKS = [
   { href: "/dashboard", title: "Realm’s Echo", Icon: AiOutlineDashboard },
-  { href: "/", title: "Kalevala’s Gate", Icon: AiFillHome },
-  { href: "/books", title: "Saga Haven", Icon: PiBooksDuotone },
+  { href: "/", title: "Kalevala’s Gate", Icon: GiMagicPortal },
+  { href: "/books", title: "Saga Haven", Icon: GiMagicGate },
   { href: "/my-reading-lists", title: "My Saga Lists", Icon: SiMagic },
-  { href: "/about", title: "Kantele’s Guide", Icon: GiLion },
+  { href: "/about", title: "Kantele’s Guide", Icon: GiMagicLamp },
   { href: "/contact", title: "Contact", Icon: HiOutlineMail },
 ];
 
@@ -35,9 +34,7 @@ export default function Navbar() {
 
   const mobileLinks = [
     ...DESKTOP_LINKS.map(({ href, title, Icon }) => ({ href, title, Icon })),
-    ...(user
-      ? [{ href: "/profile", title: user.name || "Profile", Icon: GiLion }]
-      : []),
+    ...(user ? [{ href: "/profile", title: user.name || "Profile", Icon: GiLion }] : []),
     !user
       ? { href: "/auth/login", title: "Login", Icon: FiLogIn }
       : { href: "#", title: "Logout", Icon: FiLogOut, action: () => signOut({ callbackUrl: "/" }) },
@@ -55,33 +52,32 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Right: Desktop Links, Profile Image and Mobile Hamburger */}
-          <div className="flex items-center gap-4">
-            {/* Desktop Links */}
-            <ul className="hidden md:flex items-center gap-4">
-              {DESKTOP_LINKS.map(({ href, title, Icon }, idx) => (
-                <li key={idx}>
-                  <Link
-                    href={href}
-                    className="flex items-center text-slate-200 hover:text-blue-400 gap-1"
-                  >
-                    <Icon />
-                    <span className="text-sm">{title}</span>
-                  </Link>
-                </li>
-              ))}
-              {!user && (
+          {/* Center: Desktop Links */}
+          <ul className="hidden md:flex items-center gap-4">
+            {DESKTOP_LINKS.map(({ href, title, Icon }, idx) => (
+              <li key={idx}>
                 <Link
-                  href="/auth/login"
+                  href={href}
                   className="flex items-center text-slate-200 hover:text-blue-400 gap-1"
                 >
-                  <FiLogIn />
-                  <span>Login</span>
+                  <Icon />
+                  <span className="text-sm">{title}</span>
                 </Link>
-              )}
-            </ul>
+              </li>
+            ))}
+            {!user && (
+              <Link
+                href="/auth/login"
+                className="flex items-center text-slate-200 hover:text-blue-400 gap-1"
+              >
+                <FiLogIn />
+                <span>Login</span>
+              </Link>
+            )}
+          </ul>
 
-            {/* Profile Image on the Right with a little margin on top if logged in */}
+          {/* Right: Profile and Mobile Hamburger */}
+          <div className="flex items-center gap-4">
             {user && (
               <Menu as="div" className="mt-1">
                 <Menu.Button className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-600 hover:border-blue-400 transition-all duration-300 bg-gradient-to-br from-gray-700 to-gray-900">
@@ -105,9 +101,7 @@ export default function Navbar() {
                     {({ active }) => (
                       <Link
                         href="/profile"
-                        className={`block px-4 py-2 text-sm ${
-                          active ? "bg-gray-700" : "text-gray-200"
-                        }`}
+                        className={`block px-4 py-2 text-sm ${active ? "bg-gray-700" : "text-gray-200"}`}
                       >
                         Profile
                       </Link>
@@ -117,9 +111,7 @@ export default function Navbar() {
                     {({ active }) => (
                       <Link
                         href="/settings"
-                        className={`block px-4 py-2 text-sm ${
-                          active ? "bg-gray-700" : "text-gray-200"
-                        }`}
+                        className={`block px-4 py-2 text-sm ${active ? "bg-gray-700" : "text-gray-200"}`}
                       >
                         Settings
                       </Link>
@@ -129,9 +121,7 @@ export default function Navbar() {
                     {({ active }) => (
                       <button
                         onClick={() => signOut({ callbackUrl: "/" })}
-                        className={`w-full text-left px-4 py-2 text-sm ${
-                          active ? "bg-gray-700" : "text-gray-200"
-                        }`}
+                        className={`w-full text-left px-4 py-2 text-sm ${active ? "bg-gray-700" : "text-gray-200"}`}
                       >
                         Logout
                       </button>
@@ -140,11 +130,10 @@ export default function Navbar() {
                 </Menu.Items>
               </Menu>
             )}
-
             {/* Mobile Hamburger */}
             <div className="md:hidden">
               <button
-                onClick={() => setIsOpen(o => !o)}
+                onClick={() => setIsOpen((o) => !o)}
                 className="text-slate-200 p-2 border rounded border-slate-200 hover:text-blue-400 hover:border-blue-400"
               >
                 {isOpen ? (
