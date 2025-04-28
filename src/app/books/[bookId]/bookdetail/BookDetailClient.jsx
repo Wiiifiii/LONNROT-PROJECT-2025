@@ -17,9 +17,11 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
   // slugify the author for our /authors/[slug] route
   const authorSlug = book.author
   .toLowerCase()
-  .normalize('NFC')                 // keep Finnish/Swedish letters fully
-  .replace(/[^a-zåäö0-9]+/gi, '-')   // allow a-z, å, ä, ö, numbers
-  .replace(/(^-|-$)/g, '');
+  .normalize('NFD')                  // break letters like ö -> o + ¨
+  .replace(/[\u0300-\u036f]/g, '')    // remove diacritics
+  .replace(/[^a-z0-9]+/g, '-')        // allow a-z and numbers only
+  .replace(/(^-|-$)/g, '');           // trim hyphens
+
 
 
 
