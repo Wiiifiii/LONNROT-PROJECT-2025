@@ -11,11 +11,13 @@ import {
   FaArrowLeft,
   FaInfoCircle,
   FaBookmark,
-  FaSun,
+  FaThemeisle ,
   FaMoon,
   FaCoffee,
-  FaDownload
+  BsFiletypePdf 
 } from 'react-icons/fa';
+import { BsFiletypeTxt } from "react-icons/bs";
+import { FaEye, FaInfoCircle, FaDownload } from 'react-icons/fa'
 
 /** “Rough” plain-text → Markdown converter */
 function makeRoughMarkdown(txt) {
@@ -184,16 +186,16 @@ export default function BookTextViewer({
             <span className="ml-1">— {bookAuthor}</span>
           </div>
 
-          <Tooltip content="Back to shelf">
+          <Tooltip content="To Saga Haven">
             <button
               onClick={() => router.push('/books')}
               className={`${panelText} p-2 rounded`}
             >
-              <FaArrowLeft size={ICON} />
+              <GiMagicGate size={ICON} />
             </button>
           </Tooltip>
 
-          <Tooltip content="Details">
+          <Tooltip content="Seek the Lore">
             <button
               onClick={() => router.push(`/books/${bookId}/bookdetail`)}
               className={`${panelText} p-2 rounded`}
@@ -202,7 +204,7 @@ export default function BookTextViewer({
             </button>
           </Tooltip>
 
-          <Tooltip content="Add to list">
+          <Tooltip content="Add to Saga lists">
             <button
               onClick={() => setShowListSelector(v => !v)}
               className={`${panelText} p-2 rounded`}
@@ -217,7 +219,7 @@ export default function BookTextViewer({
               className={`${panelText} p-2 rounded`}
             >
               {theme === 'dark'
-                ? <FaSun size={ICON} />
+                ? <FaThemeisle  size={ICON} />
                 : theme === 'light'
                   ? <FaMoon size={ICON} />
                   : <FaCoffee size={ICON} />}
@@ -225,26 +227,26 @@ export default function BookTextViewer({
           </Tooltip>
 
           {/* Download TXT */}
-          <Tooltip content="Download TXT">
+          <Tooltip content="Keep the Rune TXT">
             <a
               href={`/api/books/${bookId}/download?format=txt`}
               target="_blank"
               rel="noopener"
               className={`${panelText} p-2 rounded`}
             >
-              <FaDownload size={ICON} />
+              <BsFiletypeTxt size={ICON} />
             </a>
           </Tooltip>
 
           {/* Download PDF */}
-          <Tooltip content="Download PDF">
+          <Tooltip content="Keep the Rune PDF">
             <a
               href={`/api/books/${bookId}/download?format=pdf`}
               target="_blank"
               rel="noopener"
               className={`${panelText} p-2 rounded`}
             >
-              <FaDownload size={ICON} />
+              <BsFiletypePdf  size={ICON} />
             </a>
           </Tooltip>
 

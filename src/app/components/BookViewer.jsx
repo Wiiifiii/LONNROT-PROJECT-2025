@@ -98,7 +98,7 @@ export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {
               </Tooltip>
               <Tooltip content="Back to Saga Haven">
                 <Button
-                  icon={FaBook}
+                  icon={GiMagicGate}
                   onClick={() => router.push("/books")}
                   className="p-2 md:p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151] group"
                 />
