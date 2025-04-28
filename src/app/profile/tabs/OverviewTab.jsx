@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import StatsCard from "@/app/components/StatsCard";
+import StatsCard from "@/app/components/UI/StatsCard";
 
 export default function OverviewTab() {
   // State to hold reading stats fetched from the API

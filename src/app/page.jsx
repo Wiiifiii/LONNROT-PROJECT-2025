@@ -1,8 +1,8 @@
 "use client";
 export const dynamic = "force-dynamic";
 import './styles/globals.css';
-import Hero from './components/Home';
-import Navbar from './components/Navbar';
+import Hero from './components/Sections/Home';
+import Navbar from './components/Layout/Navbar';
 
 export default function Home() {
   return (

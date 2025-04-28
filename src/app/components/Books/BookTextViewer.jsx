@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import Tooltip from './Tooltip';
-import Notification from './Notification';
-import ReadingListSelector from './ReadingListSelector';
-import MarkdownRenderer from './MarkdownRenderer';
-import TableOfContents from './TableOfContents';
+import Tooltip from '@/app/components/UI/Tooltip';
+import Notification from '@/app/components/UI/Notification'
+import ReadingListSelector from '@/app/components/Books/ReadingListSelector';
+import MarkdownRenderer from '@/app/components/Books/MarkdownRenderer';
+import TableOfContents from '@/app/components/Books/TableOfContents';
 import { useSession } from 'next-auth/react';
 
 import { GiMagicGate, GiMagicTrident } from "react-icons/gi";

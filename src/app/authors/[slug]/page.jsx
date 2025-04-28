@@ -2,7 +2,7 @@
 export const dynamic = 'force-dynamic';
 
 import React from 'react';
-import ComingSoon from '@/app/components/ComingSoon';
+import ComingSoon from '@/app/components/Sections/ComingSoon';
 
 export default async function AuthorPage({ params }) {
   const { slug } = await params;

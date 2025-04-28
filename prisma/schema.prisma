@@ -92,8 +92,45 @@ model User {
   readingLists     ReadingList[]
   readingPositions ReadingPosition[]
   passwordResets   PasswordReset[]
+  
+  // Community relations
+  topics    Topic[]    @relation("UserTopics")
+  comments  Comment[]  @relation("UserComments")
 
   @@map("users")
+}
+
+// Discussion topics
+model Topic {
+  id         Int       @id @default(autoincrement())
+  title      String
+  body       String    @db.Text
+  createdAt  DateTime  @default(now())
+
+  // who posted it
+  author     User      @relation("UserTopics", fields: [authorId], references: [id])
+  authorId   Int
+
+  comments   Comment[] @relation("TopicComments")
+
+  @@map("topics")
+}
+
+// Comments on topics
+model Comment {
+  id         Int       @id @default(autoincrement())
+  body       String    @db.Text
+  createdAt  DateTime  @default(now())
+
+  // relation back to topic
+  topic      Topic     @relation("TopicComments", fields: [topicId], references: [id])
+  topicId    Int
+
+  // who commented
+  author     User      @relation("UserComments", fields: [authorId], references: [id])
+  authorId   Int
+
+  @@map("comments")
 }
 
 // ActivityLog

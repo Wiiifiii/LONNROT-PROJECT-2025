@@ -1,6 +1,6 @@
 // app/books/[bookId]/bookdetail/page.jsx
 
-import Navbar from "../../../components/Navbar";
+import Navbar from "@/app/components/Layout/Navbar";
 import BookDetailClient from "./BookDetailClient";
 
 export default async function BookDetailsPage({ params }) {

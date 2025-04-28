@@ -1,7 +1,7 @@
 // src/app/about/page.jsx
 "use client";
 import React, { useState } from "react";
-import Navbar from "@/app/components/Navbar";
+import Navbar from "@/app/components/Layout/Navbar";
 
 // Import the tab components that show different content sections
 import Secrets from "./tabs/Secrets";

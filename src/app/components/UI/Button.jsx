@@ -1,7 +1,7 @@
 // components/Button.jsx
 import React from 'react';
 import PropTypes from 'prop-types';
-import Tooltip from './Tooltip';
+import Tooltip from '@/app/components/UI/Tooltip';
 
 const Button = ({ icon: Icon, text, tooltip, onClick, className = '' }) => {
   const btn = (

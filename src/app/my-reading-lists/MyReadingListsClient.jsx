@@ -5,10 +5,10 @@ import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FaTrash, FaEdit, FaCheck, FaTimes } from "react-icons/fa";
 
-import Notification from "@/app/components/Notification";
-import Button from "@/app/components/Button";
-import ConfirmDialog from "@/app/components/ConfirmDialog";
-import Card from "@/app/components/Card";
+import Notification from "@/app/components/UI/Notification";
+import Button from "@/app/components/UI/Button";
+import ConfirmDialog from "@/app/components/UI/ConfirmDialog";
+import Card from "@/app/components/Books/Card";
 
 export default function MyReadingListsClient() {
   const { data: session, status } = useSession();

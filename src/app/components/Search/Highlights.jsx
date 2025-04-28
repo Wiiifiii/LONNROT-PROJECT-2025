@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import Button from './Button'
+import Button from '@/app/components/UI/Button'
 import { FiArrowRight } from 'react-icons/fi'
 
 export default function Highlights({ onFilter = () => {} }) {

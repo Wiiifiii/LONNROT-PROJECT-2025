@@ -6,9 +6,9 @@ import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { FaListUl, FaInfoCircle, FaBook, FaDownload, FaTimes, FaEllipsisV } from "react-icons/fa";
 import Button from "./Button";
-import ReadingListSelector from "./ReadingListSelector";
-import Notification from "./Notification";
-import Tooltip from "./Tooltip";
+import ReadingListSelector from "../ReadingListSelector";
+import Notification from "../Notification";
+import Tooltip from "../Tooltip";
 import { GiMagicGate,GiMagicTrident } from "react-icons/gi";
 
 export default function BookViewer({ bookId, pdfUrl, txtUrl, book }) {

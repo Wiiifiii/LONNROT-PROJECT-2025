@@ -1,8 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useSession } from "next-auth/react";
-import Navbar from "@/app/components/Navbar";
-import BackgroundWrapper from "@/app/components/BackgroundWrapper";
+import Navbar from "@/app/components/Layout/Navbar";
+import BackgroundWrapper from "@/app/components/Layout/BackgroundWrapper";
 import {
   ResponsiveContainer,
   PieChart,

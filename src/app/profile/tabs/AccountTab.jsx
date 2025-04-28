@@ -2,7 +2,7 @@
 "use client";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import Notification from "@/app/components/Notification";
+import Notification from "@/app/components/UI/Notification";
 
 export default function AccountTab() {
   // Get current user session data
