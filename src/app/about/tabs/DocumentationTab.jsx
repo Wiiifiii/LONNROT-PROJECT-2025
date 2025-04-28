@@ -32,7 +32,7 @@ export default function DocumentationTab() {
         onClick={() => setIsOpen(true)}
       >
         <Image
-          src="/images/Import Pipeline-Runtime App Flow.png"
+          src="/images/RuntimeAppFlow.png"
           alt="Hand-drawn flowcharts showing Import Pipeline and Runtime App Flow"
           width={500}
           height={500}
@@ -67,10 +67,6 @@ export default function DocumentationTab() {
         </div>
       )}
 
-      <p className="text-sm text-white">
-        Maintenance and housekeeping scripts (e.g. backfills, cleanups) are not shown
-        here for clarity. See the <code>scripts/</code> folder for full details.
-      </p>
-    </div>
+         </div>
   );
 }
