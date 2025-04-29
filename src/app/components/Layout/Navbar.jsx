@@ -26,7 +26,7 @@ const DESKTOP_LINKS = [
   { href: "/books", title: "Saga Haven", Icon: GiMagicGate },
   { href: "/my-reading-lists", title: "My Saga Lists", Icon: SiMagic },
   { href: "/about", title: "Kantele’s Guide", Icon: GiMagicLamp },
-  { href: "/community", title: "Community", Icon: FaComments },
+ // { href: "/community", title: "Community", Icon: FaComments },
   { href: "/contact", title: "Contact", Icon: HiOutlineMail },
 ];
 

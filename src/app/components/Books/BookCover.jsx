@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 
-
+import { GiLion} from "react-icons/gi";
 // Helper to safely truncate text
 const truncate = (text, maxLength) => {
   if (!text) return "";
@@ -115,10 +115,12 @@ export default function BookCover({ title, author }) {
 
       {/* Content */}
       <div className="relative z-10 flex flex-col justify-between h-full">
-        {/* Top: Project Name */}
-        <div className="text-[8px] font-semibold text-center text-gray-300">Lönnrot Project</div>
+        {/* Top: Project Lönnrot and Icon */}
+        <GiLion className="mx-auto text-xl text-gray-300" />
+          <div className="text-[8px] font-semibold text-center text-gray-300">PROJECT LÖNNROT</div>
+         
 
-        {/* Middle: Title and Author */}
+          {/* Middle: Title and Author */}
         <div className="flex flex-col items-center justify-center flex-grow">
           <h3 className="text-sm font-bold text-center leading-tight">{truncate(title, 24)}</h3>
           <p className="text-xs text-center mt-1">{truncate(author, 18)}</p>
