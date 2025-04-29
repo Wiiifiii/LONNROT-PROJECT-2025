@@ -15,21 +15,27 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }) {
-    return (
-      <html lang="en">
-       <head>
-         {/* make mobile responsive */}
-         <meta name="viewport" content="width=device-width, initial-scale=1" />
-       </head>
-       <body className="min-h-screen flex flex-col">
-          <Providers>
-            <div className="flex-grow">
-              {children}
-            </div>
-           <Footer />
-          </Providers>
-       </body>
-      </html>
-    );
-  }
+  return (
+    <html lang="en">
+      <head>
+        {/* make mobile responsive */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+          <body
+        className={`
+        flex flex-col min-h-screen
+        bg-[url('/images/baseImage.png')]
+         bg-no-repeat bg-center bg-cover bg-fixed
+       `}
+      >
+        <Providers>
+          <div className="flex-grow">
+            {children}
+          </div>
+          <Footer />
+        </Providers>
+      </body>
+    </html>
+  );
+}
 

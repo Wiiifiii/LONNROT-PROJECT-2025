@@ -34,13 +34,27 @@ export default function LoginPage() {
   }
 
   return (
-    <div
-      className="flex min-h-screen bg-gray-900 bg-cover bg-center"
-      style={{ backgroundImage: "url('/images/baseImage.png')" }}
-    >
-      <div className="flex flex-1 items-center justify-center p-8 bg-black bg-opacity-50">
-        <div className="w-full max-w-2xl bg-[#111827]  rounded-2xl shadow-lg p-8 space-y-6">
 
+       <div
+         className="
+           flex min-h-screen items-center justify-center
+           bg-[url('/images/baseImage.png')]
+          bg-no-repeat bg-center bg-cover
+         "
+       >
+         <div
+           className="
+            flex flex-1 items-center justify-center p-8
+             bg-[#0b1c2c] bg-opacity-50 backdrop-blur-sm
+           "
+         >
+           <div
+            className="
+               w-full max-w-2xl
+               bg-[#0b1c2c] bg-opacity-75 backdrop-blur-sm
+              rounded-2xl shadow-lg p-8 space-y-6
+            "
+          >
           <h2 className="text-3xl font-bold text-center text-white">
             Enter Väinämöinen’s Realm 🪙
           </h2>

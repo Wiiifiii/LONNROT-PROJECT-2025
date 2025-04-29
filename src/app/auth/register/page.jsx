@@ -2,31 +2,31 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useRouter }    from 'next/navigation'
-import Button           from '@/app/components/UI/Button'
-import Notification     from '@/app/components/UI/Notification'
+import { useRouter } from 'next/navigation'
+import Button from '@/app/components/UI/Button'
+import Notification from '@/app/components/UI/Notification'
 import {
   FiEye,
   FiEyeOff,
   FiUserPlus,
   FiBookOpen
-}                      from 'react-icons/fi'
+} from 'react-icons/fi'
 
 export default function RegisterPage() {
   const router = useRouter()
   const [notification, setNotification] = useState(null)
 
   // form fields
-  const [username,        setUsername]        = useState('')
-  const [email,           setEmail]           = useState('')
-  const [password,        setPassword]        = useState('')
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [displayName,     setDisplayName]     = useState('')
-  const [dateOfBirth,     setDateOfBirth]     = useState('')
-  const [gender,          setGender]          = useState('')
-  const [bio,             setBio]             = useState('')
-  const [profileImage,    setProfileImage]    = useState(null)
-  const [showPw,          setShowPw]          = useState(false)
+  const [displayName, setDisplayName] = useState('')
+  const [dateOfBirth, setDateOfBirth] = useState('')
+  const [gender, setGender] = useState('')
+  const [bio, setBio] = useState('')
+  const [profileImage, setProfileImage] = useState(null)
+  const [showPw, setShowPw] = useState(false)
 
   // read file to base64
   const handleFile = e => {
@@ -109,9 +109,15 @@ export default function RegisterPage() {
         className="flex min-h-screen bg-gray-900 bg-cover bg-center"
         style={{ backgroundImage: "url('/images/baseImage.png')" }}
       >
-        <div className="flex flex-1 items-center justify-center p-8 bg-black bg-opacity-50">
-          <div className="w-full max-w-2xl bg-[#111827]  rounded-2xl shadow-lg p-8 space-y-6">
-            <h2 className="text-3xl font-bold text-center text-white">
+        <div className="
+  flex flex-1 items-center justify-center p-8
+  bg-[#0b1c2c] bg-opacity-50 backdrop-blur-sm
+">
+          <div className="    
+  w-full max-w-2xl
+    bg-[#0b1c2c] bg-opacity-75 backdrop-blur-sm
+   rounded-2xl shadow-lg p-8 space-y-6
+  ">            <h2 className="text-3xl font-bold text-center text-white">
               Forge Your Saga’s Account 🖋️
             </h2>
 

@@ -44,8 +44,13 @@ export default function ReviewForm({ bookId, onNewReview }) {
   };
 
   return (
-    <div className="mb-6 p-4 bg-[#111827]  rounded">
-      {notif && (
+       <div
+         className="
+           mb-6 p-6
+           bg-[#0b1c2c] bg-opacity-75 backdrop-blur-sm
+          rounded-lg
+        "
+       >      {notif && (
         <Notification
           type={notif.type}
           message={notif.message}
@@ -62,13 +67,17 @@ export default function ReviewForm({ bookId, onNewReview }) {
         </div>
         <div>
           <label className="block mb-1">Whisper Your Saga</label>
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            className="w-full p-2 bg-gray-700 rounded text-white"
-            rows={4}
-            required
-          />
+                 <textarea
+           value={comment}
+           onChange={(e) => setComment(e.target.value)}
+           rows={4}
+           required
+           className="
+            w-full p-2
+            bg-[#0b1c2c] bg-opacity-50
+            rounded text-white
+          "
+        />
         </div>
         <Button
           type="submit"

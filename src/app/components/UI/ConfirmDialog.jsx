@@ -17,7 +17,7 @@ export default function ConfirmDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-      <div className="bg-[#111827]  bg-opacity-80 backdrop-blur-sm rounded-lg p-6 w-full max-w-sm space-y-4 shadow-lg">
+      <div className="bg-[#0b1c2c]  bg-opacity-80 backdrop-blur-sm rounded-lg p-6 w-full max-w-sm space-y-4 shadow-lg">
         <div className="flex items-center space-x-2">
           <FiAlertTriangle className="text-2xl text-yellow-400" />
           <h3 className="text-xl font-semibold text-white">{title}</h3>

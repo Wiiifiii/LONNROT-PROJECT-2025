@@ -14,7 +14,7 @@ export default function NewListForm({ value, onChange, onSubmit, loading }) {
         onChange={e => onChange(e.target.value)}
         placeholder="Forge a New Scroll"
         disabled={loading}
-        className="flex-1 px-4 py-2 bg-[#111827]  text-white rounded-l-md focus:outline-none"
+        className="flex-1 px-4 py-2 bg-[#0b1c2c]  text-white rounded-l-md focus:outline-none"
       />
       <Tooltip content="Create a new Saga list">
         <Button

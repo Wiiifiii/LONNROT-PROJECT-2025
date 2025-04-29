@@ -12,7 +12,7 @@
 //   onDeleteRequested,
 // }) {
 //   return (
-//     <aside className="w-full md:w-1/4 bg-[#111827]  bg-opacity-50 backdrop-blur-sm p-4 rounded-lg">
+//     <aside className="w-full md:w-1/4 bg-[#0b1c2c]  bg-opacity-50 backdrop-blur-sm p-4 rounded-lg">
 //       <h2 className="mb-4 text-white font-semibold text-lg">Your Saga Lists</h2>
 //       <nav className="flex flex-col space-y-2 overflow-auto">
 //         {lists.length === 0 ? (

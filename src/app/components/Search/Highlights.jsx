@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Button from '@/app/components/UI/Button'
 import { FiArrowRight } from 'react-icons/fi'
 
-export default function Highlights({ onFilter = () => {} }) {
+export default function Highlights({ onFilter = () => { } }) {
   const [data, setData] = useState(null)
 
   useEffect(() => {
@@ -30,11 +30,15 @@ export default function Highlights({ onFilter = () => {} }) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div className="
+    bg-[#0b1c2c] bg-opacity-75 backdrop-blur-sm
+   rounded-lg p-6
+   space-y-4 mb-6
+  ">  
       {cards.map(({ title, listKey, link }) => {
         const sample = data[listKey][0] || {}
         return (
-          <div key={listKey} className="bg-[#111827]  rounded-lg overflow-hidden shadow-lg">
+          <div key={listKey} className="bg-[#0b1c2c]  rounded-lg overflow-hidden shadow-lg">
             <div className="h-40 bg-gray-700 flex items-center justify-center">
               {sample.cover_url ? (
                 <img

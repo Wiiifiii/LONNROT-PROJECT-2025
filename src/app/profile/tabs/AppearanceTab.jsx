@@ -27,7 +27,7 @@
 //       {/* Button to toggle theme mode */}
 //       <button
 //         onClick={toggle}
-//         className="flex items-center bg-[#374151] hover:bg-[#111827] text-white py-1 px-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+//         className="flex items-center bg-[#374151] hover:bg-[#0b1c2c] text-white py-1 px-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
 //       >
 //         Switch to {mode === "dark" ? "Light" : "Dark"} Mode
 //       </button>

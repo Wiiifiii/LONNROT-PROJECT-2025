@@ -125,7 +125,7 @@ export default function BookCover({ title, author }) {
         </div>
 
         {/* Bottom: Your Name */}
-        <div className="text-[7px] text-center text-gray-400">by Wiiifiii</div>
+        <div className="text-[7px] text-center text-gray-400">Wiiifiii</div>
       </div>
     </div>
   );

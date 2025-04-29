@@ -21,7 +21,7 @@ import {
 // Simple card component
 function StatCard({ title, value }) {
   return (
-    <div className="bg-[#111827]  p-4 rounded-lg shadow">
+    <div className="bg-[#0b1c2c]  p-4 rounded-lg shadow">
       <h3 className="text-sm text-gray-400">{title}</h3>
       <p className="text-2xl font-bold text-white">{value}</p>
     </div>
@@ -66,17 +66,25 @@ export default function AdminDashboard() {
     <BackgroundWrapper>
       <Navbar />
       <div className="pt-20 px-4 py-8 space-y-8">
-        <div className="bg-[#111827]  text-white p-6 rounded-lg shadow-md space-y-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <StatCard title="Total Users" value={users.totalUsers} />
-            <StatCard title="Total Books" value={books.totalBooks} />
-            <StatCard title="Total Reads" value={interactions.totalReads} />
-            <StatCard title="Total Downloads" value={interactions.totalDownloads} />
+             <div
+         className="
+          bg-[#0b1c2c] bg-opacity-75 backdrop-blur-sm
+           text-white p-6 rounded-lg shadow-md space-y-6
+         "
+       >          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+           <StatCard title="Total Users"      value={users.totalUsers} />
+           <StatCard title="Total Books"      value={books.totalBooks} />
+           <StatCard title="Total Reads"      value={interactions.totalReads} />
+           <StatCard title="Total Downloads"  value={interactions.totalDownloads} />
           </div>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Gender Pie */}
-          <div className="bg-[#111827]  p-4 rounded-lg shadow">
+                   <div className="
+             bg-[#0b1c2c] bg-opacity-75 backdrop-blur-sm
+             p-4 rounded-lg shadow
+          "
+        >
             <h3 className="text-lg font-semibold mb-4">Users by Gender</h3>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
@@ -97,7 +105,11 @@ export default function AdminDashboard() {
           </div>
 
           {/* Age Bar */}
-          <div className="bg-[#111827]  p-4 rounded-lg shadow">
+          <div className="
+             bg-[#0b1c2c] bg-opacity-75 backdrop-blur-sm
+             p-4 rounded-lg shadow
+          "
+        >
             <h3 className="text-lg font-semibold mb-4">Users by Age Group</h3>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={ageData}>
@@ -111,7 +123,11 @@ export default function AdminDashboard() {
           </div>
 
           {/* Reads Line */}
-          <div className="bg-[#111827]  p-4 rounded-lg shadow">
+          <div className="
+             bg-[#0b1c2c] bg-opacity-75 backdrop-blur-sm
+             p-4 rounded-lg shadow
+          "
+        >
             <h3 className="text-lg font-semibold mb-4">Reads (Last 10 Days)</h3>
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={readsLast10Days}>
@@ -125,7 +141,11 @@ export default function AdminDashboard() {
           </div>
 
           {/* Downloads Line */}
-          <div className="bg-[#111827]  p-4 rounded-lg shadow">
+          <div className="
+             bg-[#0b1c2c] bg-opacity-75 backdrop-blur-sm
+             p-4 rounded-lg shadow
+          "
+        >
             <h3 className="text-lg font-semibold mb-4">Downloads (Last 10 Days)</h3>
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={downloadsLast10Days}>

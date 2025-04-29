@@ -87,8 +87,8 @@ export default function BooksPage() {
           <button
             onClick={() => setActiveTab('filters')}
             className={`pb-2 ${activeTab === 'filters'
-                ? 'border-b-2 border-white font-semibold text-white'
-                : 'text-gray-400'
+              ? 'border-b-2 border-white font-semibold text-white'
+              : 'text-gray-400'
               }`}
           >
             Rune Weaving
@@ -96,11 +96,11 @@ export default function BooksPage() {
           <button
             onClick={() => setActiveTab('highlights')}
             className={`pb-2 ${activeTab === 'highlights'
-                ? 'border-b-2 border-white font-semibold text-white'
-                : 'text-gray-400'
+              ? 'border-b-2 border-white font-semibold text-white'
+              : 'text-gray-400'
               }`}
           >
-           Gleaming Tomes
+            Gleaming Tomes
           </button>
         </div>
         {activeTab === 'filters' ? (
@@ -117,7 +117,14 @@ export default function BooksPage() {
 
       <div className="backdrop-brightness-50 min-h-screen px-6 py-8 space-y-8 pt-20">
         {/* ─── Centered Call-to-Action ─── */}
-        <div className="flex flex-col items-center mb-8 space-y-2">
+        <div
+          className="
+    mx-auto mb-8 w-full max-w-lg
+    bg-[#0b1c2c] bg-opacity-75 backdrop-blur-sm
+     rounded-lg p-6
+     flex flex-col items-center space-y-2
+   "
+        >
           <h2 className="text-2xl text-white font-semibold">Refine Your Library</h2>
           <div className="flex gap-4">
             <Button text="Rune Weaving" onClick={() => { setActiveTab('filters'); setShowModal(true) }} />

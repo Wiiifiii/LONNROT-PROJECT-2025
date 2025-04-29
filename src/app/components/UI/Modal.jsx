@@ -20,8 +20,11 @@ export default function Modal({ isOpen, title, onClose, children }) {
       onClick={onClose}
     >
       <div
-        className="bg-[#111827]  rounded-lg w-full max-w-2xl max-h-[85vh] overflow-auto p-6 mx-4 sm:mx-0 relative"
-        onClick={e => e.stopPropagation()}
+       className="
+         bg-[#0b1c2c] bg-opacity-50 backdrop-blur-sm
+         rounded-lg w-full max-w-2xl max-h-[85vh]
+         overflow-auto p-6 mx-4 sm:mx-0 relative
+       "        onClick={e => e.stopPropagation()}
       >
         <button
           onClick={onClose}

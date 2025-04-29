@@ -68,8 +68,12 @@ export default function Filters({ initial = {}, onApply, onClear }) {
   }
 
   return (
-    <div className="space-y-4 mb-6">
-      {/* Search */}
+     <div className="
+         bg-[#0b1c2c] bg-opacity-75 backdrop-blur-sm
+        rounded-lg p-6
+        space-y-4 mb-6
+       ">      
+       {/* Search */}
       <div>
         <label htmlFor="q" className="block text-sm text-gray-200 mb-1">
           Search

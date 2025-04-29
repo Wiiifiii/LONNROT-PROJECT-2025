@@ -106,7 +106,7 @@ export default function AccountTab() {
         <input type="password" value={form.newPassword} onChange={(e) => setForm({ ...form, newPassword: e.target.value })} className="w-full p-2 bg-gray-700 text-white rounded" />
       </div>
       {/* Submit button */}
-      <button type="submit" disabled={loading} className="flex items-center bg-[#374151] hover:bg-[#111827] text-white py-1 px-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+      <button type="submit" disabled={loading} className="flex items-center bg-[#374151] hover:bg-[#0b1c2c] text-white py-1 px-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
         {loading ? "Saving…" : "Save Changes"}
       </button>
     </form>

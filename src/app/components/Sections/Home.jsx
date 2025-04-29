@@ -23,7 +23,7 @@ const Home = () => {
                         </p>
                         <Link
                           href="/secrets"
-                          className="inline-flex items-center px-6 py-3 bg-[#374151] hover:bg-[#111827] rounded-full transition duration-300 text-sm"
+                          className="inline-flex items-center px-6 py-3 bg-[#374151] hover:bg-[#0b1c2c] rounded-full transition duration-300 text-sm"
                         >
                           Unveil the Runes <FiArrowRight className="ml-2" size={20} />
                         </Link>
@@ -33,7 +33,7 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-            <section className="py-8 bg-[#111827] bg-opacity-75 text-white">
+            <section className="py-8 bg-[#0b1c2c] bg-opacity-75 text-white">
                 <div className="container mx-auto p-4">
                     <h2 className="text-3xl font-semibold mb-4">Our Sacred Quest</h2>
                     <p className="mb-4">

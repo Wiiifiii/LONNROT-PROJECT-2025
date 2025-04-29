@@ -10,7 +10,7 @@ const Button = ({ icon: Icon, text, tooltip, onClick, className = '' }) => {
       className={`
         w-full sm:w-auto inline-flex items-center justify-center gap-2
         px-4 py-2 bg-[#374151] text-white rounded-full
-        hover:bg-[#111827] transition duration-300 text-sm font-medium
+        hover:bg-[#0b1c2c] transition duration-300 text-sm font-medium
         ${className}
       `}
     >

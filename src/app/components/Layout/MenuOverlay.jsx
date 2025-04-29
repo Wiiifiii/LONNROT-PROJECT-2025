@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function MenuOverlay({ links }) {
   return (
-    <ul className="flex flex-col py-4 items-center space-y-2 bg-[#111827]">
+    <ul className="flex flex-col py-4 items-center space-y-2 bg-[#0b1c2c]">
       {links.map(({ href, title, Icon, action }, idx) => (
         <li key={idx} className="w-full">
           {action ? (

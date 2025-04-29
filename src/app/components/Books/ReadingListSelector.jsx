@@ -53,7 +53,7 @@ export default function ReadingListSelector({ bookId, onClose, onAddSuccess }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div
-        className="bg-[#111827] p-6 rounded-2xl w-[450px] space-y-4 bg-cover bg-center"
+        className="bg-[#0b1c2c] p-6 rounded-2xl w-[450px] space-y-4 bg-cover bg-center"
         style={{ backgroundImage: "url('/images/baseImage.png')" }}
       >
         <div className="flex justify-between items-center">
@@ -93,14 +93,14 @@ export default function ReadingListSelector({ bookId, onClose, onAddSuccess }) {
         <div className="flex justify-between items-center space-x-4 mt-4">
           <button
             onClick={onClose}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#0b1c2c] transition duration-300"
           >
             <FaTimes /> Cancel
           </button>
           <button
             onClick={handleAdd}
             disabled={!selectedList}
-            className={`inline-flex items-center gap-2 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#111827] transition duration-300 ${
+            className={`inline-flex items-center gap-2 px-4 py-2 bg-[#374151] text-white rounded-full hover:bg-[#0b1c2c] transition duration-300 ${
               !selectedList && "cursor-not-allowed opacity-50"
             }`}
           >

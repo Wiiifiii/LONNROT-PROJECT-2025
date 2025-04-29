@@ -30,7 +30,7 @@ export default function Secrets() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {secrets.map((secret, index) => (
-          <div key={index} className="bg-[#111827] rounded-lg shadow-md p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+          <div key={index} className="bg-[#0b1c2c] rounded-lg shadow-md p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300">
             <h2 className="text-xl font-bold text-blue-400 mb-2">{secret.name}</h2>
             <h3 className="text-md font-semibold text-gray-300 mb-2 italic">{secret.meaning}</h3>
             <p className="text-sm text-gray-400">{secret.description}</p>

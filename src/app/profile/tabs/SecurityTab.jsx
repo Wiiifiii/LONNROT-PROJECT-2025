@@ -46,7 +46,7 @@ export default function SecurityTab() {
             type="password"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
-            className="w-full p-2 rounded bg-[#111827] text-white"
+            className="w-full p-2 rounded bg-[#0b1c2c] text-white"
             required
           />
         </div>
@@ -57,14 +57,14 @@ export default function SecurityTab() {
             type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full p-2 rounded bg-[#111827] text-white"
+            className="w-full p-2 rounded bg-[#0b1c2c] text-white"
             required
           />
         </div>
         {/* Submit button for changing password */}
         <button
           type="submit"
-          className="flex items-center bg-[#374151] hover:bg-[#111827] text-white py-1 px-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          className="flex items-center bg-[#374151] hover:bg-[#0b1c2c] text-white py-1 px-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         >
           Change Password
         </button>

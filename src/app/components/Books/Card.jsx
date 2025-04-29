@@ -38,7 +38,7 @@ export default function Card({ book }) {
       }}
     >
       {book.cover_url ? (
-        <div className="h-40 w-32 rounded-md overflow-hidden bg-[#111827] ">
+        <div className="h-40 w-32 rounded-md overflow-hidden bg-[#0b1c2c] ">
         <img
           src={book.cover_url}
           alt={book.title}
@@ -73,7 +73,7 @@ export default function Card({ book }) {
               fetch(`/api/books/${book.id}/stats`).catch(() => { })
               router.push(`/books/${book.id}/read`)
             }}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#0b1c2c] text-base"
           />
           <Button
             icon={FaInfoCircle}
@@ -82,7 +82,7 @@ export default function Card({ book }) {
               e.stopPropagation()
               router.push(`/books/${book.id}/bookdetail`)
             }}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#0b1c2c] text-base"
           />
         </div>
         <div className="flex flex-col space-y-2 mt-2">
@@ -91,7 +91,7 @@ export default function Card({ book }) {
               e.stopPropagation()
               handleDownload('txt')
             }}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#111827] text-base w-full"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#0b1c2c] text-base w-full"
           >
             <FaDownload /> Keep the Sampo TXT
           </button>
@@ -100,7 +100,7 @@ export default function Card({ book }) {
               e.stopPropagation()
               handleDownload('pdf')
             }}
-            className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#111827] text-sm w-full"
+            className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#0b1c2c] text-sm w-full"
           >
             <FaDownload /> Keep the Sampo PDF
           </button>

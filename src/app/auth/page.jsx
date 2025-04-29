@@ -78,7 +78,7 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-gray-900 flex justify-center items-center py-12">
-      <div className="max-w-md w-full bg-[#111827]  text-white p-8 rounded-lg shadow-lg">
+      <div className="max-w-md w-full bg-[#0b1c2c]  text-white p-8 rounded-lg shadow-lg">
         <h2 className="text-3xl font-semibold text-center mb-6">
           {isRegistering ? "Register" : "Login"}
         </h2>
@@ -147,7 +147,7 @@ export default function AuthPage() {
         </div>
         <div className="mt-4">
           <button
-            className="w-full inline-flex items-center justify-center px-6 py-3 bg-[#374151] hover:bg-[#111827] rounded-full transition duration-300 text-white font-semibold text-sm"
+            className="w-full inline-flex items-center justify-center px-6 py-3 bg-[#374151] hover:bg-[#0b1c2c] rounded-full transition duration-300 text-white font-semibold text-sm"
             onClick={continueWithoutSigningIn}
           >
             Continue without signing in
