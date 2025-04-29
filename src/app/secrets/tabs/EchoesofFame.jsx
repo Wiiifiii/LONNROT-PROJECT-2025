@@ -7,14 +7,19 @@ export default function EchoesofFame() {
   return (
     <>
       <div className="p-4 text-white">
-        In the Kalevala, tales of glory spread like wildfire. Our echoes mark the favored: ‘Sampo’s Chosen’ names the most claimed treasures, books taken as the Sampo’s gifts. ‘Fresh Tales’ are newly woven runes, fresh from the bard’s breath. ‘Kantele’s Echo’ sings of tales trending this week, their fame resounding like the kantele’s notes. ‘Lönnrot’s Runes’ honors the master’s works, the Kalevala and more, sung through the ages.
+        In the Kalevala, tales of glory spread like wildfire. Our echoes mark
+        the favored: ‘Sampo’s Chosen’ names the most claimed treasures, books taken
+        as the Sampo’s gifts. ‘Fresh Tales’ are newly woven runes, fresh from the
+        bard’s breath. ‘Kantele’s Echo’ sings of tales trending this week, their fame
+        resounding like the kantele’s notes. ‘Lönnrot’s Runes’ honors the master’s works,
+        the Kalevala and more, sung through the ages.
       </div>
       <div className="p-4">
         <div className="cursor-pointer" onClick={() => setIsOpen(true)}>
           <img
             src="/images/EchoesofFame.png"
             alt="Echoes of Fame"
-            className="max-w-xs object-cover rounded-md"
+            className="w-full max-w-xs object-cover rounded-md mx-auto"
           />
         </div>
       </div>

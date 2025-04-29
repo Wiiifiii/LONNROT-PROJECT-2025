@@ -14,7 +14,7 @@ export default function VoicesofRunes() {
           <img
             src="/images/VoicesofRunes.png"
             alt="Voices of Runes"
-            className="max-w-xs object-cover rounded-md"
+             className="w-full max-w-xs object-cover rounded-md mx-auto"
           />
         </div>
       </div>

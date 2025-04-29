@@ -14,7 +14,7 @@ export default function RunesofAction() {
           <img
             src="/images/RunesofAction.png"
             alt="Runes of Action"
-            className="max-w-xs object-cover rounded-md"
+             className="w-full max-w-xs object-cover rounded-md mx-auto"
           />
         </div>
       </div>

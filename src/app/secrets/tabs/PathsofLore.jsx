@@ -14,7 +14,7 @@ export default function PathsofLore() {
           <img
             src="/images/PathsofLore.png"
             alt="Paths of Lore"
-            className="max-w-xs object-cover rounded-md"
+            className="w-full max-w-xs object-cover rounded-md mx-auto"
           />
         </div>
       </div>

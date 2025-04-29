@@ -14,7 +14,7 @@ export default function LoresKeeper() {
           <img
             src="/images/LoresKeeper.png"
             alt="LoresKeeper"
-            className="max-w-xs object-cover rounded-md"
+            className="w-full max-w-xs object-cover rounded-md mx-auto"
           />
         </div>
       </div>
