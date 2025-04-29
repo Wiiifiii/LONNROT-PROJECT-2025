@@ -4,9 +4,14 @@ import Footer from "@/app/components/Layout/Footer";
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import './styles/globals.css';
+import { GiLion} from "react-icons/gi";
 
 export const metadata = {
-  title: "Lonnrot Library",
+  title: (
+    <span>
+      <GiLion className="inline" /> PROJECT LÖNNROT
+    </span>
+  ),
 };
 
 export const viewport = {
