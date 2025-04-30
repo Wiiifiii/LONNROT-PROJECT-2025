@@ -1,51 +1,67 @@
 "use client";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useSession } from "next-auth/react";
 
-export default function TopicList({ onTopicDeleted }) {
-  const { data: session } = useSession();
+import { useEffect, useState } from "react";
+import Link                   from "next/link";
+import { FiEdit2, FiTrash2 }  from "react-icons/fi";
+import Button                 from "@/app/components/UI/Button";
+import ConfirmDialog          from "@/app/components/UI/ConfirmDialog.client";
+
+export default function TopicList({ session, onDelete, onEdit }) {
   const [topics, setTopics] = useState([]);
 
-  const fetchTopics = () =>
+  useEffect(() => {
     fetch("/api/community/topics")
       .then((r) => r.json())
       .then(setTopics);
-
-  useEffect(fetchTopics, []);
-
-  const deleteTopic = async (id) => {
-    if (!confirm("Delete this topic?")) return;
-    await fetch(`/api/community/topics/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    fetchTopics();
-    onTopicDeleted?.();
-  };
+  }, []);
 
   return (
     <ul className="space-y-4">
-      {topics.map((t) => (
-        <li key={t.id} className="p-4 bg-gray-800 rounded flex justify-between items-center">
-          <div>
-            <Link href={`/community/${t.id}`} className="text-xl font-semibold">
-              {t.title}
-            </Link>
-            <p className="text-sm text-gray-400">
-              by {t.author.username} · {t.comments.length} comments
-            </p>
-          </div>
-          {session?.user?.email === t.author.email && (
-            <button
-              onClick={() => deleteTopic(t.id)}
-              className="text-red-500 hover:underline"
-            >
-              Delete
-            </button>
-          )}
-        </li>
-      ))}
+      {topics.map((topic) => {
+        const isAuthor = session?.user?.email === topic.author.email;
+        return (
+          <li
+            key={topic.id}
+            className="p-4 bg-gray-800 rounded flex justify-between items-center"
+          >
+            <div>
+              {/*
+                🚨 Next.js 13+ Link no longer wants
+                you to nest a plain <a> inside. You can
+                pass your classes & text directly to Link.
+              */}
+              <Link
+                href={`/community/${topic.id}`}
+                className="text-xl font-semibold hover:underline"
+              >
+                {topic.title}
+              </Link>
+
+              <p className="text-sm text-gray-400">
+                by {topic.author.username} · {topic.comments.length} comments
+              </p>
+            </div>
+
+            {isAuthor && (
+              <div className="flex items-center space-x-2">
+                <Button
+                  icon={FiEdit2}
+                  tooltip="Edit topic"
+                  onClick={() => onEdit(topic.id)}
+                />
+         <ConfirmDialog
+  title="Delete topic?"
+  message="This cannot be undone."
+  onConfirm={() => onDelete(topic.id)}
+>
+  <Button icon={FiTrash2} tooltip="Delete topic" />
+</ConfirmDialog>
+
+              </div>
+            )}
+          </li>
+        );
+      })}
     </ul>
   );
 }

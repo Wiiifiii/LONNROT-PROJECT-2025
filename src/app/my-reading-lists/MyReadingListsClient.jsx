@@ -7,7 +7,7 @@ import { FaTrash, FaEdit, FaCheck, FaTimes } from "react-icons/fa";
 
 import Notification from "@/app/components/UI/Notification";
 import Button from "@/app/components/UI/Button";
-import ConfirmDialog from "@/app/components/UI/ConfirmDialog";
+import ConfirmDialog from "@/app/components/UI/ConfirmDialog.client";
 import Card from "@/app/components/Books/Card";
 
 export default function MyReadingListsClient() {

@@ -1,47 +1,74 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useSession }           from "next-auth/react";
 
-export default function CommentList({ topicId, onCommentDeleted }) {
-  const { data: session } = useSession();
+import { useState, useEffect, useContext } from "react";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import { NotificationContext } from "@/app/components/Layout/NotificationProvider.client";
+import Button from "@/app/components/UI/Button";
+import ConfirmDialog from "@/app/components/UI/ConfirmDialog.client";
+
+export default function CommentList({ topicId, session, onCommentDeleted }) {
   const [comments, setComments] = useState([]);
+  const { showNotification } = useContext(NotificationContext);
 
-  const fetchComments = () =>
-    fetch(`/api/community/${topicId}/comments`)
-      .then(r => r.json())
-      .then(setComments);
-
-  useEffect(fetchComments, [topicId]);
-
-  // DELETE
-  const deleteComment = async (id) => {
-    if (!confirm("Delete this comment?")) return;
-    await fetch(`/api/community/${topicId}/comments/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    fetchComments();
-    onCommentDeleted?.();
+  const fetchComments = async () => {
+    try {
+      const res = await fetch(`/api/community/${topicId}/comments`);
+      if (!res.ok) throw new Error(res.statusText);
+      setComments(await res.json());
+    } catch (err) {
+      showNotification("error", `Failed to load comments: ${err.message}`);
+    }
   };
 
-  // EDIT
+  useEffect(() => {
+    fetchComments();
+  }, [topicId]);
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`/api/community/${topicId}/comments/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const { error } = await res.json();
+        throw new Error(error || res.statusText);
+      }
+      showNotification("success", "Comment deleted");
+      fetchComments();
+      onCommentDeleted?.();
+    } catch (err) {
+      showNotification("error", `Delete failed: ${err.message}`);
+    }
+  };
+
   const [editingId, setEditingId] = useState(null);
-  const [editBody, setEditBody]   = useState("");
+  const [editBody, setEditBody] = useState("");
 
   const startEdit = (c) => {
     setEditingId(c.id);
     setEditBody(c.body);
   };
+
   const saveEdit = async (id) => {
-    await fetch(`/api/community/${topicId}/comments/${id}`, {
-      method: "PATCH",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ body: editBody }),
-    });
-    setEditingId(null);
-    fetchComments();
-    onCommentDeleted?.();
+    try {
+      const res = await fetch(`/api/community/${topicId}/comments/${id}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body: editBody }),
+      });
+      if (!res.ok) {
+        const { error } = await res.json();
+        throw new Error(error || res.statusText);
+      }
+      showNotification("success", "Comment updated");
+      setEditingId(null);
+      fetchComments();
+      onCommentDeleted?.();
+    } catch (err) {
+      showNotification("error", `Update failed: ${err.message}`);
+    }
   };
 
   return (
@@ -54,43 +81,43 @@ export default function CommentList({ topicId, onCommentDeleted }) {
               <>
                 <textarea
                   value={editBody}
-                  onChange={e => setEditBody(e.target.value)}
+                  onChange={(e) => setEditBody(e.target.value)}
                   className="w-full p-2 bg-gray-600 text-white rounded"
                 />
-                <button
-                  onClick={() => saveEdit(c.id)}
-                  className="px-3 py-1 bg-green-600 rounded mr-2"
-                >
-                  Save
-                </button>
-                <button
-                  onClick={() => setEditingId(null)}
-                  className="px-3 py-1 bg-gray-600 rounded"
-                >
-                  Cancel
-                </button>
+                <div className="mt-2 space-x-2">
+                  <Button
+                    text="Save"
+                    tooltip="Save changes"
+                    onClick={() => saveEdit(c.id)}
+                  />
+                  <Button
+                    text="Cancel"
+                    tooltip="Cancel editing"
+                    onClick={() => setEditingId(null)}
+                  />
+                </div>
               </>
             ) : (
               <>
                 <p>{c.body}</p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-400 mt-1">
                   — {c.author.username} on{" "}
                   {new Date(c.createdAt).toLocaleString()}
                 </p>
                 {isAuthor && (
-                  <div className="space-x-2 mt-2">
-                    <button
+                  <div className="flex items-center space-x-2 mt-2">
+                    <Button
+                      icon={FiEdit2}
+                      tooltip="Edit comment"
                       onClick={() => startEdit(c)}
-                      className="text-blue-400 hover:underline text-sm"
+                    />
+                    <ConfirmDialog
+                      title="Delete comment?"
+                      description="This action cannot be undone."
+                      onConfirm={() => handleDelete(c.id)}
                     >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => deleteComment(c.id)}
-                      className="text-red-400 hover:underline text-sm"
-                    >
-                      Delete
-                    </button>
+                      <Button icon={FiTrash2} tooltip="Delete comment" />
+                    </ConfirmDialog>
                   </div>
                 )}
               </>
