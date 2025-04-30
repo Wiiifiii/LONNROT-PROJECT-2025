@@ -8,6 +8,7 @@ import { NextResponse } from "next/server";
 const prisma = new PrismaClient();
 
 export async function GET(request, context) {
+  // Await params before using them
   const { bookId } = await context.params;
   const id = Number(bookId);
   if (Number.isNaN(id)) {
@@ -40,6 +41,7 @@ export async function GET(request, context) {
 }
 
 export async function PUT(request, context) {
+  // Await params before using them
   const { bookId } = await context.params;
   const id = parseInt(bookId, 10);
   const body = await request.json();
@@ -65,9 +67,7 @@ export async function PUT(request, context) {
       txt_url: body.txt_url ?? undefined,
       genres:
         body.genres && Array.isArray(body.genres) ? body.genres : undefined,
-      publicationYear: body.publicationYear
-        ? Number(body.publicationYear)
-        : undefined,
+      publicationYear: body.publicationYear ? Number(body.publicationYear) : undefined,
       language: body.language || undefined,
       metadata: body.metadata || {},
       isDeleted: body.isDeleted === true,
@@ -78,6 +78,7 @@ export async function PUT(request, context) {
 }
 
 export async function DELETE(request, context) {
+  // Await params before using them
   const { bookId } = await context.params;
   const id = parseInt(bookId, 10);
   await prisma.book.delete({ where: { id } });

@@ -7,8 +7,8 @@ import { InteractionType } from "@/lib/constants"; // Import InteractionType con
 
 const prisma = new PrismaClient();
 
-export async function POST(request, ctx) {
-  const { bookId } = await ctx.params;
+export async function POST(request, context) {
+  const { bookId } = await context.params;
   const id = Number(bookId);
 
   // Fetch user session to verify authentication
