@@ -13,7 +13,6 @@ import { SiMagic } from "react-icons/si";
 import { FaComments } from "react-icons/fa";
 import { HiOutlineMail } from "react-icons/hi";
 import MenuOverlay from "@/app/components/Layout/MenuOverlay";
-import Tooltip from "@/app/components/UI/Tooltip";
 import { useSession, signOut } from "next-auth/react";
 
 // Next/Image loader for Supabase-hosted avatars
@@ -26,7 +25,7 @@ const DESKTOP_LINKS = [
   { href: "/books", title: "Saga Haven", Icon: GiMagicGate },
   { href: "/my-reading-lists", title: "My Saga Lists", Icon: SiMagic },
   { href: "/about", title: "Kantele’s Guide", Icon: GiMagicLamp },
- // { href: "/community", title: "Community", Icon: FaComments },
+  { href: "/community", title: "Kalevala Kantele", Icon: FaComments },
   { href: "/contact", title: "Contact", Icon: HiOutlineMail },
 ];
 
