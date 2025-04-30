@@ -4,8 +4,8 @@ import bcrypt from 'bcryptjs';
 
 const passwordPolicy = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{10,}$/;
 
-export async function POST(req) {
-  const { token, newPassword } = await req.json();
+export async function POST(request) {
+  const { token, newPassword } = await request.json();
   if (
     typeof token !== 'string' ||
     typeof newPassword !== 'string' ||

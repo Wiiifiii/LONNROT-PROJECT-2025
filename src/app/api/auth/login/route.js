@@ -6,9 +6,9 @@ import jwt from "jsonwebtoken";
 const prisma = new PrismaClient();
 const SECRET_KEY = process.env.JWT_SECRET || "supersecret";
 
-export async function POST(req) {
+export async function POST(request) {
   try {
-    const { username, password } = await req.json();
+    const { username, password } = await request.json();
 
     const user = await prisma.user.findUnique({ where: { username } });
     if (!user) {

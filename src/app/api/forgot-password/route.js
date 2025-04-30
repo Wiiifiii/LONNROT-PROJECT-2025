@@ -3,15 +3,15 @@ import { randomBytes } from 'crypto';
 import prisma from '@/lib/prisma';
 import { sendMail } from '@/lib/mailer';
 
-export async function POST(req) {
-  const { email } = await req.json();
+export async function POST(request) {
+  const { email } = await request.json();
   if (typeof email !== 'string') {
     return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
   }
 
   const user = await prisma.user.findUnique({ where: { email } });
   const token = randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hr
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hr
 
   if (user) {
     await prisma.passwordReset.create({
