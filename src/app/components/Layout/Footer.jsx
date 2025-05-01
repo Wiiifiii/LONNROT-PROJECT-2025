@@ -1,4 +1,4 @@
-// // src/app/components/Footer.jsx
+// src/app/components/Footer.jsx
 'use client'
 
 import Link from 'next/link'
@@ -8,7 +8,7 @@ import { FaGithub } from 'react-icons/fa'
 export default function Footer() {
   const pathname = usePathname()
 
-  // Don’t show footer on PDF‐reader pages
+ 
   if (pathname.includes('/read')) {
     return null
   }

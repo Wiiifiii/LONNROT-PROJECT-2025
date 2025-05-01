@@ -15,7 +15,6 @@ import { HiOutlineMail } from "react-icons/hi";
 import MenuOverlay from "@/app/components/Layout/MenuOverlay";
 import { useSession, signOut } from "next-auth/react";
 
-// Next/Image loader for Supabase-hosted avatars
 const supabaseLoader = ({ src, width, quality }) =>
   `${src}?width=${width}&quality=${quality || 75}`;
 

@@ -1,16 +1,7 @@
 // src/app/components/Tooltip.jsx
-// Reusable tooltip wrapper using Tailwind CSS
 
 import React from "react";
 
-/**
- * Tooltip component wraps any element and shows a tooltip on hover.
- *
- * Props:
- * - content: string (tooltip content)
- * - position: 'top' | 'bottom' | 'left' | 'right' (default: 'top')
- * - children: React node (the element to wrap)
- */
 export default function Tooltip({ content, position = "top", children }) {
   // Map positions to Tailwind absolute positioning classes
   const posClasses = {

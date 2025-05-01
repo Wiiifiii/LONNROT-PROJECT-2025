@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useContext } from "react";
+import Link from "next/link";   
 import NewTopicForm    from "./NewTopicForm.client";
 import TopicList       from "./TopicList.client";
 import CommentList     from "./CommentList.client";
@@ -18,7 +19,7 @@ export default function ClientCommunity({ session }) {
   const [isEditing, setIsEditing]     = useState(false);
   const [title, setTitle]             = useState("");
   const [body, setBody]               = useState("");
-  const [notify] = useState(() => useContext(NotificationContext).showNotification);
+  const notify = useContext(NotificationContext).showNotification;
   const [commentsKey, setCommentsKey] = useState(0);
 
   // fetch topic list
@@ -89,9 +90,18 @@ export default function ClientCommunity({ session }) {
   }
 
   return (
-    <div className="flex mt-16 px-8 space-x-6">
-      {/* ─── Sidebar ───────────────────────── */}
-      <div className="w-1/3 bg-[#0b1c2c]/75 backdrop-blur-sm rounded-lg p-6 space-y-6">
+    <div className="flex flex-col md:flex-row mt-16 px-4 md:px-8
+                    space-y-6 md:space-y-0 md:space-x-6">      
+                    {/*Sidebar*/}
+<div className="w-full md:w-1/3 bg-[#0b1c2c]/75 backdrop-blur-sm rounded-lg p-4 md:p-6 space-y-6">      
+<div className="text-right">
+         <Link
+           href="/community/rules"
+           className="text-sm text-blue-300 hover:text-blue-100 transition"
+         >
+           Discussion Rules
+         </Link>
+       </div>
         <h2 className="text-xl font-bold text-white">Create a New Topic</h2>
         <NewTopicForm onSuccess={createSuccess} />
 
@@ -121,9 +131,8 @@ export default function ClientCommunity({ session }) {
         </div>
       </div>
 
-      {/* ─── Main Panel ─────────────────────── */}
-      <div className="w-2/3 bg-[#0b1c2c]/75 backdrop-blur-sm rounded-lg p-6 space-y-6">
-        {!topicData ? (
+      {/*Main Panel*/}
+      <div className="w-full md:w-2/3 bg-[#0b1c2c]/75 backdrop-blur-sm rounded-lg p-4 md:p-6 space-y-6">        {!topicData ? (
           <p className="text-gray-300 text-center mt-12">
             Please select a topic to view details.
           </p>
@@ -167,7 +176,7 @@ export default function ClientCommunity({ session }) {
               </>
             )}
 
-            {/* ─── Comments ───────────────── */}
+            {/*Comments*/}
             <h3 className="text-lg font-semibold text-white mt-8">
               Comments
             </h3>

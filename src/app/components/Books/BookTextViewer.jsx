@@ -49,7 +49,7 @@ export default function BookTextViewer({
   const { data: session } = useSession();
   const router = useRouter();
   const containerRef = useRef(null);
-  const finishFired = useRef(false); // Ensure READ_FINISH is fired only once
+  const finishFired = useRef(false);
 
   const [fontSize, setFontSize] = useState(30);
   const [progress, setProgress] = useState(0);
@@ -217,7 +217,6 @@ export default function BookTextViewer({
 
         {/* Toolbar */}
         <div className={`flex items-center flex-wrap gap-2 p-2 rounded border-b ${panelBg} ${panelBorder}`}>
-          {/* ← “You are reading…” moved here */}
           <div className={`${panelText} flex items-center gap-1 mr-auto text-sm`}>
             <span role="img" aria-label="book">📖</span>
             <span>You are reading</span>

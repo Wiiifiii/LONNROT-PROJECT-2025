@@ -8,7 +8,7 @@ import { FiCheckCircle, FiInfo, FiAlertCircle, FiX } from "react-icons/fi";
  * @param { "info" | "success" | "error" } type
  * @param { string } message
  * @param { () => void } onClose
- * @param { number } duration  auto‑dismiss after ms
+ * @param { number } duration 
  */
 export default function Notification({
   type = "info",

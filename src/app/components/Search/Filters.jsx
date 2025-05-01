@@ -6,13 +6,13 @@ import Button from '@/app/components/UI/Button'
 import Dropdown from '@/app/components/UI/Dropdown'
 
 export default function Filters({ initial = {}, onApply, onClear }) {
-  // ─── Form state ───
+  // Form state
   const [q, setQ]                   = useState('')
   const [selectedBook, setSelectedBook]     = useState('')
   const [selectedAuthor, setSelectedAuthor] = useState('')
   const [selectedId, setSelectedId]         = useState('')
 
-  // ─── Options from API ───
+  // Options from API 
   const [bookOptions,   setBookOptions]   = useState([])
   const [authorOptions, setAuthorOptions] = useState([])
   const [idOptions,     setIdOptions]     = useState([])

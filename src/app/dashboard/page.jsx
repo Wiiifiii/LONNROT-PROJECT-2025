@@ -18,7 +18,6 @@ import {
   Line,
 } from 'recharts';
 
-// Simple card component
 function StatCard({ title, value }) {
   return (
     <div className="bg-[#0b1c2c]  p-4 rounded-lg shadow">
@@ -52,7 +51,6 @@ export default function AdminDashboard() {
     return <p className="text-white p-8">Loading dashboard…</p>;
   }
 
-  // Safely handle undefined grouping data
   const genderData = Object.entries(users.byGender ?? {}).map(
     ([name, value]) => ({ name, value })
   );

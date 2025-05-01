@@ -60,7 +60,6 @@ export default function Card({ book }) {
 
       {/* Action Buttons */}
       <div className="mt-2 w-full">
-        {/* Button row using grid layout */}
         <div className="grid grid-cols-2 gap-2">
           <Button
             icon={FaEye}

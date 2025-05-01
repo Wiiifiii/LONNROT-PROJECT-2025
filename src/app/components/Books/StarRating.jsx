@@ -5,9 +5,9 @@ import React from "react";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
 /**
- * @param {number} rating – Current rating value (1–5)
- * @param {(number) => void} [onChange] – Callback when a star is clicked
- * @param {boolean} [readOnly] – If true, disables clicking
+ * @param {number} rating 
+ * @param {(number) => void} [onChange] 
+ * @param {boolean} [readOnly] 
  */
 export default function StarRating({ rating = 0, onChange, readOnly = false }) {
   const handleStarClick = (value) => {

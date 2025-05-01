@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from 'react'
 import Button from './Button'
-import Card from './Card' // assume you’ll create or adapt this
+import Card from './Card' 
 
 export default function BookSection({
   title,
-  sort,           // e.g. "downloads_desc" | "createdAt_desc" | "trending"
-  filter = {},    // { bookId, author, originalId }
+  sort,          
+  filter = {},    
   limit = 12,
-  onSeeAll,       // callback for “See all”
+  onSeeAll,      
 }) {
   const [books, setBooks] = useState([])
 
@@ -24,8 +24,7 @@ export default function BookSection({
     fetch(`/api/books?${params.toString()}`)
         .then(r => r.json())
         .then(data => {
-         // if the API returns { books: […] }, pick that; 
-         // if it returns an array directly, use it too
+    
         const list = Array.isArray(data)
            ? data
            : data.books ?? []

@@ -12,8 +12,6 @@ export default function ConfirmDialog({
 }) {
   const [open, setOpen] = useState(false);
 
-  // Always render the icon/button you passed in as `children`
-  // but wrap its onClick to open the modal
   const trigger = isValidElement(children)
     ? cloneElement(children, {
         onClick: () => setOpen(true),

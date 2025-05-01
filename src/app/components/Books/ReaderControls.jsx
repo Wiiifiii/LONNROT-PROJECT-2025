@@ -22,7 +22,6 @@ export default function ReaderControls({ bookId, pdfUrl, txtUrl }) {
   const handleAddSuccess = () => {
     setShowSelector(false)
     setNotification("Book added to your reading list.")
-    // Auto-clear notification after 3 seconds
     setTimeout(() => setNotification(""), 3000)
   }
 
