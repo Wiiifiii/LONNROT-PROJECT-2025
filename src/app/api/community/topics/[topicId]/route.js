@@ -1,24 +1,25 @@
-// src/app/api/community/topics/[topicId]/route.js
+// GET  /api/community/topics/[topicId]
+// PATCH/DELETE same URL
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 
 export async function GET(request, context) {
-  // Await the params
-  const { topicId: topicIdStr } = await context.params;
-  const topicId = Number(topicIdStr);
-  if (isNaN(topicId)) {
+  // await the dynamic params before using them
+  const { topicId } = await context.params;
+  const id = Number(topicId);
+  if (isNaN(id)) {
     return NextResponse.json({ error: "Invalid topic ID" }, { status: 400 });
   }
 
   const topic = await prisma.topic.findUnique({
-    where: { id: topicId },
+    where: { id },
     include: {
-      author: { select: { id: true, username: true, email: true } },
+      author: { select: { username: true, email: true } },
       comments: {
-        include: { author: { select: { id: true, username: true } } },
         orderBy: { createdAt: "asc" },
+        include: { author: { select: { username: true, email: true } } },
       },
     },
   });
@@ -33,16 +34,14 @@ export async function PATCH(request, context) {
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  // Await the params
-  const { topicId: topicIdStr } = await context.params;
-  const topicId = Number(topicIdStr);
-  if (isNaN(topicId)) {
+  const { topicId } = await context.params;
+  const id = Number(topicId);
+  if (isNaN(id)) {
     return NextResponse.json({ error: "Invalid topic ID" }, { status: 400 });
   }
 
-  // Only the author can patch
   const existing = await prisma.topic.findUnique({
-    where: { id: topicId },
+    where: { id },
     select: { author: { select: { email: true } } },
   });
   if (!existing) {
@@ -58,7 +57,7 @@ export async function PATCH(request, context) {
   }
 
   const updated = await prisma.topic.update({
-    where: { id: topicId },
+    where: { id },
     data: { title, body },
   });
   return NextResponse.json(updated);
@@ -69,16 +68,14 @@ export async function DELETE(request, context) {
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  // Await the params before use
-  const { topicId: topicIdStr } = await context.params;
-  const topicId = Number(topicIdStr);
-  if (isNaN(topicId)) {
+  const { topicId } = await context.params;
+  const id = Number(topicId);
+  if (isNaN(id)) {
     return NextResponse.json({ error: "Invalid topic ID" }, { status: 400 });
   }
 
-  // Only the author can delete
   const existing = await prisma.topic.findUnique({
-    where: { id: topicId },
+    where: { id },
     select: { author: { select: { email: true } } },
   });
   if (!existing) {
@@ -88,10 +85,9 @@ export async function DELETE(request, context) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  // Delete all comments, then the topic itself
   await prisma.$transaction([
-    prisma.comment.deleteMany({ where: { topicId } }),
-    prisma.topic.delete({ where: { id: topicId } }),
+    prisma.comment.deleteMany({ where: { topicId: id } }),
+    prisma.topic.delete({ where: { id } }),
   ]);
   return NextResponse.json({ success: true });
 }
