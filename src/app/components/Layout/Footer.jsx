@@ -15,7 +15,7 @@ export default function Footer() {
 
   return (
     <footer className="text-center text-gray-500 text-sm py-4 space-y-2">
-      <div>© {new Date().getFullYear()} Lönnrot Library by Wiiifiii</div>
+      <div>© {new Date().getFullYear()} Project Lönnrot by Wiiifiii</div>
       <div className="flex justify-center space-x-4">
         <Link href="/privacy-policy" className="hover:text-white">
           Privacy Policy

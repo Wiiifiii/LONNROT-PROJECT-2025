@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Tooltip from '@/app/components/UI/Tooltip';
-import Notification from '@/app/components/UI/Notification'
+import NotificationProvider from '@/app/components/Layout/NotificationProvider.client'
 import ReadingListSelector from '@/app/components/Books/ReadingListSelector';
 import MarkdownRenderer from '@/app/components/Books/MarkdownRenderer';
 import TableOfContents from '@/app/components/Books/TableOfContents';
@@ -200,7 +200,7 @@ export default function BookTextViewer({
         )}
 
         {notif && (
-          <Notification
+          <NotificationProvider
             type={notif.type}
             message={notif.message}
             onClose={() => setNotif(null)}
