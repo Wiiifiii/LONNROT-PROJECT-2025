@@ -40,8 +40,8 @@ export default function TableOfContents({
       <div className={`${panelBg} ${panelText} border ${panelBorder} p-4 rounded shadow-lg`}>
         <h2 className="font-semibold mb-2">Contents</h2>
         <ul className="space-y-1">
-          {allHeadings.map(({ id, text, level }) => (
-            <li key={id} style={{ marginLeft: `${(level - 1) * 0.75}rem` }}>
+          {allHeadings.map(({ id, text, level }, index) => (
+            <li key={`${id}-${index}`} style={{ marginLeft: `${(level - 1) * 0.75}rem` }}>
               <button
                 onClick={() => scrollTo(id)}
                 className={`w-full text-left hover:text-accent ${
