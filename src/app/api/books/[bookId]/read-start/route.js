@@ -3,7 +3,8 @@ import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
-import { InteractionType } from "@/lib/constants"; // Import InteractionType constants
+import { InteractionType } from "@/lib/constants";
+import { startOfDay } from "date-fns";
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,7 @@ export async function POST(request, context) {
   const { bookId } = await context.params;
   const id = Number(bookId);
 
-  // Fetch the session to verify the user's authentication status
+  // Verify user's authentication status
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -19,15 +20,27 @@ export async function POST(request, context) {
   const userId = session.user.id;
   const sessionId = `user_${userId}`;
 
-  // Log the READ_START interaction using the InteractionType constant
-  await prisma.bookInteraction.create({
-    data: {
+  // DUPLICATE GUARD: only one READ_START per book per day per sessionId
+  const today = new Date();
+  const dayZero = startOfDay(today);
+  const existing = await prisma.bookInteraction.findFirst({
+    where: {
       bookId: id,
-      sessionId: sessionId,
-      type: InteractionType.READ_START, // Use InteractionType constant
-    },
+      sessionId,
+      type: InteractionType.READ_START,
+      createdAt: { gte: dayZero }
+    }
   });
 
-  // Respond with a success message
+  if (!existing) {
+    await prisma.bookInteraction.create({
+      data: {
+        bookId: id,
+        sessionId,
+        type: InteractionType.READ_START,
+      },
+    });
+  }
+
   return NextResponse.json({ ok: true }, { status: 201 });
 }
