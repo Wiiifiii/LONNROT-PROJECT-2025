@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import shuffle from 'lodash.shuffle' 
 import Navbar from '@/app/components/Layout/Navbar'
 import Modal from '@/app/components/UI/Modal'
 import Filters from '@/app/components/Search/Filters'
@@ -42,6 +43,7 @@ export default function BooksPage() {
       const json = await res.json()
       if (json.success) {
         setResults(json.data.books)
+        setResults(shuffle(json.data.books))
         setTotal(json.data.total)
       }
       setLoading(false)
