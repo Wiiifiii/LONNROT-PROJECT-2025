@@ -6,13 +6,15 @@ import { authOptions } from "@/lib/authOptions";
 import { InteractionType } from "@/lib/constants";
 import { startOfDay } from "date-fns";
 
-const prisma = new PrismaClient();
+// Reuse PrismaClient in dev to avoid too many connections
+const prismaReadStart = global.prismaReadStart || new PrismaClient();
+if (process.env.NODE_ENV === "development") global.prismaReadStart = prismaReadStart;
 
 export async function POST(request, context) {
-  const { bookId } = await context.params;
+  const { bookId } = context.params;
   const id = Number(bookId);
 
-  // Verify user's authentication status
+  // Auth: ensure we have a user
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -20,25 +22,20 @@ export async function POST(request, context) {
   const userId = session.user.id;
   const sessionId = `user_${userId}`;
 
-  // DUPLICATE GUARD: only one READ_START per book per day per sessionId
-  const today = new Date();
-  const dayZero = startOfDay(today);
-  const existing = await prisma.bookInteraction.findFirst({
+  // Guard: only one READ_START per book per session per day
+  const today = startOfDay(new Date());
+  const existing = await prismaReadStart.bookInteraction.findFirst({
     where: {
       bookId: id,
       sessionId,
       type: InteractionType.READ_START,
-      createdAt: { gte: dayZero }
+      createdAt: { gte: today }
     }
   });
 
   if (!existing) {
-    await prisma.bookInteraction.create({
-      data: {
-        bookId: id,
-        sessionId,
-        type: InteractionType.READ_START,
-      },
+    await prismaReadStart.bookInteraction.create({
+      data: { bookId: id, sessionId, type: InteractionType.READ_START }
     });
   }
 
