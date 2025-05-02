@@ -1,8 +1,7 @@
-// src/app/community/rules/page.jsx
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Community Discussion Rules',
+  title: 'Saga’s Rune Code',
 };
 
 export default function CommunityRulesPage() {
@@ -12,17 +11,20 @@ export default function CommunityRulesPage() {
         href="/community"
         className="text-blue-400 hover:underline"
       >
-        ← Back to Community
+        ← Return to Kalevala Kantele
       </Link>
 
-      <h1 className="text-3xl font-semibold">Community Discussion Rules</h1>
+      <h1 className="text-3xl font-semibold">Code of the Rune Circle</h1>
 
       <ul className="list-disc list-inside space-y-2 text-gray-200">
-        <li>Be respectful and kind—no personal attacks or hate speech.</li>
-        <li>Stay on topic—keep each thread focused on its subject.</li>
-        <li>No spam, self-promotion, or off-site links without context.</li>
-        <li>Use clear, descriptive titles for new topics.</li>
-        <li>Report rule violations to the moderators.</li>
+        <li>Whisper with honor, shun dark curses.</li>
+        <li>Weave sagas true, stray not from runes.</li>
+        <li>Seal no false echoes, share with wisdom.</li>
+        <li>Carve runes clear, sing tales with purpose.</li>
+        <li>Call the bards to mend the broken song.</li>
+        <li>Seek not to echo sung runes anew.</li>
+        <li>Guard the lore, veil the hidden names.</li>
+        <li>Join the chant, let voices rise as one.</li>
         {/* …add or modify rules to taste… */}
       </ul>
     </div>

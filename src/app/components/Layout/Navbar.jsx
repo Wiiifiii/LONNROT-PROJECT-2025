@@ -96,7 +96,7 @@ export default function Navbar() {
           <div className="flex items-center gap-4">
             {user && (
               <Menu as="div" className="relative">
-                <Menu.Button className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-600 hover:border-yellow-300 transition-all duration-300 bg-gradient-to-br from-gray-700 to-gray-900">
+                <Menu.Button className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-600 hover:border-yellow-300 transition-all duration-300 bg-gradient-to-br from-[#1f2937] to-gray-900">
                   {user.profileImage ? (
                     <Image
                       loader={supabaseLoader}
@@ -107,7 +107,7 @@ export default function Navbar() {
                       className="object-cover"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900 text-white font-bold text-lg">
+                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#1f2937] to-gray-900 text-white font-bold text-lg">
                       {(user.name || user.email)[0].toUpperCase()}
                     </div>
                   )}
@@ -118,7 +118,7 @@ export default function Navbar() {
                       <Link
                         href="/profile"
                         className={`block px-4 py-2 text-sm ${
-                          active ? "bg-gray-700 text-white" : "text-gray-200"
+                          active ? "bg-[#1f2937] text-white" : "text-gray-200"
                         }`}
                       >
                         Profile
@@ -130,7 +130,7 @@ export default function Navbar() {
                       <Link
                         href="/settings"
                         className={`block px-4 py-2 text-sm ${
-                          active ? "bg-gray-700 text-white" : "text-gray-200"
+                          active ? "bg-[#1f2937] text-white" : "text-gray-200"
                         }`}
                       >
                         Settings
@@ -142,7 +142,7 @@ export default function Navbar() {
                       <button
                         onClick={() => signOut({ callbackUrl: "/" })}
                         className={`w-full text-left px-4 py-2 text-sm ${
-                          active ? "bg-gray-700 text-white" : "text-gray-200"
+                          active ? "bg-[#1f2937] text-white" : "text-gray-200"
                         }`}
                       >
                         Logout

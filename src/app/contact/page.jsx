@@ -63,7 +63,7 @@ export default function ContactPage() {
                 <input
                   name="name"
                   required
-                  className="mt-1 w-full p-2 bg-[#0b1c2c] rounded text-white"
+                  className="mt-1 w-full p-2 bg-[#1f2937] rounded text-white"
                 />
               </label>
               <label className="block">
@@ -72,7 +72,7 @@ export default function ContactPage() {
                   type="email"
                   name="email"
                   required
-                  className="mt-1 w-full p-2 bg-[#0b1c2c] rounded text-white"
+                  className="mt-1 w-full p-2 bg-[#1f2937] rounded text-white"
                 />
               </label>
               <label className="block">
@@ -81,7 +81,7 @@ export default function ContactPage() {
                   name="message"
                   required
                   rows="5"
-                  className="mt-1 w-full p-2 bg-[#0b1c2c] rounded text-white"
+                  className="mt-1 w-full p-2 bg-[#1f2937] rounded text-white"
                 />
               </label>
 

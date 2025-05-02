@@ -144,7 +144,7 @@ export default function BookTextViewer({
   const panelBg = theme === 'dark' ? 'bg-card-dark'
     : theme === 'light' ? 'bg-card'
       : 'bg-yellow-50';
-  const panelBorder = theme === 'dark' ? 'border-gray-700' : 'border-gray-300';
+  const panelBorder = theme === 'dark' ? 'border-[#1f2937]' : 'border-gray-300';
   const panelText = theme === 'dark' ? 'text-white' : 'text-black';
   const ICON = 20;
 
@@ -208,7 +208,7 @@ export default function BookTextViewer({
         )}
 
         {/* Progress bar */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gray-700">
+        <div className="absolute top-0 left-0 w-full h-1 bg-[#1f2937]">
           <div
             className="h-full bg-accent transition-width duration-100"
             style={{ width: `${progress}%` }}
@@ -265,7 +265,7 @@ export default function BookTextViewer({
           </Tooltip>
 
           {/* Download TXT */}
-          <Tooltip content="Keep the Rune TXT">
+          <Tooltip content="Keep the Sampo TXT">
             <a
               href={`/api/books/${bookId}/download?format=txt`}
               target="_blank"
@@ -277,7 +277,7 @@ export default function BookTextViewer({
           </Tooltip>
 
           {/* Download PDF */}
-          <Tooltip content="Keep the Rune PDF">
+          <Tooltip content="Keep the Sampo PDF">
             <a
               href={`/api/books/${bookId}/download?format=pdf`}
               target="_blank"

@@ -72,11 +72,11 @@ export default function CommentList({ topicId, session, onCommentDeleted }) {
       {comments.map((c) => {
         const isAuthor = session?.user?.email === c.author.email;
         return (
-          <li key={c.id} className="p-4 bg-gray-700 rounded">
+          <li key={c.id} className="p-4 bg-[#1f2937] rounded">
             {editingId === c.id ? (
               <>
                 <textarea
-                  className="w-full p-2 bg-gray-600 text-white rounded"
+                  className="w-full p-2 bg-[#1f2937] text-white rounded"
                   value={editBody}
                   onChange={(e) => setEditBody(e.target.value)}
                 />

@@ -108,7 +108,7 @@ export default function BookCover({ title, author }) {
       {/* Mute Button */}
       <button 
         onClick={(e) => { e.stopPropagation(); toggleMute(); }}
-        className="absolute top-1 right-1 bg-gray-700 bg-opacity-70 rounded-full p-1 text-xs hover:bg-gray-600 z-20"
+        className="absolute top-1 right-1 bg-[#1f2937] bg-opacity-70 rounded-full p-1 text-xs hover:bg-gray-600 z-20"
       >
         {muted ? "🔇" : "🔊"}
       </button>

@@ -40,7 +40,7 @@ export default function MarkdownRenderer({ text, fontSize, theme }) {
           ),
           code({ inline, children, ...props }) {
             return inline ? (
-              <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded" {...props}>
+              <code className="bg-gray-200 dark:bg-[#1f2937] px-1 rounded" {...props}>
                 {children}
               </code>
             ) : (

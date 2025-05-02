@@ -177,7 +177,7 @@ export default function RegisterPage() {
                   type="date"
                   value={dateOfBirth}
                   onChange={e => setDateOfBirth(e.target.value)}
-                  className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg"
+                  className="w-full px-4 py-2 bg-[#1f2937] text-white rounded-lg"
                 />
               </div>
 
@@ -188,7 +188,7 @@ export default function RegisterPage() {
                 <select
                   value={gender}
                   onChange={e => setGender(e.target.value)}
-                  className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg"
+                  className="w-full px-4 py-2 bg-[#1f2937] text-white rounded-lg"
                 >
                   <option value="">Select gender</option>
                   <option value="MALE">Male</option>
@@ -203,7 +203,7 @@ export default function RegisterPage() {
                   value={bio}
                   onChange={e => setBio(e.target.value)}
                   rows={3}
-                  className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg"
+                  className="w-full px-4 py-2 bg-[#1f2937] text-white rounded-lg"
                   placeholder="Tell us a bit about yourself…"
                 />
               </div>
@@ -233,7 +233,7 @@ export default function RegisterPage() {
                 onClick={() => router.push('/auth/login')}
                 icon={FiBookOpen}
                 text="Return to Login"
-                className="w-full justify-center bg-gray-700 hover:bg-gray-600"
+                className="w-full justify-center bg-[#1f2937] hover:bg-gray-600"
               />
             </div>
           </div>
@@ -262,7 +262,7 @@ function FloatingInput({
         value={value}
         onChange={onChange}
         required
-        className="w-full px-4 pt-6 pb-2 bg-gray-700 text-white rounded-lg border border-gray-600 peer"
+        className="w-full px-4 pt-6 pb-2 bg-[#1f2937] text-white rounded-lg border border-gray-600 peer"
         placeholder=" "
       />
       <label

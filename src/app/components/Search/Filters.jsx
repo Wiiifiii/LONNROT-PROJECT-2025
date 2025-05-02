@@ -85,7 +85,7 @@ export default function Filters({ initial = {}, onApply, onClear }) {
             value={q}
             onChange={e => setQ(e.target.value)}
             placeholder="Keyword, author…"
-            className="w-full px-4 py-2 bg-gray-700 rounded-md text-white"
+            className="w-full px-4 py-2 bg-[#1f2937] rounded-md text-white"
           />
           <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         </div>

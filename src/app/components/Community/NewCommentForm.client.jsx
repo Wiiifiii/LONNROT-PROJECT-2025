@@ -35,7 +35,7 @@ export default function NewCommentForm({ topicId, onSuccess }) {
         placeholder="Write your comment…"
         value={body}
         onChange={(e) => setBody(e.target.value)}
-        className="w-full p-3 bg-gray-700 text-white rounded h-24"
+        className="w-full p-3 bg-[#1f2937] text-white rounded h-24"
       />
       <Button type="submit" text="Post Comment" />
     </form>

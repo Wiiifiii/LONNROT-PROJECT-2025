@@ -29,7 +29,7 @@ export default function FloatingInput({
         value={value}
         onChange={onChange}
         required
-        className="w-full px-4 pt-6 pb-2 bg-gray-700 text-white rounded-lg border border-gray-600 peer"
+        className="w-full px-4 pt-6 pb-2 bg-[#1f2937] text-white rounded-lg border border-gray-600 peer"
         placeholder=" "
       />
       <label

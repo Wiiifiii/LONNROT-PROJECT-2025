@@ -100,7 +100,7 @@ export default function LoginPage() {
                 onClick={() => router.push('/auth/forgot-password')}
                 icon={FiLock}
                 text="Forgotten Rune"
-                className="w-full justify-center bg-gray-700 hover:bg-gray-600"
+                className="w-full justify-center bg-[#1f2937] hover:bg-gray-600"
               />
             </div>
           </form>
@@ -110,13 +110,13 @@ export default function LoginPage() {
               onClick={() => router.push('/auth/register')}
               icon={FiUserPlus}
               text="Forge Your Saga with Lönnrot’s Quill"
-              className="w-full justify-center bg-gray-700 hover:bg-gray-600"
+              className="w-full justify-center bg-[#1f2937] hover:bg-gray-600"
             />
             <Button
               onClick={() => router.push('/')}
               icon={FiBookOpen}
               text="Wander the Kalevala’s Lore, No Oath Required"
-              className="w-full justify-center bg-gray-700 hover:bg-gray-600"
+              className="w-full justify-center bg-[#1f2937] hover:bg-gray-600"
             />
           </div>
 

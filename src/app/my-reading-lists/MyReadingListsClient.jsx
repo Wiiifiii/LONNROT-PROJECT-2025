@@ -177,7 +177,7 @@ export default function MyReadingListsClient() {
                 {editingId === list.id ? (
                   <>
                     <input
-                      className="flex-1 px-2 py-1 bg-gray-700 text-white rounded"
+                      className="flex-1 px-2 py-1 bg-[#1f2937] text-white rounded"
                       value={editingName}
                       onChange={(e) => setEditingName(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && saveEdit(list.id)}
@@ -203,8 +203,8 @@ export default function MyReadingListsClient() {
                       onClick={() => setActiveId(list.id)}
                       className={`flex-1 text-left px-3 py-2 rounded ${
                         activeId === list.id
-                          ? "bg-gray-700 text-white"
-                          : "bg-gray-900 text-gray-400 hover:bg-gray-700 hover:text-white"
+                          ? "bg-[#1f2937] text-white"
+                          : "bg-gray-900 text-gray-400 hover:bg-[#1f2937] hover:text-white"
                       }`}
                     >
                       {list.name}
@@ -246,7 +246,7 @@ export default function MyReadingListsClient() {
               placeholder="Forge a New Scroll"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-lg bg-gray-700 text-white"
+              className="flex-1 px-4 py-2 rounded-lg bg-[#1f2937] text-white"
             />
             <button
               type="submit"

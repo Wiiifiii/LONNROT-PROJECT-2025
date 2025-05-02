@@ -85,7 +85,7 @@ export default function AuthPage() {
         <form onSubmit={handleSubmit}>
           {isRegistering && (
             <input
-              className="w-full mb-4 p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400"
+              className="w-full mb-4 p-3 rounded-lg bg-[#1f2937] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400"
               type="text"
               name="username"
               placeholder="Username"
@@ -95,7 +95,7 @@ export default function AuthPage() {
             />
           )}
           <input
-            className="w-full mb-4 p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400"
+            className="w-full mb-4 p-3 rounded-lg bg-[#1f2937] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400"
             type="email"
             name="email"
             placeholder="Email"
@@ -104,7 +104,7 @@ export default function AuthPage() {
             required
           />
           <input
-            className="w-full mb-4 p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400"
+            className="w-full mb-4 p-3 rounded-lg bg-[#1f2937] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400"
             type="password"
             name="password"
             placeholder="Password"
@@ -114,7 +114,7 @@ export default function AuthPage() {
           />
           {isRegistering && (
             <input
-              className="w-full mb-6 p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400"
+              className="w-full mb-6 p-3 rounded-lg bg-[#1f2937] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400"
               type="password"
               name="confirmPassword"
               placeholder="Confirm Password"

@@ -34,7 +34,7 @@
 //         <>
 //           <Tooltip content="Download PDF">
 //             <Button
-//               icon={FaDownload}
+//               icon={BsFiletypePdf}
 //               onClick={onDownload}
 //               className="p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151]"
 //             />

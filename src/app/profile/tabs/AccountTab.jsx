@@ -87,23 +87,23 @@ export default function AccountTab() {
       {/* Display Name field */}
       <div>
         <label className="block text-sm text-gray-300">Display Name</label>
-        <input value={form.displayName} onChange={(e) => setForm({ ...form, displayName: e.target.value })} className="w-full p-2 bg-gray-700 text-white rounded" />
+        <input value={form.displayName} onChange={(e) => setForm({ ...form, displayName: e.target.value })} className="w-full p-2 bg-[#1f2937] text-white rounded" />
       </div>
       {/* Email field */}
       <div>
         <label className="block text-sm text-gray-300">Email</label>
-        <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full p-2 bg-gray-700 text-white rounded" />
+        <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full p-2 bg-[#1f2937] text-white rounded" />
       </div>
       <hr className="border-gray-600" />
       {/* Current Password field */}
       <div>
         <label className="block text-sm text-gray-300">Current Password</label>
-        <input type="password" value={form.currentPassword} onChange={(e) => setForm({ ...form, currentPassword: e.target.value })} className="w-full p-2 bg-gray-700 text-white rounded" />
+        <input type="password" value={form.currentPassword} onChange={(e) => setForm({ ...form, currentPassword: e.target.value })} className="w-full p-2 bg-[#1f2937] text-white rounded" />
       </div>
       {/* New Password field */}
       <div>
         <label className="block text-sm text-gray-300">New Password</label>
-        <input type="password" value={form.newPassword} onChange={(e) => setForm({ ...form, newPassword: e.target.value })} className="w-full p-2 bg-gray-700 text-white rounded" />
+        <input type="password" value={form.newPassword} onChange={(e) => setForm({ ...form, newPassword: e.target.value })} className="w-full p-2 bg-[#1f2937] text-white rounded" />
       </div>
       {/* Submit button */}
       <button type="submit" disabled={loading} className="flex items-center bg-[#374151] hover:bg-[#0b1c2c] text-white py-1 px-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">

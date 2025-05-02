@@ -12,7 +12,7 @@ export default function Dropdown({ options, value, onChange, className = '' }) {
     <select
       value={value}
       onChange={onChange}
-      className={`px-4 py-2 rounded-md bg-gray-700 text-white ${className}`}
+      className={`px-4 py-2 rounded-md bg-[#1f2937] text-white ${className}`}
     >
       <option value="">All</option>
       {options.map(opt => (

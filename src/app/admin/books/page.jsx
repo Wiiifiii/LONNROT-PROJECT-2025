@@ -169,7 +169,7 @@ export default function ManageBooksPage() {
             {books.map((book) => (
               <li
                 key={book.id}
-                className="flex justify-between items-center bg-gray-700 p-4 rounded-lg"
+                className="flex justify-between items-center bg-[#1f2937] p-4 rounded-lg"
               >
                 <div>
                   <p className="text-white font-semibold">{book.title}</p>
@@ -223,7 +223,7 @@ export default function ManageBooksPage() {
                     name="title"
                     value={bookForm.title}
                     onChange={handleFormChange}
-                    className="w-full p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 bg-[#1f2937] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
@@ -234,7 +234,7 @@ export default function ManageBooksPage() {
                     name="author"
                     value={bookForm.author}
                     onChange={handleFormChange}
-                    className="w-full p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 bg-[#1f2937] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
@@ -245,7 +245,7 @@ export default function ManageBooksPage() {
                   name="description"
                   value={bookForm.description}
                   onChange={handleFormChange}
-                  className="w-full p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-3 bg-[#1f2937] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -256,7 +256,7 @@ export default function ManageBooksPage() {
                     name="file_name"
                     value={bookForm.file_name}
                     onChange={handleFormChange}
-                    className="w-full p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 bg-[#1f2937] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
@@ -266,7 +266,7 @@ export default function ManageBooksPage() {
                     name="file_url"
                     value={bookForm.file_url}
                     onChange={handleFormChange}
-                    className="w-full p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 bg-[#1f2937] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -278,7 +278,7 @@ export default function ManageBooksPage() {
                     name="cover_url"
                     value={bookForm.cover_url}
                     onChange={handleFormChange}
-                    className="w-full p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 bg-[#1f2937] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
@@ -288,7 +288,7 @@ export default function ManageBooksPage() {
                     name="metadata"
                     value={bookForm.metadata}
                     onChange={handleFormChange}
-                    className="w-full p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 bg-[#1f2937] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>

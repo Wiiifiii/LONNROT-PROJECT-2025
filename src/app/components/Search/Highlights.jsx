@@ -39,7 +39,7 @@ export default function Highlights({ onFilter = () => { } }) {
         const sample = data[listKey][0] || {}
         return (
           <div key={listKey} className="bg-[#0b1c2c]  rounded-lg overflow-hidden shadow-lg">
-            <div className="h-40 bg-gray-700 flex items-center justify-center">
+            <div className="h-40 bg-[#1f2937] flex items-center justify-center">
               {sample.cover_url ? (
                 <img
                   src={sample.cover_url}

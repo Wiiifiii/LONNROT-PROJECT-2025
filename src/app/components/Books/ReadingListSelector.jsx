@@ -78,7 +78,7 @@ export default function ReadingListSelector({ bookId, onClose, onAddSuccess }) {
           <select
             value={selectedList}
             onChange={(e) => setSelectedList(e.target.value)}
-            className="w-full p-2 bg-gray-700 text-white rounded-lg"
+            className="w-full p-2 bg-[#1f2937] text-white rounded-lg"
           >
             <option value="">— Select a list —</option>
             {lists.map((l) => (

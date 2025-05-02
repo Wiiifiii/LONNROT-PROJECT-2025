@@ -1,4 +1,4 @@
-// components/Button.jsx
+// src/app/components/UI/Button.jsx
 import React from 'react';
 import PropTypes from 'prop-types';
 import Tooltip from '@/app/components/UI/Tooltip';
@@ -7,6 +7,7 @@ const Button = ({ icon: Icon, text, tooltip, onClick, className = '' }) => {
   const btn = (
     <button
       onClick={onClick}
+      title={tooltip}   // ← add this
       className={`
         w-full sm:w-auto inline-flex items-center justify-center gap-2
         px-4 py-2 bg-[#374151] text-white rounded-full
@@ -18,7 +19,10 @@ const Button = ({ icon: Icon, text, tooltip, onClick, className = '' }) => {
       {text}
     </button>
   );
-  return tooltip ? <Tooltip text={tooltip}>{btn}</Tooltip> : btn;
+
+  return tooltip
+    ? <Tooltip text={tooltip}>{btn}</Tooltip>
+    : btn;
 };
 
 Button.propTypes = {

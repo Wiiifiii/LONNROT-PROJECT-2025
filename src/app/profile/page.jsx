@@ -47,7 +47,7 @@ export default function ProfilePage() {
               <li key={tab}>
                 <button
                   onClick={() => setActive(tab)}
-                  className={`w-full px-4 py-3 text-left text-sm ${active === tab ? "bg-gray-700 text-white font-semibold" : "text-gray-400 hover:bg-gray-700"}`}
+                  className={`w-full px-4 py-3 text-left text-sm ${active === tab ? "bg-[#1f2937] text-white font-semibold" : "text-gray-400 hover:bg-[#1f2937]"}`}
                 >
                   {tab}
                 </button>

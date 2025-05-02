@@ -19,6 +19,12 @@ export default function Secrets() {
     { name: "Rune Weaving", meaning: "Filters", description: "Weave your search by filtering the library's runes." },
     { name: "Gleaming Tomes", meaning: "Highlights", description: "Reveal sagas that shine brightest among the ancient tomes." },
     { name: "Unveil All Runes", meaning: "Show All", description: "Let all runes be seen without veil or limit." },
+    { name: "Chant a New Verse", meaning: "Create a New Topic", description: "Begin a new chant to share your tale with the bards." },
+    { name: "Bards’ Chants", meaning: "Topic List", description: "Explore the sung threads of the community’s gathered tales." },
+    { name: "Chant’s Rune", meaning: "Topic Title", description: "Inscribe the rune that names your chant’s beginning." },
+    { name: "Voice Your Bard’s Chant", meaning: "What’s on your mind?", description: "Raise your voice to weave your chant into the circle." },
+    { name: "Choose a chant to unveil its rune", meaning: "Please select a topic to view details", description: "Select a chant to reveal its hidden runic details." },
+    { name: "Seal the Verse", meaning: "Create Topic Button", description: "Seal your chant to join the bards’ eternal song." },
   ];
 
   return (

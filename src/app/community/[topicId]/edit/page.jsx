@@ -77,14 +77,14 @@ export default function EditTopicPage({ params }) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="w-full p-2 bg-gray-700 text-white rounded"
+          className="w-full p-2 bg-[#1f2937] text-white rounded"
           placeholder="Topic title"
         />
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value)}
           required
-          className="w-full p-2 bg-gray-700 text-white rounded h-32"
+          className="w-full p-2 bg-[#1f2937] text-white rounded h-32"
           placeholder="Topic body"
         />
         <div className="flex space-x-2">

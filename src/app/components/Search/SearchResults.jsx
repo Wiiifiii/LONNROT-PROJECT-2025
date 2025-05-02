@@ -42,7 +42,7 @@ export default function SearchResults({
           <Button
             onClick={() => onPageChange(Math.max(1, page - 1))}
             text="‹ Prev"
-            className="px-2 py-1 text-xs sm:px-3 sm:py-1 sm:text-sm bg-gray-700 rounded disabled:opacity-50"
+            className="px-2 py-1 text-xs sm:px-3 sm:py-1 sm:text-sm bg-[#1f2937] rounded disabled:opacity-50"
           />
           <span className="text-white px-2 py-1 text-xs sm:px-4 sm:py-2 sm:text-sm">
             Page {page} / {totalPages}
@@ -50,7 +50,7 @@ export default function SearchResults({
           <Button
             onClick={() => onPageChange(page + 1)}
             text="Next ›"
-            className="px-2 py-1 text-xs sm:px-3 sm:py-1 sm:text-sm bg-gray-700 rounded disabled:opacity-50"
+            className="px-2 py-1 text-xs sm:px-3 sm:py-1 sm:text-sm bg-[#1f2937] rounded disabled:opacity-50"
           />
         </div>
       )}

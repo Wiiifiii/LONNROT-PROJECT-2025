@@ -11,6 +11,8 @@ import { FaEye, FaDownload, FaBookOpen, FaUser } from "react-icons/fa";
 import ReadingListSelector from "@/app/components/Books/ReadingListSelector";
 import BookCover from "@/app/components/Books/BookCover";
 import { GiMagicGate,GiMagicTrident } from "react-icons/gi";
+import { BsFiletypeTxt, BsFiletypePdf } from "react-icons/bs";
+
 export default function BookDetailClient({ book, otherBooks, reviews: initialReviews }) {
   const router = useRouter();
 
@@ -134,7 +136,7 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
             />
 
             <Button
-              icon={FaDownload}
+              icon={BsFiletypeTxt}
               text="Keep the Sampo TXT"
               tooltip="Download original TXT"
               onClick={async () => {
@@ -148,8 +150,8 @@ export default function BookDetailClient({ book, otherBooks, reviews: initialRev
             />
 
             <Button
-              icon={FaDownload}
-              text="Keep the Rune PDF"
+              icon={BsFiletypePdf}
+              text="Keep the Sampo PDF"
               tooltip={book.pdf_url ? "Download generated PDF" : "PDF not available yet"}
               onClick={async () => {
                 window.open(`/api/books/${book.id}/download?format=pdf`, "_blank", "noopener");

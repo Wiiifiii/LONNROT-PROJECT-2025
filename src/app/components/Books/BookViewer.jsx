@@ -64,7 +64,7 @@
 
 //       {/* Main content */}
 //       {pdfUrl && !showReader ? (
-//         <div className="flex-1 flex items-center justify-center bg-gray-700">
+//         <div className="flex-1 flex items-center justify-center bg-[#1f2937]">
 //           <Button
 //             onClick={handleReadClick}
 //             className="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 text-lg font-semibold"
@@ -106,7 +106,7 @@
 //               </Tooltip>
 //               <Tooltip content="Download PDF">
 //                 <Button
-//                   icon={FaDownload}
+//                   icon={BsFiletypePdf}
 //                   onClick={() => handleDownload("pdf")}
 //                   className="p-2 md:p-3 rounded-full bg-[#374151]/80 hover:bg-[#374151] group"
 //                 />
@@ -133,7 +133,7 @@
 //                     setShowListSelector(true);
 //                     setShowMenu(false);
 //                   }}
-//                   className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
+//                   className="p-2 flex items-center space-x-2 rounded hover:bg-[#1f2937]"
 //                 >
 //                   <span className="text-sm">Add to Saga lists</span>
 //                 </Button>
@@ -143,7 +143,7 @@
 //                     router.push(`/books/${bookId}/bookdetail`);
 //                     setShowMenu(false);
 //                   }}
-//                   className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
+//                   className="p-2 flex items-center space-x-2 rounded hover:bg-[#1f2937]"
 //                 >
 //                   <span className="text-sm">View details</span>
 //                 </Button>
@@ -153,17 +153,17 @@
 //                     router.push("/books");
 //                     setShowMenu(false);
 //                   }}
-//                   className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
+//                   className="p-2 flex items-center space-x-2 rounded hover:bg-[#1f2937]"
 //                 >
 //                   <span className="text-sm">Back to books</span>
 //                 </Button>
 //                 <Button
-//                   icon={FaDownload}
+//                   icon={BsFiletypePdf}
 //                   onClick={() => {
 //                     handleDownload("pdf");
 //                     setShowMenu(false);
 //                   }}
-//                   className="p-2 flex items-center space-x-2 rounded hover:bg-gray-700"
+//                   className="p-2 flex items-center space-x-2 rounded hover:bg-[#1f2937]"
 //                 >
 //                   <span className="text-sm">Download PDF</span>
 //                 </Button>

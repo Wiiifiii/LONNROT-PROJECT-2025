@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Button from '@/app/components/UI/Button'
 import { FaEye, FaInfoCircle, FaDownload } from 'react-icons/fa'
 import BookCover from './BookCover';
-
+import { BsFiletypeTxt, BsFiletypePdf } from "react-icons/bs";
 
 export default function Card({ book }) {
   const router = useRouter()
@@ -92,7 +92,7 @@ export default function Card({ book }) {
             }}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#374151] rounded-full hover:bg-[#0b1c2c] text-base w-full"
           >
-            <FaDownload /> Keep the Sampo TXT
+            <BsFiletypeTxt /> Keep the Sampo TXT
           </button>
           <button
             onClick={(e) => {
@@ -101,7 +101,7 @@ export default function Card({ book }) {
             }}
             className="inline-flex items-center justify-center gap-1 px-4 py-2 bg-[#374151] rounded-full hover:bg-[#0b1c2c] text-sm w-full"
           >
-            <FaDownload /> Keep the Sampo PDF
+            <BsFiletypePdf /> Keep the Sampo PDF
           </button>
         </div>
       </div>

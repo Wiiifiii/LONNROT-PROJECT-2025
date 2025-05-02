@@ -47,8 +47,8 @@ export default function AboutPage() {
                   className={`
                     w-full px-4 py-3 text-left text-sm
                     ${active === tab
-                      ? "bg-gray-700 text-white font-semibold"
-                      : "text-gray-300 hover:bg-gray-700 hover:bg-opacity-50"}
+                      ? "bg-[#1f2937] text-white font-semibold"
+                      : "text-gray-300 hover:bg-[#1f2937] hover:bg-opacity-50"}
                   `}
                 >
                   {tab}

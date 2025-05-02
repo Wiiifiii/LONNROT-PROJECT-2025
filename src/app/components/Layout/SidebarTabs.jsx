@@ -21,13 +21,13 @@
 //           lists.map((list) => (
 //             <div
 //               key={list.id}
-//               className="flex items-center justify-between bg-gray-900 hover:bg-gray-700 rounded"
+//               className="flex items-center justify-between bg-gray-900 hover:bg-[#1f2937] rounded"
 //             >
 //               <button
 //                 onClick={() => onChange(list.id)}
 //                 className={`flex-1 text-left px-4 py-2 rounded-l
 //                   ${activeId === list.id
-//                     ? "bg-gray-700 text-white"
+//                     ? "bg-[#1f2937] text-white"
 //                     : "text-gray-400"}`
 //                 }
 //               >

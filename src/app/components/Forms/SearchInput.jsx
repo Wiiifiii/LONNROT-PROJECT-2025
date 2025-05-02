@@ -9,7 +9,7 @@ const SearchInput = ({ value, onChange, placeholder }) => {
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className="px-4 py-2 rounded-md bg-gray-700 text-white w-full max-w-xs"
+      className="px-4 py-2 rounded-md bg-[#1f2937] text-white w-full max-w-xs"
     />
   );
 };
