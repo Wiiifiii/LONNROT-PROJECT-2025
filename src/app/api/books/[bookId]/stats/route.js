@@ -9,7 +9,8 @@ const prismaStats = global.prismaStats || new PrismaClient();
 if (process.env.NODE_ENV === "development") global.prismaStats = prismaStats;
 
 export async function GET(request, context) {
-  const { bookId } = context.params;
+  const params = await context.params;
+  const { bookId } = params;
   const id = Number(bookId);
 
   if (Number.isNaN(id)) {

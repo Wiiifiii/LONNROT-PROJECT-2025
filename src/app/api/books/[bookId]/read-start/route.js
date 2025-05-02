@@ -11,7 +11,8 @@ const prismaReadStart = global.prismaReadStart || new PrismaClient();
 if (process.env.NODE_ENV === "development") global.prismaReadStart = prismaReadStart;
 
 export async function POST(request, context) {
-  const { bookId } = context.params;
+  const params = await context.params;
+  const { bookId } = params;
   const id = Number(bookId);
 
   // Auth: ensure we have a user
