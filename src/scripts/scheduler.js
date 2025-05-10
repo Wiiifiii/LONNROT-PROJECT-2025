@@ -1,3 +1,12 @@
+/**
+ * scheduler.js
+ *
+ * This module schedules a daily import task using node-cron to execute the importBooks main function.
+ * It also supports an immediate run via the '--run-now' command line argument.
+ *
+ * Dependencies: node-cron, dotenv, and importBooks.js.
+ */
+
 import cron from 'node-cron'; // Import node-cron to schedule tasks
 import 'dotenv/config'; // Load environment variables from .env file
 import { main } from './importBooks.js'; // Import the main function from importBooks.js

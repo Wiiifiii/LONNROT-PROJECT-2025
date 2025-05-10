@@ -1,7 +1,16 @@
-import { createClient } from "@supabase/supabase-js"; // Import the createClient function from Supabase SDK
+/**
+ * supabaseClient.js
+ *
+ * Exports a Supabase client instance using the project URL and anonymous API key
+ * provided in the environment variables. This client is used to interact with 
+ * Supabase services.
+ *
+ * Dependencies: @supabase/supabase-js.
+ */
 
-// Export a Supabase client instance using the URL and anonymous key from environment variables
+import { createClient } from "@supabase/supabase-js";
+
 export const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,   // Supabase project URL
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY  // Supabase anonymous API key
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
