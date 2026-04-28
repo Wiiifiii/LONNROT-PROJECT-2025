@@ -39,19 +39,32 @@ async function downloadAndUnzip(url, outputDir) {
   fs.unlinkSync(zipPath);
 }
 
-export async function processBook(id) {
+export async function processBook(id, zipUrl) {
   const paddedId = id.toString().padStart(4, '0');
-  const dlUrl = `http://www.lonnrot.net/kirjat/${paddedId}.zip`;
+  const dlUrl = zipUrl || `http://www.lonnrot.net/kirjat/${paddedId}.zip`;
   const tempDir = path.join(process.cwd(), 'temp', String(id));
   const fixedTxt = path.join(process.cwd(), 'temp', `${id}_fixed.txt`);
-  const expectedTxt = path.join(tempDir, `${paddedId}.txt`);
   await downloadAndUnzip(dlUrl, tempDir);
-  if (!fs.existsSync(expectedTxt)) {
-    const files = fs.readdirSync(tempDir);
-    throw new Error(`Expected ${paddedId}.txt not found. Found: ${files.join(', ')}`);
+
+  // Old zips contain {paddedId}.txt. Newer zips may contain differently named files.
+  const candidates = fs
+    .readdirSync(tempDir)
+    .filter(f => f.toLowerCase().endsWith('.txt'))
+
+  const preferred = `${paddedId}.txt`
+  const txtFileName =
+    (candidates.find(f => f === preferred) ||
+      candidates.find(f => f.toLowerCase() === preferred.toLowerCase()) ||
+      candidates[0])
+
+  if (!txtFileName) {
+    const files = fs.readdirSync(tempDir)
+    throw new Error(`No .txt file found after unzip. Found: ${files.join(', ')}`);
   }
+
+  const txtPath = path.join(tempDir, txtFileName)
   let rawText;
-  const buffer = fs.readFileSync(expectedTxt);
+  const buffer = fs.readFileSync(txtPath);
   const utf8 = buffer.toString('utf8');
   if (utf8.includes('�')) {
     const isoText = new TextDecoder('iso-8859-1').decode(buffer);
