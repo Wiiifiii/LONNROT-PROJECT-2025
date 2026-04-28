@@ -1,7 +1,7 @@
-// next.config.js
-import path from 'path';
-import { createRequire } from 'module';
-const requireModule = createRequire(import.meta.url);
+// next.config.js (CommonJS)
+const path = require('path');
+const { createRequire } = require('module');
+const requireModule = createRequire(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -9,7 +9,6 @@ const nextConfig = {
   images: {
     domains: [
       'ngevmoprmgngavyjujav.supabase.co',
-    
     ],
   },
 
@@ -36,4 +35,4 @@ const nextConfig = {
   serverExternalPackages: ['@prisma/client', 'bcryptjs'],
 };
 
-export default nextConfig;
+module.exports = nextConfig;

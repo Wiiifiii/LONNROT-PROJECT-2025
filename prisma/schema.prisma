@@ -1,7 +1,9 @@
 // prisma/schema.prisma
 
+// Explicit output path to avoid Prisma 7.0 deprecation warning
 generator client {
   provider = "prisma-client-js"
+  output = "../node_modules/.prisma/client"
 }
 
 datasource db {

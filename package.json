@@ -55,7 +55,6 @@
     "react-markdown": "^10.1.0",
     "react-pdf": "^9.2.1",
     "react-responsive": "^10.0.1",
-    "react-tsparticles": "^2.12.2",
     "readable-stream": "^3.6.2",
     "recharts": "^2.15.3",
     "rehype-autolink-headings": "^7.1.0",

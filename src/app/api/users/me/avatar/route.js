@@ -6,12 +6,12 @@ import { getServerSession }     from "next-auth/next";
 import { authOptions }          from "@/lib/authOptions";
 import { createClient }         from "@supabase/supabase-js";
 
-const supabaseAdmin = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
-
 export async function POST(request) {
+  // Create Supabase admin client at request-time to avoid requiring env vars during build
+  const supabaseAdmin = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
   // 1) Auth
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {

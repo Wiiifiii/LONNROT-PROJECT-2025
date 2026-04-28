@@ -7,11 +7,7 @@ import { fileSlug }        from '@/lib/slugify.js';
 import prisma              from '@/lib/prisma.js';
 import bcrypt              from 'bcrypt';
 
-// Initialize Supabase client with service-role key
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+// Initialize Supabase client at request time to avoid build-time env requirements
 
 // Parse Data URI → { buffer, mime, ext }
 function parseDataUri(dataUri) {
@@ -26,6 +22,10 @@ function parseDataUri(dataUri) {
 
 export async function POST(request) {
   try {
+    const supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
     const formData = await request.json();
 
     // 1) Required fields
