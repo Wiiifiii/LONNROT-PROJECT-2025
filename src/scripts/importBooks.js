@@ -11,7 +11,6 @@
 import dotenv from 'dotenv'
 import fs from 'fs'
 import path from 'path'
-import * as cheerio from 'cheerio'
 import axios from 'axios'
 import { PrismaClient } from '@prisma/client'
 import { createClient } from '@supabase/supabase-js'
