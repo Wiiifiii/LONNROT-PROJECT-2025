@@ -91,7 +91,8 @@ npm run dev
 
 ### `.env`
 ```env
-DATABASE_URL=postgresql://...        # Supabase/PostgreSQL connection
+DATABASE_URL=postgresql://...        # Supabase/PostgreSQL connection (pooled is OK)
+DIRECT_URL=postgresql://...          # Supabase/PostgreSQL direct connection (for Prisma migrations)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
