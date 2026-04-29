@@ -1,0 +1,58 @@
+name: Import books (weekly)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Import mode"
+        required: true
+        default: "metadataOnly"
+        type: choice
+        options:
+          - metadataOnly
+          - full
+      all:
+        description: "Disable safety limit (import everything missing)"
+        required: true
+        default: true
+        type: boolean
+  schedule:
+    # Weekly on Sundays at 03:15 UTC
+    - cron: "15 3 * * 0"
+
+concurrency:
+  group: import-books
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Import books
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # Optional. Only required when mode=full (uploads enabled)
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          # Allow full import on fresh DB when requested
+          IMPORT_ALL: ${{ (github.event_name == 'schedule' || inputs.all) && '1' || '0' }}
+          # Scheduled runs default to metadata-only for safety.
+          IMPORT_METADATA_ONLY: ${{ (github.event_name == 'schedule' || inputs.mode == 'metadataOnly') && '1' || '0' }}
+        run: node src/scripts/importBooks.js

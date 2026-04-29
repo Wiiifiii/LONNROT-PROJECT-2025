@@ -353,6 +353,7 @@ function extractFileName(url) {
 
 export async function main() {
   const metadataOnly = hasArg('--metadataOnly') || hasArg('--noUpload') || hasArg('--skipUpload') || process.env.IMPORT_METADATA_ONLY === '1'
+  const importAll = hasArg('--all') || process.env.IMPORT_ALL === '1'
   initClients({ skipUpload: metadataOnly })
   await prisma.$connect()
   const SOURCE_URL =
@@ -375,7 +376,7 @@ export async function main() {
   let missingBooks = allBooks.filter(b => !existingIds.has(b.id))
   // The page is ordered newest → oldest. If this is a fresh DB, default to a safe limit
   // to avoid an accidental import of thousands of books.
-  const effectiveLimit = importLimit ?? (existingCount === 0 ? 50 : null)
+  const effectiveLimit = importAll ? null : (importLimit ?? (existingCount === 0 ? 50 : null))
   if (effectiveLimit && missingBooks.length > effectiveLimit) {
     missingBooks = missingBooks.slice(0, effectiveLimit)
     console.log(`ℹ️ Limiting import to newest ${effectiveLimit} missing books (use --limit=... or set IMPORT_LIMIT, or remove limit by setting a high value).`)
