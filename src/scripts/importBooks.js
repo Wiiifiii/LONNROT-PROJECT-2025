@@ -37,12 +37,6 @@ function hasArg(flag) {
   return process.argv.some(a => a === normalized || a.startsWith(`${normalized}=`))
 }
 
-function getArgValue(flag) {
-  const normalized = String(flag)
-  const arg = process.argv.find(a => a.startsWith(`${normalized}=`))
-  return arg ? arg.split('=').slice(1).join('=') : null
-}
-
 function base64UrlDecodeToString(input) {
   const base64 = String(input).replace(/-/g, '+').replace(/_/g, '/')
   const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=')
