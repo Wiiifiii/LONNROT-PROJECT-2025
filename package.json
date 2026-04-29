@@ -7,8 +7,10 @@
   },
   "scripts": {
     "postinstall": "prisma generate",
+    "predev": "node scripts/ensurePrerenderManifest.cjs",
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "node scripts/ensurePrerenderManifest.cjs",
     "start": "next start",
     "lint": "next lint",
     "test": "jest",

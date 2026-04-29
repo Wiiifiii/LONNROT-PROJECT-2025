@@ -4,14 +4,23 @@ export const runtime = 'nodejs';
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+function toInt(value, fallback) {
+  const n = Number.parseInt(String(value ?? ''), 10);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function clampInt(n, { min, max }) {
+  return Math.max(min, Math.min(max, n));
+}
+
 export async function GET(request) {
   try {
     await prisma.$connect();
 
     const url       = new URL(request.url);
     const sortParam = url.searchParams.get("sort")      || "";
-    const page      = parseInt(url.searchParams.get("page")  || "1",  10);
-    const limit     = parseInt(url.searchParams.get("limit") || "20", 10);
+    const page      = clampInt(toInt(url.searchParams.get("page"), 1), { min: 1, max: 1_000_000 });
+    const limit     = clampInt(toInt(url.searchParams.get("limit"), 20), { min: 1, max: 200 });
 
     // 1) Top downloads (DOWNLOAD interactions)
     if (sortParam === "downloads_desc") {
@@ -23,10 +32,29 @@ export async function GET(request) {
         take: limit,
       });
       const ids = group.map((r) => r.bookId);
-      const books = await prisma.book.findMany({
+
+      // Fresh DB: no download interactions yet. Fall back to a deterministic list.
+      if (ids.length === 0) {
+        const books = await prisma.book.findMany({
+          where: { isDeleted: false },
+          orderBy: { bookInteractions: { _count: "desc" } },
+          take: limit,
+          select: { id: true, title: true, author: true, cover_url: true },
+        });
+        return NextResponse.json({
+          success: true,
+          data: { books, total: books.length, page: 1, limit },
+        });
+      }
+
+      const booksRaw = await prisma.book.findMany({
         where: { id: { in: ids }, isDeleted: false },
         select: { id: true, title: true, author: true, cover_url: true },
       });
+
+      // Prisma doesn't preserve IN(...) ordering; re-order to match ranking.
+      const byId = new Map(booksRaw.map((b) => [b.id, b]));
+      const books = ids.map((id) => byId.get(id)).filter(Boolean);
       return NextResponse.json({
         success: true,
         data: { books, total: books.length, page: 1, limit },
@@ -43,10 +71,27 @@ export async function GET(request) {
         take: limit,
       });
       const ids = group.map((r) => r.bookId);
-      const books = await prisma.book.findMany({
+
+      // Fresh DB: no reads logged yet. Fall back to a deterministic list.
+      if (ids.length === 0) {
+        const books = await prisma.book.findMany({
+          where: { isDeleted: false },
+          orderBy: { upload_date: "desc" },
+          take: limit,
+          select: { id: true, title: true, author: true, cover_url: true },
+        });
+        return NextResponse.json({
+          success: true,
+          data: { books, total: books.length, page: 1, limit },
+        });
+      }
+
+      const booksRaw = await prisma.book.findMany({
         where: { id: { in: ids }, isDeleted: false },
         select: { id: true, title: true, author: true, cover_url: true },
       });
+      const byId = new Map(booksRaw.map((b) => [b.id, b]));
+      const books = ids.map((id) => byId.get(id)).filter(Boolean);
       return NextResponse.json({
         success: true,
         data: { books, total: books.length, page: 1, limit },
@@ -86,9 +131,9 @@ export async function GET(request) {
 
     // 5) Fallback: regular filtered & paginated search
     const searchQuery = url.searchParams.get("searchQuery") || "";
-    const bookId      = url.searchParams.get("book")       || "";
+    const bookId      = url.searchParams.get("book")       || url.searchParams.get("bookId") || "";
     const author      = url.searchParams.get("author")     || "";
-    const origId      = url.searchParams.get("origId")     || "";
+    const origId      = url.searchParams.get("origId")     || url.searchParams.get("originalId") || "";
 
     const where = { isDeleted: false };
     if (searchQuery) {

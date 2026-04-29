@@ -29,9 +29,11 @@ export default function ManageBooksPage() {
     async function fetchBooks() {
       try {
         const res = await fetch("/api/books");
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to fetch books");
-        setBooks(data.data);
+        const json = await res.json();
+        if (!res.ok || !json?.success) {
+          throw new Error(json?.error || "Failed to fetch books");
+        }
+        setBooks(Array.isArray(json?.data?.books) ? json.data.books : []);
       } catch (err) {
         setError(err.message);
       }

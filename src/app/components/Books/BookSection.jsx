@@ -16,20 +16,19 @@ export default function BookSection({
   useEffect(() => {
     const params = new URLSearchParams()
     if (sort)          params.set('sort', sort)
-    if (filter.bookId) params.set('bookId', filter.bookId)
+    if (filter.bookId) params.set('book', filter.bookId)
     if (filter.author) params.set('author', filter.author)
-    if (filter.originalId) params.set('originalId', filter.originalId)
+    if (filter.originalId) params.set('origId', filter.originalId)
     params.set('limit', limit)
 
     fetch(`/api/books?${params.toString()}`)
         .then(r => r.json())
-        .then(data => {
-    
-        const list = Array.isArray(data)
-           ? data
-           : data.books ?? []
-         setBooks(list)
-       })
+        .then(json => {
+          const list = Array.isArray(json)
+            ? json
+            : (json?.data?.books ?? json?.books ?? [])
+          setBooks(Array.isArray(list) ? list : [])
+        })
         .catch(console.error)
   }, [sort, filter.bookId, filter.author, filter.originalId, limit])
 
