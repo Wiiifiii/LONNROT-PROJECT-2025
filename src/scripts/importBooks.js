@@ -32,6 +32,17 @@ for (const envFile of ['.env.local', '.env']) {
 const prisma = new PrismaClient()
 let supabase
 
+function hasArg(flag) {
+  const normalized = String(flag)
+  return process.argv.some(a => a === normalized || a.startsWith(`${normalized}=`))
+}
+
+function getArgValue(flag) {
+  const normalized = String(flag)
+  const arg = process.argv.find(a => a.startsWith(`${normalized}=`))
+  return arg ? arg.split('=').slice(1).join('=') : null
+}
+
 function base64UrlDecodeToString(input) {
   const base64 = String(input).replace(/-/g, '+').replace(/_/g, '/')
   const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=')
@@ -120,7 +131,7 @@ function requireEnv(name) {
   return value
 }
 
-function initClients() {
+function initClients({ skipUpload } = {}) {
   // Prisma needs DATABASE_URL (and DIRECT_URL for migrations; not required here)
   const databaseUrl = requireEnv('DATABASE_URL')
   if (hasPlaceholderPassword(databaseUrl)) {
@@ -138,6 +149,12 @@ function initClients() {
     )
   } else {
     console.log(`🗄️  DB target: ${maskDatabaseUrl(databaseUrl)}`)
+  }
+
+  if (skipUpload) {
+    console.log('☁️  Supabase uploads: skipped (metadata-only import)')
+    supabase = null
+    return
   }
 
   // Supabase admin client for uploads
@@ -229,12 +246,19 @@ function extractBooks(html, baseUrl) {
   return books
 }
 
-async function getHighestBookId() {
-  const last = await prisma.book.findFirst({ orderBy: { id: 'desc' } })
-  return last?.id ?? 0
+async function getExistingBookIds(candidateIds) {
+  if (!Array.isArray(candidateIds) || candidateIds.length === 0) return new Set()
+
+  // Keep it simple: one round-trip to find which IDs already exist.
+  // (~3-4k ids fits comfortably in a single `IN (...)` for Postgres here.)
+  const existing = await prisma.book.findMany({
+    where: { id: { in: candidateIds } },
+    select: { id: true }
+  })
+  return new Set(existing.map(r => r.id))
 }
 
-async function upsertBooks(booksToImport) {
+async function upsertBooks(booksToImport, { metadataOnly } = {}) {
   let imported = 0
   for (const { id, title, author, file_url } of booksToImport) {
     console.log(`\n📦 Processing Book #${id}: "${title}" by ${author}`)
@@ -247,9 +271,27 @@ async function upsertBooks(booksToImport) {
       txt_url: null,
       pdf_url: null,
       upload_date: new Date(),
-      metadata: {}
+      metadata: {},
+      genres: []
     }
     try {
+      if (metadataOnly) {
+        await prisma.book.upsert({
+          where: { id },
+          update: record,
+          create: record
+        })
+        console.log('   🎉 Book upserted (metadata-only)')
+        imported++
+        continue
+      }
+
+      if (!supabase) {
+        throw new Error(
+          'Supabase client not initialized. Re-run with --metadataOnly to import without uploads, or fix SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY.'
+        )
+      }
+
       const rawText = await processBook(id, file_url)
       if (typeof rawText !== 'string') {
         console.error(`⚠️ processBook(${id}) did not return text, got:`, rawText)
@@ -316,7 +358,8 @@ function extractFileName(url) {
 }
 
 export async function main() {
-  initClients()
+  const metadataOnly = hasArg('--metadataOnly') || hasArg('--noUpload') || hasArg('--skipUpload') || process.env.IMPORT_METADATA_ONLY === '1'
+  initClients({ skipUpload: metadataOnly })
   await prisma.$connect()
   const SOURCE_URL =
     process.env.BOOK_SOURCE_URL ||
@@ -331,22 +374,24 @@ export async function main() {
 
   console.log(`🔍 Fetching book list from ${SOURCE_URL}`)
   const allBooks  = await fetchBooks(SOURCE_URL)
-  const highestId = await getHighestBookId()
 
-  let newBooks  = allBooks.filter(b => b.id > highestId)
+  const existingCount = await prisma.book.count()
+  const existingIds = await getExistingBookIds(allBooks.map(b => b.id))
+
+  let missingBooks = allBooks.filter(b => !existingIds.has(b.id))
   // The page is ordered newest → oldest. If this is a fresh DB, default to a safe limit
   // to avoid an accidental import of thousands of books.
-  const effectiveLimit = importLimit ?? (highestId === 0 ? 50 : null)
-  if (effectiveLimit && newBooks.length > effectiveLimit) {
-    newBooks = newBooks.slice(0, effectiveLimit)
-    console.log(`ℹ️ Limiting import to newest ${effectiveLimit} books (use --limit=... or set IMPORT_LIMIT, or remove limit by setting a high value).`)
+  const effectiveLimit = importLimit ?? (existingCount === 0 ? 50 : null)
+  if (effectiveLimit && missingBooks.length > effectiveLimit) {
+    missingBooks = missingBooks.slice(0, effectiveLimit)
+    console.log(`ℹ️ Limiting import to newest ${effectiveLimit} missing books (use --limit=... or set IMPORT_LIMIT, or remove limit by setting a high value).`)
   }
 
-  console.log(`Found ${allBooks.length} total books. ${newBooks.length} to import.`)
-  if (newBooks.length === 0) {
+  console.log(`Found ${allBooks.length} total books. ${missingBooks.length} to import.`)
+  if (missingBooks.length === 0) {
     console.log('✅ No new books to import.')
   } else {
-    const count = await upsertBooks(newBooks)
+    const count = await upsertBooks(missingBooks, { metadataOnly })
     console.log(`\n🚀 Import complete: ${count} books added/updated.`)
   }
   await prisma.$disconnect()
