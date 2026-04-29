@@ -63,7 +63,6 @@ Whether you're a reader, researcher, or cultural enthusiast, this platform invit
 - Community ratings & comments
 - Multi-language UI
 - API Documentation UI panel
-
 ---
 
 ## 🚀 Getting Started
@@ -106,9 +105,6 @@ SUPABASE_SERVICE_ROLE_KEY=...
 NEXT_PUBLIC_SUPABASE_URL=https://...supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 ```
-
-> Tip: Use [App Passwords](https://myaccount.google.com/apppasswords) if using Gmail
-
 ---
 
 ## 📩 Notes
