@@ -111,15 +111,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 
 ---
 
-## 📩 Contact & Feedback
+## 📩 Notes
 
-The site is still growing and community-driven. If you find a bug, want to suggest a book, or have a better cover image — we'd love to hear from you.
-
-### Email:
-**wiiifiii@lonnrotproject.live**
-
-### Contact Page:
-[https://lonnrotproject.live/contact](https://lonnrotproject.live/contact)
+The site is still growing and community-driven.
 
 ---
 
