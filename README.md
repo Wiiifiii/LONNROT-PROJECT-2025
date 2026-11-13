@@ -84,35 +84,6 @@ cp .env.example .env
 npm run dev
 ```
 
----
-
-## 🔐 Environment Variables
-
-### `.env`
-```env
-DATABASE_URL=postgresql://...        # Supabase/PostgreSQL connection (pooled is OK)
-DIRECT_URL=postgresql://...          # Supabase/PostgreSQL direct connection (for Prisma migrations)
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-app-password
-SMTP_FROM="Project Lönnrot <no-reply@lonnrotproject.live>"
-NEXTAUTH_SECRET=...
-NEXTAUTH_URL=http://localhost:3000
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
-SUPABASE_URL=https://...supabase.co
-SUPABASE_SERVICE_ROLE_KEY=...
-NEXT_PUBLIC_SUPABASE_URL=https://...supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-```
----
-
-## 📩 Notes
-
-The site is still growing and community-driven.
-
----
-
 ## 🚫 License
 
 This project is open-source under the **MIT License**. Content and uploaded books must be in the public domain.
